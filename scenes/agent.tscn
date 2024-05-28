@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://ddi7i5qaafx3r"]
+
+[ext_resource type="Texture2D" uid="uid://d2j525lq5pcfb" path="res://assets/medievalRTS/RTS_medieval2.png" id="1_3ai6s"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_frdbs"]
+size = Vector2(16, 24)
+
+[node name="Agent" type="CharacterBody2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_3ai6s")
+region_enabled = true
+region_rect = Rect2(2416, 680, 33, 48)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource("RectangleShape2D_frdbs")

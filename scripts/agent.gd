@@ -18,11 +18,11 @@ var next_tile
 
 func _on_ready():
 	print("Agent is at x: " + str(position.x) + " y: " + str(position.y))
-	var current_tile = tile_map.local_to_map(position)
+	var current_position = tile_map.local_to_map(position)
 	
-	var tiles = tile_map.get_adjacent_tiles(current_tile, available_tile_steps)
+	var tiles = tile_map.get_adjacent_tiles(current_position, available_tile_steps)
 	choose_next_step(tiles)
-	
+	find_destination(next_tile,current_position)
 	#print(str(next_tile.position) + ": " + next_tile.type)
 	
 
@@ -32,6 +32,7 @@ func choose_next_step(tiles):
 	for tile in tiles:
 		if tile.type == goal_type:
 			next_tile = tile
+			found = true
 			break
 	
 	if !found:
@@ -39,15 +40,16 @@ func choose_next_step(tiles):
 	
 	current_state = State.WALKING
 
-
-func move_to_tile(next_tile, current_tile):
-	var dif = next_tile.position - current_tile.position
-
+func find_destination(next_tile, current_position):
+	var tile_dif = next_tile.position - current_position
+	var destination_pos = Vector2i(position) + tile_dif * tile_map.get_tile_size()
+	print("Destination: " + str(destination_pos))
+	position = destination_pos
 
 func _process(delta):
 	if current_state == State.STANDING:
 		return
 	elif current_state == State.WALKING:
-		#(0,1) -> (0, 64) -> (31, 95)
+		
 		pass
 	

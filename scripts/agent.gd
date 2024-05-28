@@ -4,6 +4,7 @@ extends CharacterBody2D
 
 const SPEED = 50
 const GOAL_TYPE = "sand"
+const EPSILON = 2
 
 var available_tile_steps = [
 	Vector2i(1, 0), Vector2i(-1, 0),  # Horizontal movement
@@ -51,8 +52,8 @@ func _process(delta):
 		calculate_destination(next_tile, current_position)
 		return
 	elif current_state == State.WALKING:
-		if Vector2i(position) == destination_pos:
+		position += tile_dif * SPEED * delta
+		if (Vector2i(position) - destination_pos).length() <= EPSILON:
+			position = destination_pos
 			current_state = State.DISCOVERING
 			return
-		position += tile_dif * SPEED * delta
-	

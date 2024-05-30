@@ -20,6 +20,7 @@ var prev_state
 
 var destination_pos
 var tile_dif
+var current_speed
 var visited_tiles = {}
 
 
@@ -52,6 +53,13 @@ func calculate_destination(next_tile_position, current_tile_position):
 	tile_dif = next_tile_position - current_tile_position
 	return (Vector2i(position) + tile_dif * tile_map.get_tile_size())
 
+func calculate_max_abs(tile_dif):
+	var max_abs = abs(tile_dif.x) # Default abs, abs_x
+	var abs_y = abs(tile_dif.y)
+	if abs_y > max_abs:
+		max_abs = abs_y
+	return max_abs	
+
 func _process(delta):
 	if current_state == State.EXPLORING:
 		
@@ -61,13 +69,14 @@ func _process(delta):
 			next_tile_position = dfs_not_visited.front()
 		
 		destination_pos = calculate_destination(next_tile_position, tile_map.local_to_map(position))
+		current_speed = SPEED / calculate_max_abs(tile_dif)
 		
 		prev_state = State.EXPLORING
 		current_state = State.WALKING
 		
 		return
 	elif current_state == State.WALKING:
-		position += tile_dif * SPEED * delta
+		position += tile_dif * current_speed * delta
 		if (Vector2i(position) - destination_pos).length() <= EPSILON:
 			
 			position = destination_pos

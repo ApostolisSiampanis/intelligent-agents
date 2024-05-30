@@ -29,4 +29,5 @@ func get_adjacent_tiles(current_tile, available_tile_steps):
 		
 		adjacent_tiles.append(tile_info)
 	
+	adjacent_tiles.shuffle()
 	return adjacent_tiles

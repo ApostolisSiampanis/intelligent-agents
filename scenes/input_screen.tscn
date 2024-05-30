@@ -1,10 +1,12 @@
-[gd_scene load_steps=4 format=3 uid="uid://cxpdfyyo8a4oy"]
+[gd_scene load_steps=5 format=3 uid="uid://cxpdfyyo8a4oy"]
 
 [ext_resource type="Script" path="res://scripts/line_edit.gd" id="1_2sh7x"]
+[ext_resource type="Script" path="res://scripts/change_min_max_values.gd" id="1_237xi"]
 [ext_resource type="Script" path="res://scripts/h_box_container_input_screen.gd" id="1_ve8jk"]
 [ext_resource type="Script" path="res://scripts/start_map_generation.gd" id="3_cl4sr"]
 
 [node name="input_screen" type="Node2D"]
+script = ExtResource("1_237xi")
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 custom_minimum_size = Vector2(800, 800)

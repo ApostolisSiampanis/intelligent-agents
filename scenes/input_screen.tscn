@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cxpdfyyo8a4oy"]
 
-[ext_resource type="Script" path="res://scripts/HBoxContainerInputScreen.gd" id="1_ve8jk"]
 [ext_resource type="Script" path="res://scripts/line_edit.gd" id="1_2sh7x"]
+[ext_resource type="Script" path="res://scripts/h_box_container_input_screen.gd" id="1_ve8jk"]
 
 [node name="input_screen" type="Node2D"]
 

@@ -1,5 +1,6 @@
 extends TileMap
 
+
 class TileInfo:	
 	var type = ""
 	var position = Vector2i.ZERO

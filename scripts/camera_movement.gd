@@ -1,5 +1,8 @@
 extends Camera2D
 
+@onready var tile_map = $"../TileMap"
+
+
 @export var zoomSpeed : float = 10;
 
 var zoomTarget :Vector2

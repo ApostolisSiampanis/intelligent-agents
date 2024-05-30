@@ -42,4 +42,5 @@ script = ExtResource("1_4te8f")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
+limit_smoothed = true
 script = ExtResource("3_g5pt1")

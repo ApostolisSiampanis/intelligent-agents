@@ -1,12 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://cxpdfyyo8a4oy"]
+[gd_scene load_steps=4 format=3 uid="uid://cxpdfyyo8a4oy"]
 
 [ext_resource type="Script" path="res://scripts/line_edit.gd" id="1_2sh7x"]
 [ext_resource type="Script" path="res://scripts/h_box_container_input_screen.gd" id="1_ve8jk"]
+[ext_resource type="Script" path="res://scripts/start_map_generation.gd" id="3_cl4sr"]
 
 [node name="input_screen" type="Node2D"]
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
-custom_minimum_size = Vector2(800, 500)
+custom_minimum_size = Vector2(1152, 648)
 offset_right = 800.0
 offset_bottom = 799.0
 
@@ -252,7 +253,10 @@ layout_mode = 2
 text = "Cancel
 "
 
-[node name="ButtonSave" type="Button" parent="CenterContainer/VBoxContainer/HBoxContainer"]
+[node name="ButtonStart" type="Button" parent="CenterContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
-text = "Save"
+text = "Start"
+script = ExtResource("3_cl4sr")
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/HBoxContainer/ButtonStart" to="CenterContainer/VBoxContainer/HBoxContainer/ButtonStart" method="_on_button_start_pressed"]

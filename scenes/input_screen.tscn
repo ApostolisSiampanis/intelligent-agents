@@ -1,0 +1,258 @@
+[gd_scene load_steps=3 format=3 uid="uid://cxpdfyyo8a4oy"]
+
+[ext_resource type="Script" path="res://scripts/LineEdit.gd" id="1_2sh7x"]
+[ext_resource type="Script" path="res://scripts/HBoxContainerInputScreen.gd" id="1_ve8jk"]
+
+[node name="input_screen" type="Node2D"]
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+custom_minimum_size = Vector2(800, 500)
+offset_right = 800.0
+offset_bottom = 799.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="GridContainerParameters" type="GridContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+columns = 3
+
+[node name="VBoxContainerName" type="VBoxContainer" parent="CenterContainer/VBoxContainer/GridContainerParameters"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_constants/separation = 22
+
+[node name="LabelHeader" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerName"]
+layout_mode = 2
+text = "Name"
+horizontal_alignment = 1
+
+[node name="LabelRowsName" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerName"]
+layout_mode = 2
+text = "Rows"
+horizontal_alignment = 1
+
+[node name="LabelColumnsName" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerName"]
+layout_mode = 2
+text = "Columns"
+horizontal_alignment = 1
+
+[node name="LabelStonesName" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerName"]
+layout_mode = 2
+text = "Stones
+"
+horizontal_alignment = 1
+
+[node name="LabelWoodName" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerName"]
+layout_mode = 2
+text = "Wood
+"
+horizontal_alignment = 1
+
+[node name="LabelGoldName" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerName"]
+layout_mode = 2
+text = "Gold
+"
+horizontal_alignment = 1
+
+[node name="LabelAgentsName" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerName"]
+layout_mode = 2
+text = "Agents per village
+"
+horizontal_alignment = 1
+
+[node name="VBoxContainerValue" type="VBoxContainer" parent="CenterContainer/VBoxContainer/GridContainerParameters"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_constants/separation = 22
+
+[node name="LabelHeader" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue"]
+layout_mode = 2
+text = "Min. Max. Values"
+horizontal_alignment = 1
+
+[node name="LabelRowsValue" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue"]
+layout_mode = 2
+text = "(25 - 100)"
+horizontal_alignment = 1
+
+[node name="LabelColumnValue" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue"]
+layout_mode = 2
+text = "(25 - 100)"
+horizontal_alignment = 1
+
+[node name="LabelStonesValue" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue"]
+layout_mode = 2
+text = "(1 - 30)
+"
+horizontal_alignment = 1
+
+[node name="LabelWoodValue" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue"]
+layout_mode = 2
+text = "(1 - 30)
+"
+horizontal_alignment = 1
+
+[node name="LabelGoldValue" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue"]
+layout_mode = 2
+text = "(1 - 30)
+"
+horizontal_alignment = 1
+
+[node name="LabelAgentsValue" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue"]
+layout_mode = 2
+text = "(4 - 10)
+"
+horizontal_alignment = 1
+
+[node name="VBoxContainerInput" type="VBoxContainer" parent="CenterContainer/VBoxContainer/GridContainerParameters"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="LabelHeader" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput"]
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+text = "Input"
+horizontal_alignment = 1
+
+[node name="HBoxContainerRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput"]
+layout_mode = 2
+alignment = 1
+script = ExtResource("1_ve8jk")
+
+[node name="HSlider" type="HSlider" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerRow"]
+custom_minimum_size = Vector2(150, 40)
+layout_mode = 2
+min_value = 25.0
+value = 25.0
+
+[node name="LineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerRow"]
+layout_mode = 2
+text = "25"
+placeholder_text = "Value"
+alignment = 1
+expand_to_text_length = true
+caret_blink = true
+script = ExtResource("1_2sh7x")
+
+[node name="HBoxContainerColumn" type="HBoxContainer" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput"]
+layout_mode = 2
+alignment = 1
+script = ExtResource("1_ve8jk")
+
+[node name="HSlider" type="HSlider" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerColumn"]
+custom_minimum_size = Vector2(150, 40)
+layout_mode = 2
+min_value = 25.0
+value = 25.0
+
+[node name="LineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerColumn"]
+layout_mode = 2
+text = "25"
+placeholder_text = "Value"
+alignment = 1
+expand_to_text_length = true
+caret_blink = true
+script = ExtResource("1_2sh7x")
+
+[node name="HBoxContainerStone" type="HBoxContainer" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput"]
+layout_mode = 2
+alignment = 1
+script = ExtResource("1_ve8jk")
+
+[node name="HSlider" type="HSlider" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerStone"]
+custom_minimum_size = Vector2(150, 40)
+layout_mode = 2
+min_value = 1.0
+max_value = 30.0
+value = 1.0
+
+[node name="LineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerStone"]
+layout_mode = 2
+text = "1"
+placeholder_text = "Value"
+alignment = 1
+expand_to_text_length = true
+caret_blink = true
+script = ExtResource("1_2sh7x")
+
+[node name="HBoxContainerWood" type="HBoxContainer" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput"]
+layout_mode = 2
+alignment = 1
+script = ExtResource("1_ve8jk")
+
+[node name="HSlider" type="HSlider" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerWood"]
+custom_minimum_size = Vector2(150, 40)
+layout_mode = 2
+min_value = 1.0
+max_value = 30.0
+value = 1.0
+
+[node name="LineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerWood"]
+layout_mode = 2
+text = "1"
+placeholder_text = "Value"
+alignment = 1
+expand_to_text_length = true
+caret_blink = true
+script = ExtResource("1_2sh7x")
+
+[node name="HBoxContainerGold" type="HBoxContainer" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput"]
+layout_mode = 2
+alignment = 1
+script = ExtResource("1_ve8jk")
+
+[node name="HSlider" type="HSlider" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerGold"]
+custom_minimum_size = Vector2(150, 40)
+layout_mode = 2
+min_value = 1.0
+max_value = 30.0
+value = 1.0
+
+[node name="LineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerGold"]
+layout_mode = 2
+text = "1"
+placeholder_text = "Value"
+alignment = 1
+expand_to_text_length = true
+caret_blink = true
+script = ExtResource("1_2sh7x")
+
+[node name="HBoxContainerAgents" type="HBoxContainer" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput"]
+layout_mode = 2
+alignment = 1
+script = ExtResource("1_ve8jk")
+
+[node name="HSlider" type="HSlider" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerAgents"]
+custom_minimum_size = Vector2(150, 40)
+layout_mode = 2
+min_value = 4.0
+max_value = 10.0
+value = 4.0
+
+[node name="LineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerAgents"]
+layout_mode = 2
+text = "4"
+placeholder_text = "Value"
+alignment = 1
+expand_to_text_length = true
+caret_blink = true
+script = ExtResource("1_2sh7x")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 60
+
+[node name="ButtonCancel" type="Button" parent="CenterContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+text = "Cancel
+"
+
+[node name="ButtonSave" type="Button" parent="CenterContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+text = "Save"

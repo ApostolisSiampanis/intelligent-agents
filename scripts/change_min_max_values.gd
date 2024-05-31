@@ -3,7 +3,6 @@ extends Node2D
 @onready var rows_slider = $CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerRow/HSlider
 @onready var rows_line_edit = $CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerRow/LineEdit
 
-
 @onready var columns_slider = $CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerColumn/HSlider
 @onready var columns_line_edit = $CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerColumn/LineEdit
 
@@ -40,26 +39,44 @@ func _on_rows_or_columns_changed(new_value):
 	var columns_value = int(columns_line_edit.text)
 	var total_tiles = rows_value * columns_value
 
-	stones_slider.min_value = total_tiles / 10
-	stones_slider.max_value = total_tiles / 5
+	var total_max_resources = ceil(total_tiles * 0.01)
+
+	var min_gold = max(1, int(total_max_resources * 0.1))
+	var max_gold = max(1, int(total_max_resources * 0.2))
+
+	var min_stones = max(1, int(total_max_resources * 0.3))
+	var max_stones = max(1, int(total_max_resources * 0.4))
+
+	var min_wood = max(1, int(total_max_resources * 0.4))
+	var max_wood = max(1, int(total_max_resources * 0.6))
+
+	var min_agents = max(1, int(total_max_resources * 0.1))
+	var max_agents = max(1, int(total_max_resources * 0.2))
+	
+	if max_agents % 2 != 0:
+		max_agents += 1 # Ensure max_agents is even
+
+
+	stones_slider.min_value = min_stones
+	stones_slider.max_value = max_stones
 	stones_slider.value = stones_slider.min_value
 	stones_line_edit.text = str(stones_slider.min_value)
 	label_stones_value.text = "(" + str(stones_slider.min_value) + " - " + str(stones_slider.max_value) + ")"
-	
-	wood_slider.min_value = total_tiles / 5
-	wood_slider.max_value = total_tiles / 2
+
+	wood_slider.min_value = min_wood
+	wood_slider.max_value = max_wood
 	wood_slider.value = wood_slider.min_value
 	wood_line_edit.text = str(wood_slider.min_value)
 	label_wood_value.text = "(" + str(wood_slider.min_value) + " - " + str(wood_slider.max_value) + ")"
 
-	gold_slider.min_value = total_tiles / 6
-	gold_slider.max_value = total_tiles / 3
+	gold_slider.min_value = min_gold
+	gold_slider.max_value = max_gold
 	gold_slider.value = gold_slider.min_value
 	gold_line_edit.text = str(gold_slider.min_value)
 	label_gold_value.text = "(" + str(gold_slider.min_value) + " - " + str(gold_slider.max_value) + ")"
 
-	agents_slider.min_value = total_tiles / 10
-	agents_slider.max_value = total_tiles / 4
+	agents_slider.min_value = min_agents
+	agents_slider.max_value = max_agents
 	agents_slider.value = agents_slider.min_value
 	agents_line_edit.text = str(agents_slider.min_value)
 	label_agents_value.text = "(" + str(agents_slider.min_value) + " - " + str(agents_slider.max_value) + ")"

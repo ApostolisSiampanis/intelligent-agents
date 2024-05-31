@@ -1,6 +1,7 @@
 extends TileMap
 
 const tile_size = Vector2i(64,64)
+const MAX_Y = 100
 
 func get_tile_size():
 	return tile_size
@@ -29,5 +30,4 @@ func get_adjacent_tiles(current_tile, available_tile_steps):
 		
 		adjacent_tiles.append(tile_info)
 	
-	adjacent_tiles.shuffle()
 	return adjacent_tiles

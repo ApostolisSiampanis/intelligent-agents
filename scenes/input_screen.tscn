@@ -87,25 +87,25 @@ horizontal_alignment = 1
 
 [node name="LabelStonesValue" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue"]
 layout_mode = 2
-text = "(25 - 60)
+text = "(2 - 2)
 "
 horizontal_alignment = 1
 
 [node name="LabelWoodValue" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue"]
 layout_mode = 2
-text = "(40 - 100)
+text = "(2 - 4)
 "
 horizontal_alignment = 1
 
 [node name="LabelGoldValue" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue"]
 layout_mode = 2
-text = "(10 - 60)
+text = "(1 - 1)
 "
 horizontal_alignment = 1
 
 [node name="LabelAgentsValue" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue"]
 layout_mode = 2
-text = "(4 - 10)
+text = "(2 - 10)
 "
 horizontal_alignment = 1
 
@@ -168,13 +168,13 @@ script = ExtResource("1_ve8jk")
 [node name="HSlider" type="HSlider" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerStone"]
 custom_minimum_size = Vector2(150, 40)
 layout_mode = 2
-min_value = 25.0
-max_value = 60.0
-value = 25.0
+min_value = 2.0
+max_value = 2.0
+value = 2.0
 
 [node name="LineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerStone"]
 layout_mode = 2
-text = "25"
+text = "2"
 placeholder_text = "Value"
 alignment = 1
 expand_to_text_length = true
@@ -189,13 +189,13 @@ script = ExtResource("1_ve8jk")
 [node name="HSlider" type="HSlider" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerWood"]
 custom_minimum_size = Vector2(150, 40)
 layout_mode = 2
-min_value = 40.0
-max_value = 80.0
-value = 40.0
+min_value = 2.0
+max_value = 4.0
+value = 2.0
 
 [node name="LineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerWood"]
 layout_mode = 2
-text = "40"
+text = "2"
 placeholder_text = "Value"
 alignment = 1
 expand_to_text_length = true
@@ -210,13 +210,13 @@ script = ExtResource("1_ve8jk")
 [node name="HSlider" type="HSlider" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerGold"]
 custom_minimum_size = Vector2(150, 40)
 layout_mode = 2
-min_value = 10.0
-max_value = 60.0
-value = 10.0
+min_value = 4.0
+max_value = 4.0
+value = 4.0
 
 [node name="LineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerGold"]
 layout_mode = 2
-text = "10"
+text = "1"
 placeholder_text = "Value"
 alignment = 1
 expand_to_text_length = true
@@ -231,13 +231,13 @@ script = ExtResource("1_ve8jk")
 [node name="HSlider" type="HSlider" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerAgents"]
 custom_minimum_size = Vector2(150, 40)
 layout_mode = 2
-min_value = 4.0
+min_value = 2.0
 max_value = 10.0
-value = 4.0
+value = 2.0
 
 [node name="LineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerAgents"]
 layout_mode = 2
-text = "4"
+text = "2"
 placeholder_text = "Value"
 alignment = 1
 expand_to_text_length = true

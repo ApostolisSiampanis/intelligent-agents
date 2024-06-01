@@ -53,6 +53,9 @@ func _on_rows_or_columns_changed(new_value):
 	var min_agents = max(1, int(total_max_resources * 0.1))
 	var max_agents = max(1, int(total_max_resources * 0.2))
 	
+	if min_agents % 2 != 0:
+		min_agents += 1 # Ensure min_agents is even
+	
 	if max_agents % 2 != 0:
 		max_agents += 1 # Ensure max_agents is even
 

@@ -19,7 +19,10 @@ func get_adjacent_tiles(current_tile, available_tile_steps):
 	for step in available_tile_steps:
 		var new_pos = current_tile + step
 		
-		var adj_tile_data = get_cell_tile_data(0, new_pos)
+		var adj_tile_data = get_cell_tile_data(1, new_pos)
+		
+		if adj_tile_data == null:
+			adj_tile_data = get_cell_tile_data(0, new_pos)
 		
 		if adj_tile_data == null:
 			continue

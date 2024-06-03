@@ -80,17 +80,17 @@ func walk(delta):
 func decide():
 	var current_tile_pos = tile_map.local_to_map(position)
 	var tile_type = get_tile_type(current_tile_pos)
-		
+	
+	if is_backtracking && astar_path_queue.is_empty():
+		is_backtracking = false
+		choose_search_algorithm()
+	
 	var goal_reached = tile_type == current_goal_type
 	
 	if current_search_algorithm == SearchAlgorithm.EXPLORE:
 		visited.push_back(current_tile_pos)
-		
 	elif current_search_algorithm == SearchAlgorithm.ASTAR:
 		goal_reached = goal_reached && astar_path_queue.is_empty()
-		if is_backtracking && astar_path_queue.is_empty():
-			is_backtracking = false
-			choose_search_algorithm()
 	
 	if goal_reached:
 		if current_search_algorithm == SearchAlgorithm.EXPLORE:

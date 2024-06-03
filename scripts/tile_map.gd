@@ -1,6 +1,13 @@
 extends TileMap
 
 
+const tile_size = Vector2i(64,64)
+const MAX_Y = 100
+
+func get_tile_size():
+	return tile_size
+
+
 class TileInfo:	
 	var type = ""
 	var position = Vector2i.ZERO
@@ -8,14 +15,16 @@ class TileInfo:
 func _ready():
 	pass
 	
-func get_adjacent_tiles(agent_pos, available_tile_steps):
+func get_adjacent_tiles(current_tile, available_tile_steps):
 	var adjacent_tiles = []
-	var tile_pos = local_to_map(agent_pos)
 	
 	for step in available_tile_steps:
-		var new_pos = tile_pos + step
+		var new_pos = current_tile + step
 		
-		var adj_tile_data = get_cell_tile_data(0, new_pos)
+		var adj_tile_data = get_cell_tile_data(1, new_pos)
+		
+		if adj_tile_data == null:
+			adj_tile_data = get_cell_tile_data(0, new_pos)
 		
 		if adj_tile_data == null:
 			continue

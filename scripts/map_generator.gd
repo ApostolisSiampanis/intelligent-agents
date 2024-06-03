@@ -4,6 +4,7 @@ extends TileMap
 @onready var tile_map := $"."
 @onready var button_exit = $"../ButtonExit"
 
+const AGENT = preload("res://scenes/agent.tscn")
 
 ''' Random number generator '''
 var rng := RandomNumberGenerator.new()
@@ -74,6 +75,13 @@ func _ready():
 	
 	# Tiles placement into the map
 	tiles_placement_into_the_map(map, available_rows, obstacles_per_row, obstacles_per_col)
+	
+	# TODO: Remove
+	# Code to spawn agent
+	var agent = AGENT.instantiate()
+	agent.position = Vector2(96, 96)
+	agent.set_tile_map(tile_map)
+	add_child(agent)
 
 func tiles_placement_into_the_map(
 	map: Array, available_rows: Array,
@@ -187,3 +195,37 @@ func add_obstacle_tile(
 	
 	set_cell(1, Vector2i(coords.x, coords.y), 0,
 			 Vector2i(obstacle_tile_coords.x, obstacle_tile_coords.y))
+
+
+const tile_size = Vector2i(64,64)
+const MAX_Y = 100
+
+func get_tile_size():
+	return tile_size
+
+
+class TileInfo:	
+	var type = ""
+	var position = Vector2i.ZERO
+
+func get_adjacent_tiles(current_tile, available_tile_steps):
+	var adjacent_tiles = []
+	
+	for step in available_tile_steps:
+		var new_pos = current_tile + step
+		
+		var adj_tile_data = get_cell_tile_data(1, new_pos)
+		
+		if adj_tile_data == null:
+			adj_tile_data = get_cell_tile_data(0, new_pos)
+		
+		if adj_tile_data == null:
+			continue
+		
+		var tile_info = TileInfo.new()
+		tile_info.position = new_pos
+		tile_info.type = adj_tile_data.get_custom_data("type")
+		
+		adjacent_tiles.append(tile_info)
+	
+	return adjacent_tiles

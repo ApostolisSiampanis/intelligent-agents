@@ -1,12 +1,12 @@
 extends CharacterBody2D
 
-@onready var tile_map = %TileMap
+var tile_map
 
 const SPEED: int = 150
 var current_goal_type: String = "stone"
 
 enum State { WALKING, DECIDING, IDLE }
-enum SearchAlgorithm { EXPLORE, ASTAR }
+enum SearchAlgorithm { EXPLORE, ASTAR, NONE }
 
 var available_tile_steps: Array[Vector2i] = [
 	Vector2i(1, 0), Vector2i(-1, 0),  # Horizontal movement
@@ -26,11 +26,13 @@ var valuable_tile_point_ids: Dictionary = {}
 
 var not_visited = []
 var visited = []
-
+# TODO: Remove
+var spawn
 
 func _on_ready():
 	var current_tile_pos = tile_map.local_to_map(position)
-	valuable_tile_point_ids["village"] = [get_point_id(current_tile_pos)]
+	spawn = get_tile_type(current_tile_pos)
+	valuable_tile_point_ids[spawn] = [get_point_id(current_tile_pos)]
 	
 	# Initialize AStar
 	astar = AStar2D.new()
@@ -71,22 +73,25 @@ func is_one_step_away(current_tile_position, next_tile_position):
 	return available_tile_steps.has(tile_dif)
 
 func walk(delta):
-	global_position = global_position.move_toward(destination_pos, SPEED * delta)
-	if Vector2i(global_position.x, global_position.y) == destination_pos:
+	position = position.move_toward(destination_pos, SPEED * delta)
+	if Vector2i(position.x, position.y) == destination_pos:
 		current_state = State.DECIDING
 
 func decide():
 	var current_tile_pos = tile_map.local_to_map(position)
 	var tile_type = get_tile_type(current_tile_pos)
-	
-	if is_backtracking && astar_path_queue.is_empty():
-		is_backtracking = false
-		choose_search_algorithm()
 		
+	var goal_reached = tile_type == current_goal_type
+	
 	if current_search_algorithm == SearchAlgorithm.EXPLORE:
 		visited.push_back(current_tile_pos)
+		
+	elif current_search_algorithm == SearchAlgorithm.ASTAR:
+		goal_reached = goal_reached && astar_path_queue.is_empty()
+		if is_backtracking && astar_path_queue.is_empty():
+			is_backtracking = false
+			choose_search_algorithm()
 	
-	var goal_reached = tile_type == current_goal_type
 	if goal_reached:
 		if current_search_algorithm == SearchAlgorithm.EXPLORE:
 			update_valuable_tiles(current_tile_pos, tile_type)
@@ -136,6 +141,11 @@ func explore(current_tile_pos: Vector2i):
 		not_visited.pop_front()
 		next_tile_pos = not_visited.front()
 	
+	if next_tile_pos == null:
+		print("I don't have anything to explore")
+		change_goal("")
+		return
+	
 	if is_one_step_away(tile_map.local_to_map(position), next_tile_pos):
 		destination_pos = calculate_destination(tile_map.local_to_map(position), next_tile_pos)
 	else:
@@ -169,16 +179,24 @@ func redefine_goal(goal_reached: bool):
 		# TODO: Change goal based on team goals
 		# TODO: Call choose_search_algorithm()
 		if current_goal_type == "stone":
-			change_goal("village")
+			change_goal(spawn)
 		else:
 			change_goal("stone")
 		return
 
 func change_goal(goal_type: String):
+	if goal_type == null || goal_type.is_empty():
+		current_goal_type = ""
+		choose_search_algorithm()
+		return
+		
 	current_goal_type = goal_type
 	choose_search_algorithm()
 
 func choose_search_algorithm():
+	if current_goal_type == null || current_goal_type.is_empty():
+		current_search_algorithm = SearchAlgorithm.NONE
+		return
 	if is_backtracking:
 		current_search_algorithm = SearchAlgorithm.ASTAR
 		return
@@ -195,3 +213,6 @@ func update_valuable_tiles(current_tile_pos: Vector2i, tile_type: String):
 		valuable_tile_point_ids[tile_type].append(current_tile_pos_id)
 	else:
 		valuable_tile_point_ids[tile_type] = [current_tile_pos_id]
+
+func set_tile_map(tile_map: TileMap):
+	self.tile_map = tile_map

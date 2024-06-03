@@ -22,7 +22,16 @@ extends Node2D
 @onready var agents_line_edit = $CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerAgents/LineEdit
 @onready var label_agents_value = $CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue/LabelAgentsValue
 
+@onready var center_container = $CenterContainer
+
 func _ready():
+	var viewport_size = get_viewport_rect().size
+
+	center_container.set_position(Vector2(
+		viewport_size.x / 2 - center_container.size.x / 2,
+		viewport_size.y / 2 - center_container.size.y / 2
+	))
+	
 	rows_slider.connect("value_changed", Callable(self, "_on_slider_value_changed"))
 	rows_line_edit.connect("text_changed", Callable(self, "_on_rows_or_columns_changed"))
 	
@@ -39,7 +48,7 @@ func _on_rows_or_columns_changed(new_value):
 	var columns_value = int(columns_line_edit.text)
 	var total_tiles = rows_value * columns_value
 
-	var total_max_resources = ceil(total_tiles * 0.01)
+	var total_max_resources = ceili(total_tiles * 0.01)
 
 	var min_gold = max(1, int(total_max_resources * 0.1))
 	var max_gold = max(1, int(total_max_resources * 0.2))

@@ -61,98 +61,72 @@ func _ready():
 	# Arrays initialization
 	var map : Array
 	var available_rows: Array
-	var obstacles_per_row: Array
-	var obstacles_per_col: Array
 	
 	for y in rows:
 		if y >= 1 and y <= rows-2: # first and last row are boundaries
 			available_rows.append(y)
-			obstacles_per_row.append(cols-2) # cols-2 because first and last column are boundaries
 		map.append([])
 		for x in range(1, cols-1):
-			obstacles_per_col.append(rows-2) # rows-2 because first and last row are boundaries
 			map[y].append(x)
 	
 	# Tiles placement into the map
-	tiles_placement_into_the_map(map, available_rows, obstacles_per_row, obstacles_per_col)
-	
-	# TODO: Remove
-	# Code to spawn agent
-	var agent = AGENT.instantiate()
-	agent.position = Vector2(96, 96)
-	agent.set_tile_map(tile_map)
-	add_child(agent)
+	tiles_placement_into_the_map(map, available_rows)
 
-func tiles_placement_into_the_map(
-	map: Array, available_rows: Array,
-	obstacles_per_row: Array, obstacles_per_col: Array
-) -> void:
+func tiles_placement_into_the_map(map: Array, available_rows: Array) -> void:
 	"""
 		
 	"""
-	add_foreground_tile(map, available_rows, village_1_tile_coords,
-						obstacles_per_row, obstacles_per_col) # village 1 placement
-	add_foreground_tile(map, available_rows, village_2_tile_coords,
-						obstacles_per_row, obstacles_per_col) # village 2 placement
+	var village_1 := add_foreground_tile(map, available_rows, village_1_tile_coords) # village 1 placement
+	var village_2 := add_foreground_tile(map, available_rows, village_2_tile_coords) # village 2 placement
+	
+	# Code to spawn agent
+	var agent = AGENT.instantiate()
+	var coords := map_to_local(Vector2(village_1.x, village_1.y))
+	agent.position = coords
+	agent.set_tile_map(tile_map)
 	
 	for y in rows:
 		for x in cols:
 			add_background_tile(x, y) # background tile placement
 			
 			if stone > 0: # stone placement
-				add_foreground_tile(map, available_rows, stone_tile_coords,
-									obstacles_per_row, obstacles_per_col)
+				add_foreground_tile(map, available_rows, stone_tile_coords)
 				stone -= 1
 			if gold > 0: # gold placement
-				add_foreground_tile(map, available_rows, gold_tile_coords,
-									obstacles_per_row, obstacles_per_col)
+				add_foreground_tile(map, available_rows, gold_tile_coords)
 				gold -= 1
 			if wood > 0: # wood placement
-				add_foreground_tile(map, available_rows, wood_tile_coords,
-									obstacles_per_row, obstacles_per_col)
+				add_foreground_tile(map, available_rows, wood_tile_coords)
 				wood -= 1
 			if agents > 0: # agents placement
 				# Todo: Agents placement
 				agents -= 1
 			if obstacles > 0: # obstacles placement
-				add_obstacle_tile(map, available_rows, obstacles_per_row, obstacles_per_col)
+				add_foreground_tile(map, available_rows, obstacle_tile_coords)
 				obstacles -= 1
+	add_child(agent)
 
-func find_foreground_tile_coords(
-	map: Array, available_rows: Array, obstacles_per_row: Array, obstacles_per_col: Array
-) -> Dictionary:
+func add_foreground_tile(map: Array, available_rows: Array,	tile_coords: Dictionary) -> Dictionary:
 	"""
 		- This function randomly adds a foreground tile into the map.
 		- It chooses a random row from available_rows and then a random position
 		  within that row from map.
-		- ...
 		- If the chosen row becomes empty after removing the selected position,
 		  it's also removed from available_rows.
-		- ...
 		- Returns a dictionary containing the x and y coordinates.
 	"""
 	var idx_of_y: int = rng.randi_range(0, len(available_rows)-1)
 	var y: int = available_rows[idx_of_y]
-	obstacles_per_row[idx_of_y] -= 1
 	
 	var idx_of_x: int = rng.randi_range(0, len(map[y])-1)
 	var x: int = map[y].pop_at(idx_of_x)
-	obstacles_per_col[idx_of_x] -= 1
 	
 	if len(map[y]) == 0:
 		available_rows.pop_at(idx_of_y)
 	
-	return {'x': x, 'y': y, 'idx_of_x': idx_of_x, 'idx_of_y': idx_of_y}
-
-func add_foreground_tile(
-	map: Array, available_rows: Array,	tile_coords: Dictionary,
-	obstacles_per_row: Array, obstacles_per_col: Array
-) -> void:
-	"""
-		
-	"""
-	var coords := find_foreground_tile_coords(map, available_rows, obstacles_per_row, obstacles_per_col)
-	set_cell(1, Vector2i(coords.x, coords.y), 0, Vector2i(tile_coords.x, tile_coords.y))
+	set_cell(1, Vector2i(x, y), 0, Vector2i(tile_coords.x, tile_coords.y))
+	
+	return {'x': x, 'y': y}
 
 func add_background_tile(x: int, y: int) -> void:
 	"""
@@ -168,33 +142,6 @@ func add_background_tile(x: int, y: int) -> void:
 	else:
 		set_cell(0, Vector2i(x, y),
 				 0, Vector2i(grass_tile_coords.x, grass_tile_coords.y))
-
-func add_obstacle_tile(
-	map: Array, available_rows: Array, obstacles_per_row: Array, obstacles_per_col: Array
-) -> void:
-	"""
-		
-	"""
-	var coords: Dictionary
-	
-	while true:
-		coords = find_foreground_tile_coords(map, available_rows, obstacles_per_row, obstacles_per_col)
-		
-		# Check if obstacle can be placed in the specific coords
-		if obstacles_per_row[coords.idx_of_y] > 0 and obstacles_per_col[coords.idx_of_x] > 0:
-			if (len(map[coords.y]) == 0):
-				obstacles_per_row.pop_at(coords.idx_of_y)
-			break
-		
-		# Rollback the steps executed in find_foreground_tile_coords
-		# because if obstacle be placed at coords (x,y), the map will
-		# be splitted in two sections.
-		if len(map[coords.y]) == 0:
-			available_rows.append(coords.y)
-		map[coords.y].append(coords.x)
-	
-	set_cell(1, Vector2i(coords.x, coords.y), 0,
-			 Vector2i(obstacle_tile_coords.x, obstacle_tile_coords.y))
 
 
 const tile_size = Vector2i(64,64)

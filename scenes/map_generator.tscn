@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bnlyv6t748rbo"]
+[gd_scene load_steps=8 format=3 uid="uid://cyw2b0ow4rr55"]
 
 [ext_resource type="Script" path="res://scripts/map_generator.gd" id="1_4te8f"]
 [ext_resource type="Texture2D" uid="uid://b232tmj85wv4e" path="res://assets/medievalRTS/medieval_tilesheet.png" id="1_qqf7x"]

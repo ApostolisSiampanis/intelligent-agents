@@ -1,10 +1,12 @@
 extends TileMap
 
+
 const tile_size = Vector2i(64,64)
 const MAX_Y = 100
 
 func get_tile_size():
 	return tile_size
+
 
 class TileInfo:	
 	var type = ""

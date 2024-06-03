@@ -1,0 +1,65 @@
+[gd_scene load_steps=8 format=3 uid="uid://cyw2b0ow4rr55"]
+
+[ext_resource type="Script" path="res://scripts/map_generator.gd" id="1_4te8f"]
+[ext_resource type="Texture2D" uid="uid://b232tmj85wv4e" path="res://assets/medievalRTS/medieval_tilesheet.png" id="1_qqf7x"]
+[ext_resource type="Script" path="res://scripts/camera_movement.gd" id="3_g5pt1"]
+[ext_resource type="Script" path="res://scripts/exit_app.gd" id="4_61sxg"]
+[ext_resource type="Script" path="res://scripts/back_to_menu.gd" id="5_l6ovq"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ylq5a"]
+texture = ExtResource("1_qqf7x")
+margins = Vector2i(32, 32)
+separation = Vector2i(32, 32)
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+7:4/0 = 0
+9:5/0 = 0
+7:6/0 = 0
+5:6/0 = 0
+1:4/0 = 0
+0:6/0 = 0
+3:1/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_vw3px"]
+tile_size = Vector2i(64, 64)
+sources/0 = SubResource("TileSetAtlasSource_ylq5a")
+
+[node name="MapGenerator" type="Node2D"]
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = SubResource("TileSet_vw3px")
+format = 2
+layer_0/name = "background"
+layer_1/name = "foreground"
+layer_1/z_index = 1
+layer_1/tile_data = PackedInt32Array()
+script = ExtResource("1_4te8f")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+limit_smoothed = true
+script = ExtResource("3_g5pt1")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ExitButton" type="Button" parent="CanvasLayer"]
+custom_minimum_size = Vector2(100, 40)
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 102.0
+offset_bottom = 42.0
+text = "Exit"
+script = ExtResource("4_61sxg")
+
+[node name="MainMenuButton" type="Button" parent="CanvasLayer"]
+custom_minimum_size = Vector2(100, 40)
+offset_left = 2.0
+offset_top = 50.0
+offset_right = 102.0
+offset_bottom = 90.0
+text = "Back to
+menu"
+script = ExtResource("5_l6ovq")
+
+[connection signal="pressed" from="CanvasLayer/ExitButton" to="CanvasLayer/ExitButton" method="_on_pressed"]
+[connection signal="pressed" from="CanvasLayer/MainMenuButton" to="CanvasLayer/MainMenuButton" method="_on_pressed"]

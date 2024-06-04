@@ -5,9 +5,10 @@ extends CharacterBody2D
 @onready var label = $Label
 @onready var timer = %Timer
 
-const SPEED: int = 150
+const SPEED: int = 600
 var energy := MAX_ENERGY_LEVEL
 var current_goal_type: String = "stone"
+var carring_resource_amount = 5
 
 enum State { WALKING, DECIDING, REFILLING, IDLE }
 enum SearchAlgorithm { EXPLORE, ASTAR, NONE }
@@ -41,7 +42,7 @@ const ENERGY_GAIN_VALUE := 10
 func _on_ready():
 	var current_tile_pos = tile_map.local_to_map(position)
 	spawn_tile_type = get_tile_type(current_tile_pos)
-	valuable_tile_point_ids[spawn_tile_type] = [get_point_id(current_tile_pos)]
+	valuable_tile_point_ids[spawn_tile_type] = get_point_id(current_tile_pos)
 	
 	label.text = str(energy) + "%"
 	
@@ -111,7 +112,7 @@ func decide():
 		if current_search_algorithm == SearchAlgorithm.EXPLORE:
 			update_valuable_tiles(current_tile_pos, tile_type)
 		# If the agent is at spawn
-		elif get_point_id(current_tile_pos) == valuable_tile_point_ids[spawn_tile_type][0]:
+		elif get_point_id(current_tile_pos) == valuable_tile_point_ids[spawn_tile_type]:
 			# TODO: Check if the agent has any resources to leave at spawn
 			if energy <= SPAWN_REFILL_ENERGY_THRESHOLD:
 				current_state = State.REFILLING
@@ -177,10 +178,18 @@ func use_astar(current_tile_pos: Vector2i):
 		# Create the path queue
 		# TODO: Find closest point
 		var target_tile_id
+		var target_tile_availability
 		if is_backtracking:
 			target_tile_id = get_point_id(not_visited[0])
 		else:
-			target_tile_id = valuable_tile_point_ids[current_goal_type][0]
+			if valuable_tile_point_ids[current_goal_type] == spawn_tile_type:
+				target_tile_id = valuable_tile_point_ids[current_goal_type]
+			else:
+				for i in range(valuable_tile_point_ids[current_goal_type].size()):
+					target_tile_id = valuable_tile_point_ids[current_goal_type]["point"]
+					target_tile_availability = valuable_tile_point_ids[current_goal_type]["is_available"]
+					calculate_dif(current_tile_pos, )
+					
 		astar_path_queue = astar.get_id_path(get_point_id(current_tile_pos), target_tile_id).slice(1)
 	
 	# Calculate destination for the next tile
@@ -251,3 +260,8 @@ func _on_timer_timeout():
 	
 	if energy <= 0:
 		queue_free()
+		
+func on_resource_interact(resource):
+	if current_goal_type == resource.type:
+		print("Current amount: " + str(resource.current_amount))
+		print("Loot amount: " + str(resource.loot(carring_resource_amount)))

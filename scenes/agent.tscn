@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://d2j525lq5pcfb" path="res://assets/medievalRTS/RTS_medieval2.png" id="1_3ai6s"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_frdbs"]
-size = Vector2(16, 24)
+size = Vector2(32, 48)
 
 [node name="Agent" type="CharacterBody2D"]
 script = ExtResource("1_1qcrf")
@@ -15,7 +15,7 @@ region_enabled = true
 region_rect = Rect2(2416, 680, 33, 48)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
+visibility_layer = 3
 shape = SubResource("RectangleShape2D_frdbs")
 
 [node name="Label" type="Label" parent="."]

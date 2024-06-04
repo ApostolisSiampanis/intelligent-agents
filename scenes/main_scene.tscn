@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://h4f78sugqr74"]
+[gd_scene load_steps=7 format=3 uid="uid://h4f78sugqr74"]
 
 [ext_resource type="Texture2D" uid="uid://b232tmj85wv4e" path="res://assets/medievalRTS/medieval_tilesheet.png" id="1_4m8wj"]
 [ext_resource type="PackedScene" uid="uid://ddi7i5qaafx3r" path="res://scenes/agent.tscn" id="2_7qair"]
 [ext_resource type="Script" path="res://scripts/tile_map.gd" id="2_sn78h"]
+[ext_resource type="PackedScene" uid="uid://bar1wx54hl5nv" path="res://scenes/resource.tscn" id="4_pk8yd"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7x0qx"]
 texture = ExtResource("1_4m8wj")
@@ -19,6 +20,10 @@ texture_region_size = Vector2i(64, 64)
 6:4/0/custom_data_0 = "stone"
 3:1/0 = 0
 3:1/0/custom_data_0 = "wall"
+9:4/0 = 0
+9:4/0/custom_data_0 = "gold"
+7:3/0 = 0
+7:3/0/custom_data_0 = "wood"
 
 [sub_resource type="TileSet" id="TileSet_ldi06"]
 tile_size = Vector2i(64, 64)
@@ -61,3 +66,6 @@ position = Vector2(864, 544)
 [node name="Timer" type="Timer" parent="."]
 unique_name_in_owner = true
 autostart = true
+
+[node name="Stone" parent="." instance=ExtResource("4_pk8yd")]
+position = Vector2(480, 160)

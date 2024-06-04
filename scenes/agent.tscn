@@ -18,4 +18,12 @@ region_rect = Rect2(2416, 680, 33, 48)
 visible = false
 shape = SubResource("RectangleShape2D_frdbs")
 
+[node name="Label" type="Label" parent="."]
+offset_left = -24.0
+offset_top = -48.0
+offset_right = 24.0
+offset_bottom = -25.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+horizontal_alignment = 1
+
 [connection signal="ready" from="." to="." method="_on_ready"]

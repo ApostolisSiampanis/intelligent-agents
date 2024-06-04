@@ -58,14 +58,6 @@ position = Vector2(864, 544)
 z_index = 10
 position = Vector2(864, 544)
 
-[node name="Agent5" parent="." instance=ExtResource("2_7qair")]
-z_index = 10
-position = Vector2(864, 544)
-
-[node name="Agent6" parent="." instance=ExtResource("2_7qair")]
-z_index = 10
-position = Vector2(864, 544)
-
-[node name="Agent7" parent="." instance=ExtResource("2_7qair")]
-z_index = 10
-position = Vector2(864, 544)
+[node name="Timer" type="Timer" parent="."]
+unique_name_in_owner = true
+autostart = true

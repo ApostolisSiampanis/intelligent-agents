@@ -1,11 +1,15 @@
 extends CharacterBody2D
 
-var tile_map
+#var tile_map
+@onready var tile_map = %TileMap
+@onready var label = $Label
+@onready var timer = %Timer
 
 const SPEED: int = 150
+var energy := MAX_ENERGY_LEVEL
 var current_goal_type: String = "stone"
 
-enum State { WALKING, DECIDING, IDLE }
+enum State { WALKING, DECIDING, REFILLING, IDLE }
 enum SearchAlgorithm { EXPLORE, ASTAR, NONE }
 
 var available_tile_steps: Array[Vector2i] = [
@@ -14,7 +18,6 @@ var available_tile_steps: Array[Vector2i] = [
 ]
 
 var current_state: State
-
 var current_search_algorithm: SearchAlgorithm
 
 var destination_pos: Vector2i
@@ -26,13 +29,24 @@ var valuable_tile_point_ids: Dictionary = {}
 
 var not_visited = []
 var visited = []
-# TODO: Remove
-var spawn
+
+var spawn_tile_type: String
+
+const MAX_ENERGY_LEVEL := 100
+const SPAWN_REFILL_ENERGY_THRESHOLD := MAX_ENERGY_LEVEL / 2
+const RETURN_TO_SPAWN_ENERGY_THRESHOLD := MAX_ENERGY_LEVEL / 3
+const ENERGY_LOSS_VALUE := 1
+const ENERGY_GAIN_VALUE := 10
 
 func _on_ready():
 	var current_tile_pos = tile_map.local_to_map(position)
-	spawn = get_tile_type(current_tile_pos)
-	valuable_tile_point_ids[spawn] = [get_point_id(current_tile_pos)]
+	spawn_tile_type = get_tile_type(current_tile_pos)
+	valuable_tile_point_ids[spawn_tile_type] = [get_point_id(current_tile_pos)]
+	
+	label.text = str(energy) + "%"
+	
+	# Connect timer signal
+	timer.timeout.connect(_on_timer_timeout)
 	
 	# Initialize AStar
 	astar = AStar2D.new()
@@ -45,6 +59,7 @@ func _on_ready():
 	print("Agent is at x: " + str(position.x) + " y: " + str(position.y))
 
 func _physics_process(delta):
+	if current_state == State.IDLE || current_state == State.REFILLING: return
 	match current_state:
 		State.WALKING: walk(delta)
 		State.DECIDING: decide()
@@ -95,8 +110,12 @@ func decide():
 	if goal_reached:
 		if current_search_algorithm == SearchAlgorithm.EXPLORE:
 			update_valuable_tiles(current_tile_pos, tile_type)
-		
-		print("Found " + current_goal_type)
+		# If the agent is at spawn
+		elif get_point_id(current_tile_pos) == valuable_tile_point_ids[spawn_tile_type][0]:
+			# TODO: Check if the agent has any resources to leave at spawn
+			if energy <= SPAWN_REFILL_ENERGY_THRESHOLD:
+				current_state = State.REFILLING
+				return
 	
 	redefine_goal(goal_reached)
 	
@@ -179,7 +198,7 @@ func redefine_goal(goal_reached: bool):
 		# TODO: Change goal based on team goals
 		# TODO: Call choose_search_algorithm()
 		if current_goal_type == "stone":
-			change_goal(spawn)
+			change_goal(spawn_tile_type)
 		else:
 			change_goal("stone")
 		return
@@ -216,3 +235,19 @@ func update_valuable_tiles(current_tile_pos: Vector2i, tile_type: String):
 
 func set_tile_map(tile_map: TileMap):
 	self.tile_map = tile_map
+
+func _on_timer_timeout():
+	if current_state == State.REFILLING:
+		var new_energy = energy + ENERGY_GAIN_VALUE
+		energy = MAX_ENERGY_LEVEL if new_energy > MAX_ENERGY_LEVEL else new_energy
+		if energy == MAX_ENERGY_LEVEL:
+			current_state = State.DECIDING
+	else:
+		energy -= ENERGY_LOSS_VALUE
+		if current_goal_type != spawn_tile_type && energy <= RETURN_TO_SPAWN_ENERGY_THRESHOLD:
+			change_goal(spawn_tile_type)
+	
+	label.text = str(energy) + "%"
+	
+	if energy <= 0:
+		queue_free()

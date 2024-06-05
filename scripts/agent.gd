@@ -5,10 +5,12 @@ extends CharacterBody2D
 @onready var label = $Label
 @onready var timer = %Timer
 
-const SPEED: int = 600
+const SPEED: int = 200
 var energy := MAX_ENERGY_LEVEL
 var current_goal_type: String = "stone"
-var carring_resource_amount = 5
+var carrying_resource_amount = 5
+# TODO: Remove
+var is_carrying = false
 
 enum State { WALKING, DECIDING, REFILLING, IDLE }
 enum SearchAlgorithm { EXPLORE, ASTAR, NONE }
@@ -109,10 +111,7 @@ func decide():
 		goal_reached = goal_reached && astar_path_queue.is_empty()
 	
 	if goal_reached:
-		if current_search_algorithm == SearchAlgorithm.EXPLORE:
-			update_valuable_tiles(current_tile_pos, tile_type)
-		# If the agent is at spawn
-		elif get_point_id(current_tile_pos) == valuable_tile_point_ids[spawn_tile_type]:
+		if get_point_id(current_tile_pos) == valuable_tile_point_ids[spawn_tile_type]:
 			# TODO: Check if the agent has any resources to leave at spawn
 			if energy <= SPAWN_REFILL_ENERGY_THRESHOLD:
 				current_state = State.REFILLING
@@ -148,6 +147,7 @@ func explore(current_tile_pos: Vector2i):
 		not_visited.push_front(child_tile_pos)
 		
 		# Add children points to AStart
+		# TODO: Save important tiles to valuable_tiles
 		var child_tile_id = get_point_id(child_tile_pos)
 		if !astar.has_point(child_tile_id):
 			astar.add_point(child_tile_id, child_tile_pos)
@@ -176,20 +176,13 @@ func explore(current_tile_pos: Vector2i):
 func use_astar(current_tile_pos: Vector2i):
 	if astar_path_queue.is_empty():
 		# Create the path queue
-		# TODO: Find closest point
 		var target_tile_id
 		var target_tile_availability
 		if is_backtracking:
 			target_tile_id = get_point_id(not_visited[0])
 		else:
-			if valuable_tile_point_ids[current_goal_type] == spawn_tile_type:
-				target_tile_id = valuable_tile_point_ids[current_goal_type]
-			else:
-				for i in range(valuable_tile_point_ids[current_goal_type].size()):
-					target_tile_id = valuable_tile_point_ids[current_goal_type]["point"]
-					target_tile_availability = valuable_tile_point_ids[current_goal_type]["is_available"]
-					calculate_dif(current_tile_pos, )
-					
+			target_tile_id = find_closest_tile_id(current_tile_pos, current_goal_type)
+		
 		astar_path_queue = astar.get_id_path(get_point_id(current_tile_pos), target_tile_id).slice(1)
 	
 	# Calculate destination for the next tile
@@ -200,15 +193,13 @@ func get_point_id(vector: Vector2i):
 	return vector.x * tile_map.MAX_Y + vector.y
 
 func redefine_goal(goal_reached: bool):
-	
-	# TODO: Check for energy level
-	
 	if goal_reached:
 		# TODO: Change goal based on team goals
 		# TODO: Call choose_search_algorithm()
-		if current_goal_type == "stone":
+		if current_goal_type == "stone" && is_carrying:
 			change_goal(spawn_tile_type)
 		else:
+			is_carrying = false
 			change_goal("stone")
 		return
 
@@ -225,22 +216,42 @@ func choose_search_algorithm():
 	if current_goal_type == null || current_goal_type.is_empty():
 		current_search_algorithm = SearchAlgorithm.NONE
 		return
+	
 	if is_backtracking:
 		current_search_algorithm = SearchAlgorithm.ASTAR
 		return
-	current_search_algorithm = SearchAlgorithm.EXPLORE if !valuable_tile_point_ids.has(current_goal_type) else SearchAlgorithm.ASTAR
+	
+	# Choose EXPLORE algorithm if the current_goal_type doesn't exist or all the tiles do not have available loot
+	if !valuable_tile_point_ids.has(current_goal_type):
+		current_search_algorithm = SearchAlgorithm.EXPLORE
+		return
+	
+	if current_goal_type == spawn_tile_type:
+		current_search_algorithm = SearchAlgorithm.ASTAR
+		return
+	
+	var has_available_point = false
+	for point in valuable_tile_point_ids[current_goal_type].keys():
+		if valuable_tile_point_ids[current_goal_type][point] == true:
+			has_available_point = true
+			break
+	
+	current_search_algorithm = SearchAlgorithm.ASTAR if has_available_point else SearchAlgorithm.EXPLORE
 
 func get_tile_type(current_tile_pos: Vector2i):
 	var tile_data = tile_map.get_cell_tile_data(1, current_tile_pos)
 	if tile_data == null: tile_data = tile_map.get_cell_tile_data(0, current_tile_pos)
 	return tile_data.get_custom_data("type")
 
-func update_valuable_tiles(current_tile_pos: Vector2i, tile_type: String):
-	var current_tile_pos_id = get_point_id(current_tile_pos)
-	if valuable_tile_point_ids.has(tile_type):
-		valuable_tile_point_ids[tile_type].append(current_tile_pos_id)
+func update_valuable_tiles(current_tile_pos: Vector2i, tile_type: String, is_available: bool):
+	var current_tile_point_id = get_point_id(current_tile_pos)
+	var tile = {
+		current_tile_point_id: is_available
+	}
+	if !valuable_tile_point_ids.has(tile_type):
+		valuable_tile_point_ids[tile_type] = tile
 	else:
-		valuable_tile_point_ids[tile_type] = [current_tile_pos_id]
+		valuable_tile_point_ids[tile_type].merge(tile, true)
 
 func set_tile_map(tile_map: TileMap):
 	self.tile_map = tile_map
@@ -260,8 +271,67 @@ func _on_timer_timeout():
 	
 	if energy <= 0:
 		queue_free()
+
+func find_closest_tile_id(current_tile_pos: Vector2i, tile_goal_type: String):
+	"""
+		Returns the closest tile id based on AStar knowledge
 		
+		{
+			"spawn": 1234,
+			...,
+			"stone": {
+				2345: true,
+				...,
+				6789: false
+			}
+		}
+		
+	"""
+	var saved_tiles = valuable_tile_point_ids[tile_goal_type]
+	
+	if saved_tiles == null:
+		return null
+	
+	# If the goal tile type is spawn tile, return it. Spawn tile can only be one
+	if tile_goal_type == spawn_tile_type:
+		return valuable_tile_point_ids[tile_goal_type]
+		
+	# If only one resource of the given tile_type exists, return that as the closest
+	var dict_keys = saved_tiles.keys()
+	var first_key = dict_keys[0]
+	if dict_keys.size() == 1:
+		return first_key
+	
+	# Find the closest among all tiles
+	var closest_tile_point = {
+		"id": first_key,
+		"steps": astar.get_id_path(get_point_id(current_tile_pos), first_key).size()
+	}
+	var point_id
+	var is_available
+	var steps
+	for i in range(1, valuable_tile_point_ids[tile_goal_type].size()):
+		point_id = dict_keys[i]
+		is_available = saved_tiles[point_id]
+		# If the tile is not available then skip. Not available means there is no amount left on that resource
+		if !is_available: continue
+		# Check if this point is closer
+		steps = astar.get_id_path(get_point_id(current_tile_pos), point_id).size()
+		if steps < closest_tile_point["steps"]:
+			closest_tile_point["id"] = point_id
+			closest_tile_point["steps"] = steps
+	
+	return closest_tile_point["id"]
+
 func on_resource_interact(resource):
 	if current_goal_type == resource.type:
+		var loot_amount = resource.loot(carrying_resource_amount)
+		var current_tile_pos = tile_map.local_to_map(position)
+		is_carrying = loot_amount > 0
+		if resource.current_amount <= 0:
+			update_valuable_tiles(current_tile_pos, resource.type, false)
+		elif !valuable_tile_point_ids.has(resource.type):
+			update_valuable_tiles(current_tile_pos, resource.type, true)
+		# If the agent is at spawn
+		print("Loot amount: " + str(loot_amount))
 		print("Current amount: " + str(resource.current_amount))
-		print("Loot amount: " + str(resource.loot(carring_resource_amount)))

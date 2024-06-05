@@ -16,7 +16,6 @@ func _on_ready():
 	update_label()
 
 func _on_body_entered(body):
-	print("Hello from on body entered method!")
 	body.on_resource_interact(self)
 
 func loot(amount):

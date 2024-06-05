@@ -197,11 +197,8 @@ func use_astar(current_tile_pos: Vector2i):
 		astar_path_queue = astar.get_id_path(get_point_id(current_tile_pos), target_tile_id).slice(1)
 	
 	# Calculate destination for the next tile
-	if astar_path_queue.size() != 0:
-		destination_pos = calculate_destination(current_tile_pos, astar.get_point_position(astar_path_queue[0]))
-		astar_path_queue.remove_at(0)
-	else:
-		current_state = State.IDLE
+	destination_pos = calculate_destination(current_tile_pos, astar.get_point_position(astar_path_queue[0]))
+	astar_path_queue.remove_at(0)
 
 func get_point_id(vector: Vector2i):
 	return vector.x * tile_map.MAX_Y + vector.y

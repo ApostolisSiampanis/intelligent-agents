@@ -1,13 +1,20 @@
 extends CharacterBody2D
 
-#var tile_map
 @onready var tile_map = %TileMap
-@onready var label = $Label
 @onready var timer = %Timer
+@onready var label = $Label
 
 const SPEED: int = 500
+
 var energy := MAX_ENERGY_LEVEL
-var current_goal_type: String = "stone"
+const MAX_ENERGY_LEVEL := 100
+const SPAWN_REFILL_ENERGY_THRESHOLD := MAX_ENERGY_LEVEL / 2
+const RETURN_TO_SPAWN_ENERGY_THRESHOLD := MAX_ENERGY_LEVEL / 3
+const ENERGY_LOSS_VALUE := 1
+const ENERGY_GAIN_VALUE := 10
+
+var current_goal_type := "stone"
+
 # TODO: Replace with genetic algorithm's data
 var carrying_resource_amount = 5
 
@@ -21,13 +28,13 @@ class CarryingResource:
 
 var current_carrying_resource: CarryingResource
 
-enum State { WALKING, DECIDING, REFILLING, IDLE }
-enum SearchAlgorithm { EXPLORE, ASTAR, NONE }
-
 var available_tile_steps: Array[Vector2i] = [
 	Vector2i(1, 0), Vector2i(-1, 0),  # Horizontal movement
 	Vector2i(0, 1), Vector2i(0, -1)  # Vertical movement
 ]
+
+enum State { WALKING, DECIDING, REFILLING, IDLE }
+enum SearchAlgorithm { EXPLORE, ASTAR, NONE }
 
 var current_state: State
 var current_search_algorithm: SearchAlgorithm
@@ -35,20 +42,15 @@ var current_search_algorithm: SearchAlgorithm
 var destination_pos: Vector2i
 
 var astar: AStar2D
-var is_backtracking: bool = false
+var is_backtracking := false
 var astar_path_queue: PackedInt64Array = []
+
 var valuable_tile_point_ids: Dictionary = {}
 
 var not_visited = []
 var visited = []
 
 var spawn_tile_type: String
-
-const MAX_ENERGY_LEVEL := 100
-const SPAWN_REFILL_ENERGY_THRESHOLD := MAX_ENERGY_LEVEL / 2
-const RETURN_TO_SPAWN_ENERGY_THRESHOLD := MAX_ENERGY_LEVEL / 3
-const ENERGY_LOSS_VALUE := 1
-const ENERGY_GAIN_VALUE := 10
 
 func _on_ready():
 	var current_tile_pos = tile_map.local_to_map(position)
@@ -78,7 +80,7 @@ func _physics_process(delta):
 
 func filter_tiles(tiles):
 	tiles.shuffle()
-	var walkable_tiles: Array = []
+	var walkable_tiles := []
 	for i in range(tiles.size()):
 		if tiles[i].type == "wall":
 			continue
@@ -129,7 +131,7 @@ func decide():
 	redefine_goal(goal_reached)
 	
 	match current_search_algorithm:
-		SearchAlgorithm.EXPLORE: explore(current_tile_pos)	
+		SearchAlgorithm.EXPLORE: explore(current_tile_pos)
 		SearchAlgorithm.ASTAR: use_astar(current_tile_pos)
 	
 	if current_goal_type.is_empty():
@@ -263,6 +265,10 @@ func update_valuable_tiles(current_tile_pos: Vector2i, tile_type: String, is_ava
 	else:
 		valuable_tile_point_ids[tile_type].merge(tile, true)
 
+func has_valuable_tile(resource_tile_pos, resource_type):
+	if !valuable_tile_point_ids.has(resource_type): return false
+	return valuable_tile_point_ids[resource_type].keys().has(get_point_id(resource_tile_pos))
+
 func set_tile_map(tile_map: TileMap):
 	self.tile_map = tile_map
 
@@ -338,9 +344,9 @@ func on_resource_interact(resource):
 		var loot_amount = resource.loot(carrying_resource_amount)
 		var current_tile_pos = tile_map.local_to_map(position)
 		
-		if resource.current_amount <= 0:
+		if resource.current_amount == 0:
 			update_valuable_tiles(current_tile_pos, resource.type, false)
-		elif !valuable_tile_point_ids.has(resource.type):
+		elif !has_valuable_tile(current_tile_pos, resource.type):
 			update_valuable_tiles(current_tile_pos, resource.type, true)
 		
 		if loot_amount > 0:	

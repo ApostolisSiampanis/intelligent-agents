@@ -5,12 +5,21 @@ extends CharacterBody2D
 @onready var label = $Label
 @onready var timer = %Timer
 
-const SPEED: int = 200
+const SPEED: int = 500
 var energy := MAX_ENERGY_LEVEL
 var current_goal_type: String = "stone"
+# TODO: Replace with genetic algorithm's data
 var carrying_resource_amount = 5
-# TODO: Remove
-var is_carrying = false
+
+class CarryingResource:
+	var type: String
+	var amount: int
+
+	func _init(type, amount):
+		self.type = type
+		self.amount = amount
+
+var current_carrying_resource: CarryingResource
 
 enum State { WALKING, DECIDING, REFILLING, IDLE }
 enum SearchAlgorithm { EXPLORE, ASTAR, NONE }
@@ -195,11 +204,12 @@ func get_point_id(vector: Vector2i):
 func redefine_goal(goal_reached: bool):
 	if goal_reached:
 		# TODO: Change goal based on team goals
-		# TODO: Call choose_search_algorithm()
-		if current_goal_type == "stone" && is_carrying:
+		if current_goal_type == "stone" && current_carrying_resource:
 			change_goal(spawn_tile_type)
 		else:
-			is_carrying = false
+			if current_carrying_resource:
+				print("Leave behind: " + str(current_carrying_resource.amount) + " " + str(current_carrying_resource.type))
+				current_carrying_resource = null
 			change_goal("stone")
 		return
 
@@ -327,11 +337,13 @@ func on_resource_interact(resource):
 	if current_goal_type == resource.type:
 		var loot_amount = resource.loot(carrying_resource_amount)
 		var current_tile_pos = tile_map.local_to_map(position)
-		is_carrying = loot_amount > 0
+		
 		if resource.current_amount <= 0:
 			update_valuable_tiles(current_tile_pos, resource.type, false)
 		elif !valuable_tile_point_ids.has(resource.type):
 			update_valuable_tiles(current_tile_pos, resource.type, true)
-		# If the agent is at spawn
-		print("Loot amount: " + str(loot_amount))
-		print("Current amount: " + str(resource.current_amount))
+		
+		if loot_amount > 0:	
+			current_carrying_resource = CarryingResource.new(resource.type, loot_amount)
+			print("Carrying amount: " + str(current_carrying_resource.amount))
+			print("Carrying Resource type: " + str(current_carrying_resource.type))

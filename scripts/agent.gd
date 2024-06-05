@@ -197,8 +197,11 @@ func use_astar(current_tile_pos: Vector2i):
 		astar_path_queue = astar.get_id_path(get_point_id(current_tile_pos), target_tile_id).slice(1)
 	
 	# Calculate destination for the next tile
-	destination_pos = calculate_destination(current_tile_pos, astar.get_point_position(astar_path_queue[0]))
-	astar_path_queue.remove_at(0)
+	if astar_path_queue.size() != 0:
+		destination_pos = calculate_destination(current_tile_pos, astar.get_point_position(astar_path_queue[0]))
+		astar_path_queue.remove_at(0)
+	else:
+		current_state = State.IDLE
 
 func get_point_id(vector: Vector2i):
 	return vector.x * tile_map.MAX_Y + vector.y
@@ -319,28 +322,29 @@ func find_closest_tile_id(current_tile_pos: Vector2i, tile_goal_type: String):
 		return first_key
 	
 	# Find the closest among all tiles
-	var closest_tile_point = {
-		"id": first_key,
-		"steps": astar.get_id_path(get_point_id(current_tile_pos), first_key).size()
-	}
+	var closest_tile_point
 	var point_id
 	var is_available
 	var steps
-	for i in range(1, valuable_tile_point_ids[tile_goal_type].size()):
+	for i in range(valuable_tile_point_ids[tile_goal_type].size()):
 		point_id = dict_keys[i]
 		is_available = saved_tiles[point_id]
 		# If the tile is not available then skip. Not available means there is no amount left on that resource
 		if !is_available: continue
-		# Check if this point is closer
 		steps = astar.get_id_path(get_point_id(current_tile_pos), point_id).size()
-		if steps < closest_tile_point["steps"]:
+		if closest_tile_point == null:
+			closest_tile_point = {
+				"id": point_id,
+				"steps": steps
+			}
+		elif steps < closest_tile_point["steps"]:
 			closest_tile_point["id"] = point_id
 			closest_tile_point["steps"] = steps
 	
 	return closest_tile_point["id"]
 
 func on_resource_interact(resource):
-	if current_goal_type == resource.type:
+	if current_goal_type == resource.type && current_carrying_resource == null:
 		var loot_amount = resource.loot(carrying_resource_amount)
 		var current_tile_pos = tile_map.local_to_map(position)
 		
@@ -351,5 +355,3 @@ func on_resource_interact(resource):
 		
 		if loot_amount > 0:	
 			current_carrying_resource = CarryingResource.new(resource.type, loot_amount)
-			print("Carrying amount: " + str(current_carrying_resource.amount))
-			print("Carrying Resource type: " + str(current_carrying_resource.type))

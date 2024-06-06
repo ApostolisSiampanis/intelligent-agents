@@ -93,7 +93,7 @@ func filter_tiles(tiles):
 
 func calculate_destination(current_tile_position, next_tile_position):
 	var tile_dif = calculate_dif(Vector2i(current_tile_position), Vector2i(next_tile_position))
-	return (Vector2i(position) + tile_dif * tile_map.get_tile_size())
+	return (Vector2i(position) + tile_dif * tile_map.TILE_SIZE)
 
 func calculate_dif(vector1: Vector2i, vector2: Vector2i):
 	return vector2 - vector1

@@ -9,10 +9,17 @@ size = Vector2(16, 24)
 [node name="Agent" type="CharacterBody2D"]
 script = ExtResource("1_1qcrf")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_3ai6s")
+[node name="Agent_1" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("2_15li1")
 region_enabled = true
-region_rect = Rect2(2416, 680, 33, 48)
+region_rect = Rect2(2414.22, 1063.11, 36.241, 50.5291)
+
+[node name="Agent_2" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("2_15li1")
+region_enabled = true
+region_rect = Rect2(2414.19, 870.684, 36.5664, 50.8461)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false

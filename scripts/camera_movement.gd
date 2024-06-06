@@ -14,11 +14,11 @@ func _ready():
 	zoom_target = zoom
 
 func _process(delta):
-	zoom_camera(delta)
+	zoom_camera()
 	simple_pan(delta)
 	click_and_drag()
 
-func zoom_camera(delta):
+func zoom_camera():
 	if Input.is_action_just_pressed("camera_zoom_in"):
 		zoom_camera_to_cursor(0.025)
 	

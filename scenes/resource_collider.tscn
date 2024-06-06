@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://cyv14pa7n8yb5"]
+
+[ext_resource type="Script" path="res://scripts/resource.gd" id="1_ngksa"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a8k3f"]
+size = Vector2(32, 32)
+
+[node name="ResourceCollider" type="Area2D"]
+script = ExtResource("1_ngksa")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visibility_layer = 2
+shape = SubResource("RectangleShape2D_a8k3f")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -24.0
+offset_top = -40.0
+offset_right = 24.0
+offset_bottom = -17.0
+horizontal_alignment = 1
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="ready" from="." to="." method="_on_ready"]

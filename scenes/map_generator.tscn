@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://cyw2b0ow4rr55"]
 
 [ext_resource type="Script" path="res://scripts/map_generator.gd" id="1_4te8f"]
-[ext_resource type="Texture2D" uid="uid://b232tmj85wv4e" path="res://assets/medievalRTS/medieval_tilesheet.png" id="1_qqf7x"]
+[ext_resource type="Texture2D" uid="uid://b232tmj85wv4e" path="res://assets/medievalRTS/medieval_tilesheet_1.png" id="1_qqf7x"]
 [ext_resource type="Script" path="res://scripts/camera_movement.gd" id="3_g5pt1"]
 [ext_resource type="Script" path="res://scripts/exit_app.gd" id="4_61sxg"]
 [ext_resource type="Script" path="res://scripts/back_to_menu.gd" id="5_l6ovq"]
@@ -23,9 +23,9 @@ texture_region_size = Vector2i(64, 64)
 5:6/0/custom_data_0 = "village"
 1:4/0 = 0
 1:4/0/custom_data_0 = "tree"
-0:6/0 = 0
 3:1/0 = 0
 3:1/0/custom_data_0 = "wall"
+0:6/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_vw3px"]
 tile_size = Vector2i(64, 64)
@@ -69,6 +69,10 @@ offset_bottom = 90.0
 text = "Back to
 menu"
 script = ExtResource("5_l6ovq")
+
+[node name="Timer" type="Timer" parent="."]
+unique_name_in_owner = true
+autostart = true
 
 [connection signal="pressed" from="CanvasLayer/ExitButton" to="CanvasLayer/ExitButton" method="_on_pressed"]
 [connection signal="pressed" from="CanvasLayer/MainMenuButton" to="CanvasLayer/MainMenuButton" method="_on_pressed"]

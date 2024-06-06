@@ -1,13 +1,21 @@
 extends TileMap
 
 
-@onready var tile_map := $"."
-@onready var button_exit = $"../ButtonExit"
+@onready var timer = %Timer
+
 
 const AGENT = preload("res://scenes/agent.tscn")
+const RESOURCE_COLLIDER = preload("res://scenes/resource_collider.tscn")
+
+const TILE_SIZE := Vector2i(64,64)
+const MAX_Y := 100
+
+var AGENTS := [] # stores all created agent instances
+
 
 ''' Random number generator '''
 var rng := RandomNumberGenerator.new()
+
 
 ''' Tiles coordinates based on medieval_tilesheet (TileSet) '''
 const village_1_tile_coords := {'x': 5, 'y': 6}
@@ -27,8 +35,9 @@ static var cols: int # columns
 static var stone: int # number of gold resources
 static var wood: int # number of wood resources 
 static var gold: int # number of gold resources
-static var agents: int # number of agents
+static var agents: int # number of agents per village
 static var obstacles: int  # number of obstacles
+
 
 ''' Functions '''
 static func set_input_arguments(
@@ -52,14 +61,14 @@ func _ready():
 	# Set a random seed for the RandomNumberGenerator
 	randomize()
 	
-	# Center the tile_map
+	# Center the tile map
 	var viewport_size: Vector2 = get_viewport_rect().size
-	tile_map.set_position(Vector2(
-		viewport_size.x / 2 - (cols * 64) / 2,
-		viewport_size.y / 2 - (rows * 64) / 2))
+	self.set_position(Vector2(
+		viewport_size.x / 2 - (float(cols) * 64) / 2,
+		viewport_size.y / 2 - (float(rows) * 64) / 2))
 	
 	# Arrays initialization
-	var map : Array
+	var map: Array
 	var available_rows: Array
 	
 	for y in rows:
@@ -69,42 +78,44 @@ func _ready():
 		for x in range(1, cols-1):
 			map[y].append(x)
 	
-	# Tiles placement into the map
-	tiles_placement_into_the_map(map, available_rows)
+	# Map generation
+	generate_map(map, available_rows)
 
-func tiles_placement_into_the_map(map: Array, available_rows: Array) -> void:
+	# Place agents into the tile map to start exploring
+	for agent in AGENTS:
+		add_child(agent)
+
+func generate_map(map: Array, available_rows: Array) -> void:
 	"""
-		
+		This function generates a map populated with villages, resources, obstacles, and agents.
 	"""
-	var village_1 := add_foreground_tile(map, available_rows, village_1_tile_coords) # village 1 placement
-	var village_2 := add_foreground_tile(map, available_rows, village_2_tile_coords) # village 2 placement
-	
-	# Code to spawn agent
-	var agent = AGENT.instantiate()
-	var coords := map_to_local(Vector2(village_1.x, village_1.y))
-	agent.position = coords
-	agent.set_tile_map(tile_map)
+	var village_1_coords := add_foreground_tile(map, available_rows, village_1_tile_coords) # village_1 tile placement
+	var village_2_coords := add_foreground_tile(map, available_rows, village_2_tile_coords) # village_2 tile placement
+	var resource_coords: Dictionary
 	
 	for y in rows:
 		for x in cols:
 			add_background_tile(x, y) # background tile placement
 			
-			if stone > 0: # stone placement
-				add_foreground_tile(map, available_rows, stone_tile_coords)
+			if stone > 0: # stone tile placement
+				resource_coords = add_foreground_tile(map, available_rows, stone_tile_coords)
+				add_collider_for_resource(resource_coords, stone + ((y+1) * (x+1)), "stone")
 				stone -= 1
-			if gold > 0: # gold placement
-				add_foreground_tile(map, available_rows, gold_tile_coords)
+			if gold > 0: # gold tile placement
+				resource_coords = add_foreground_tile(map, available_rows, gold_tile_coords)
+				add_collider_for_resource(resource_coords, gold + ((y+1) * (x+1)), "gold")
 				gold -= 1
-			if wood > 0: # wood placement
-				add_foreground_tile(map, available_rows, wood_tile_coords)
+			if wood > 0: # wood tile placement
+				resource_coords = add_foreground_tile(map, available_rows, wood_tile_coords)
+				add_collider_for_resource(resource_coords, wood + ((y+1) * (x+1)), "wood")
 				wood -= 1
-			if agents > 0: # agents placement
-				# Todo: Agents placement
+			if agents > 0: # in each iteration create one agent for each village
+				AGENTS.append(create_agent(AGENT.instantiate(), 0, village_1_coords)) # agent for village 1
+				AGENTS.append(create_agent(AGENT.instantiate(), 1, village_2_coords)) # agent for village 2
 				agents -= 1
-			if obstacles > 0: # obstacles placement
+			if obstacles > 0: # obstacles tile placement
 				add_foreground_tile(map, available_rows, obstacle_tile_coords)
 				obstacles -= 1
-	add_child(agent)
 
 func add_foreground_tile(map: Array, available_rows: Array,	tile_coords: Dictionary) -> Dictionary:
 	"""
@@ -113,7 +124,7 @@ func add_foreground_tile(map: Array, available_rows: Array,	tile_coords: Diction
 		  within that row from map.
 		- If the chosen row becomes empty after removing the selected position,
 		  it's also removed from available_rows.
-		- Returns a dictionary containing the x and y coordinates.
+		- Returns a dictionary containing the placed tile's x and y coordinates in the map.
 	"""
 	var idx_of_y: int = rng.randi_range(0, len(available_rows)-1)
 	var y: int = available_rows[idx_of_y]
@@ -143,12 +154,28 @@ func add_background_tile(x: int, y: int) -> void:
 		set_cell(0, Vector2i(x, y),
 				 0, Vector2i(grass_tile_coords.x, grass_tile_coords.y))
 
+func add_collider_for_resource(resource_coords: Dictionary, quantity: int, type: String) -> void:
+	"""
+		Adds a collider for a resource at the specified coordinates with quantity and type.
+	"""
+	var resource_collider := RESOURCE_COLLIDER.instantiate()
+	var coords := map_to_local(Vector2i(resource_coords.x, resource_coords.y))
+	resource_collider.position = coords
+	resource_collider.set_total_quantity(quantity)
+	resource_collider.type = type
+	resource_collider.z_index = 3
+	add_child(resource_collider)
 
-const tile_size = Vector2i(64,64)
-const MAX_Y = 100
-
-func get_tile_size():
-	return tile_size
+func create_agent(agent: Node, agent_idx: int, village_coords: Dictionary) -> Node:
+	"""
+		Initializes and positions an agent at the village with a reference to the tile map and timer.
+	"""
+	agent.position = map_to_local(Vector2(village_coords.x, village_coords.y))
+	agent.tile_map = self
+	agent.get_child(agent_idx).visible = true
+	agent.timer = timer
+	agent.z_index = 4
+	return agent
 
 
 class TileInfo:	

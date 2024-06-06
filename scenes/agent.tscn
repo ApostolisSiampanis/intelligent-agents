@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://ddi7i5qaafx3r"]
 
 [ext_resource type="Script" path="res://scripts/agent.gd" id="1_1qcrf"]
-[ext_resource type="Texture2D" uid="uid://d2j525lq5pcfb" path="res://assets/medievalRTS/RTS_medieval2.png" id="1_3ai6s"]
+[ext_resource type="Texture2D" uid="uid://d2j525lq5pcfb" path="res://assets/medievalRTS/medieval_tilesheet_2.png" id="2_15li1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_frdbs"]
 size = Vector2(16, 24)
@@ -9,10 +9,17 @@ size = Vector2(16, 24)
 [node name="Agent" type="CharacterBody2D"]
 script = ExtResource("1_1qcrf")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_3ai6s")
+[node name="Agent_1" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("2_15li1")
 region_enabled = true
-region_rect = Rect2(2416, 680, 33, 48)
+region_rect = Rect2(2414.22, 1063.11, 36.241, 50.5291)
+
+[node name="Agent_2" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("2_15li1")
+region_enabled = true
+region_rect = Rect2(2414.19, 870.684, 36.5664, 50.8461)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false

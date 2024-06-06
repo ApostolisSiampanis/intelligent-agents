@@ -71,7 +71,7 @@ horizontal_alignment = 1
 
 [node name="LabelAgentsName" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerName"]
 layout_mode = 2
-text = "Total Agents
+text = "Agents per village
 "
 horizontal_alignment = 1
 

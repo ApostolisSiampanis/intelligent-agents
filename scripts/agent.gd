@@ -352,3 +352,6 @@ func on_resource_interact(resource):
 		
 		if loot_amount > 0:	
 			current_carrying_resource = CarryingResource.new(resource.type, loot_amount)
+
+func _on_body_entered(body):
+	print("Hello from an Agent!")

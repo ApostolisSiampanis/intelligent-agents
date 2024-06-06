@@ -1,0 +1,66 @@
+[gd_scene load_steps=2 format=3 uid="uid://cj80fllllmlwl"]
+
+[ext_resource type="Script" path="res://scenes/info_card.gd" id="1_wpc8v"]
+
+[node name="InfoCard" type="Node2D"]
+script = ExtResource("1_wpc8v")
+
+[node name="Panel" type="Panel" parent="."]
+offset_right = 388.0
+offset_bottom = 191.0
+
+[node name="LabelAgentID" type="Label" parent="Panel"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 78.0
+offset_top = 9.0
+offset_right = 211.0
+offset_bottom = 32.0
+text = "Agent ID: #"
+
+[node name="LabelAgentVillage" type="Label" parent="Panel"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 142.0
+offset_top = 134.0
+offset_right = 275.0
+offset_bottom = 157.0
+text = "Village: #"
+
+[node name="LabelState" type="Label" parent="Panel"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 19.0
+offset_top = 40.0
+offset_right = 78.0
+offset_bottom = 63.0
+text = "State: "
+
+[node name="LabelEnergy" type="Label" parent="Panel"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 253.0
+offset_top = 42.0
+offset_right = 325.0
+offset_bottom = 65.0
+text = "Energy: #"
+
+[node name="LabelResource" type="Label" parent="Panel"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 20.0
+offset_top = 78.0
+offset_right = 160.0
+offset_bottom = 101.0
+text = "Agent Resource:"
+
+[node name="LabelMapDiscovery" type="Label" parent="Panel"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 206.0
+offset_top = 78.0
+offset_right = 352.0
+offset_bottom = 101.0
+text = "Map Discovery: #%"
+
+[connection signal="ready" from="." to="." method="_on_ready"]

@@ -14,6 +14,8 @@ const RETURN_TO_SPAWN_ENERGY_THRESHOLD := MAX_ENERGY_LEVEL / 3
 const ENERGY_LOSS_VALUE := 1
 const ENERGY_GAIN_VALUE := 10
 
+var village_type = "Green"
+
 var current_goal_type := "stone"
 
 # TODO: Replace with genetic algorithm's data

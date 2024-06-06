@@ -49,9 +49,10 @@ anchor_mode = 0
 limit_smoothed = true
 script = ExtResource("3_g5pt1")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="UILayer" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
 
-[node name="ExitButton" type="Button" parent="CanvasLayer"]
+[node name="ExitButton" type="Button" parent="UILayer"]
 custom_minimum_size = Vector2(100, 40)
 offset_left = 2.0
 offset_top = 2.0
@@ -60,7 +61,7 @@ offset_bottom = 42.0
 text = "Exit"
 script = ExtResource("4_61sxg")
 
-[node name="MainMenuButton" type="Button" parent="CanvasLayer"]
+[node name="MainMenuButton" type="Button" parent="UILayer"]
 custom_minimum_size = Vector2(100, 40)
 offset_left = 2.0
 offset_top = 50.0
@@ -70,9 +71,46 @@ text = "Back to
 menu"
 script = ExtResource("5_l6ovq")
 
+[node name="PanelAgentsStatus" type="Panel" parent="UILayer"]
+custom_minimum_size = Vector2(400, 0)
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -402.0
+offset_top = -1.0
+offset_right = -2.0
+offset_bottom = -1.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="LabelMenu" type="Label" parent="UILayer/PanelAgentsStatus"]
+layout_mode = 2
+offset_right = 400.0
+offset_bottom = 23.0
+text = "Agents Status"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UILayer/PanelAgentsStatus"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainerInfoCards" type="VBoxContainer" parent="UILayer/PanelAgentsStatus/ScrollContainer"]
+unique_name_in_owner = true
+y_sort_enabled = true
+clip_contents = true
+custom_minimum_size = Vector2(400, 200)
+layout_direction = 2
+layout_mode = 2
+
 [node name="Timer" type="Timer" parent="."]
 unique_name_in_owner = true
 autostart = true
 
-[connection signal="pressed" from="CanvasLayer/ExitButton" to="CanvasLayer/ExitButton" method="_on_pressed"]
-[connection signal="pressed" from="CanvasLayer/MainMenuButton" to="CanvasLayer/MainMenuButton" method="_on_pressed"]
+[connection signal="pressed" from="UILayer/ExitButton" to="UILayer/ExitButton" method="_on_pressed"]
+[connection signal="pressed" from="UILayer/MainMenuButton" to="UILayer/MainMenuButton" method="_on_pressed"]

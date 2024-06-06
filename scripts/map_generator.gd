@@ -1,5 +1,8 @@
 extends TileMap
 
+const INFO_CARD = preload("res://scenes/info_card.tscn")
+
+@onready var v_box_container_info_cards = %VBoxContainerInfoCards
 
 @onready var timer = %Timer
 
@@ -80,10 +83,27 @@ func _ready():
 	
 	# Map generation
 	generate_map(map, available_rows)
+	
+	v_box_container_info_cards.set("custom_constants/separation", 10)
 
 	# Place agents into the tile map to start exploring
 	for agent in AGENTS:
 		add_child(agent)
+		
+		# Create an InfoCard for the agent
+		var info_card = INFO_CARD.instantiate()
+
+		info_card.agent = agent
+		timer.connect("timeout", Callable(info_card, "_on_timer_timeout"))
+		
+		# Wrap the info_card in a MarginContainer
+		var margin_container = MarginContainer.new()
+		margin_container.add_child(info_card)
+		# Add spacing (adjust the values to your preference)
+		margin_container.add_theme_constant_override("margin_bottom", 200)
+		
+		v_box_container_info_cards.add_child(margin_container) # Add the margin container to the VBoxContainer
+
 
 func generate_map(map: Array, available_rows: Array) -> void:
 	"""

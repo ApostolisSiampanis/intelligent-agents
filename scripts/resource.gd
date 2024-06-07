@@ -2,7 +2,7 @@ extends Area2D
 
 @onready var label = $Label
 
-var type: String
+var type: String = "stone"
 var total_quantity: int
 var current_quantity: int
 

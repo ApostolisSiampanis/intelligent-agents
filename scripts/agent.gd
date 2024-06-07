@@ -3,6 +3,8 @@ extends CharacterBody2D
 
 @onready var label = $Label
 
+var chromosome: String
+
 const SPEED: int = 500
 
 var timer: Timer

@@ -31,6 +31,8 @@ const wood_tile_coords := {'x': 1, 'y': 4}
 const grass_tile_coords := {'x': 0, 'y': 0}
 const obstacle_tile_coords := {'x': 3, 'y': 1}
 
+const highlight_tile := {'x': 4, 'y': 4}
+
 
 ''' Input fields '''
 static var rows: int # rows
@@ -80,7 +82,7 @@ func _ready():
 		map.append([])
 		for x in range(1, cols-1):
 			map[y].append(x)
-	
+			
 	# Map generation
 	generate_map(map, available_rows)
 	
@@ -94,6 +96,9 @@ func _ready():
 		var info_card = INFO_CARD.instantiate()
 
 		info_card.agent = agent
+		info_card.connect("highlight_agent", Callable(self, "_on_highlight_agent"))
+		info_card.connect("highlight_map", Callable(self, "_on_highlight_map"))
+		
 		timer.connect("timeout", Callable(info_card, "_on_timer_timeout"))
 		
 		# Wrap the info_card in a MarginContainer
@@ -223,3 +228,52 @@ func get_adjacent_tiles(current_tile, available_tile_steps):
 		adjacent_tiles.append(tile_info)
 	
 	return adjacent_tiles
+
+func _on_highlight_agent(agent, highlight):
+	# Clear previous highlight
+	for other_agent in AGENTS:
+		other_agent.modulate = Color.WHITE
+	
+	if highlight:
+		agent.modulate = Color.FIREBRICK  # or another suitable color
+	
+	if highlight:
+		var viewport_size: Vector2 = get_viewport_rect().size
+		var agent_center = agent.position + Vector2(TILE_SIZE.x / 2, TILE_SIZE.y / 2)
+		var new_position = Vector2(
+			viewport_size.x / 2 - agent_center.x,
+			viewport_size.y / 2 - agent_center.y
+		)
+		set_position(new_position)
+
+func _on_highlight_map(agent, mode):
+	match mode:
+		"known":
+			highlight_known_tiles(agent)
+			print("I will highlight the tiles of the agent: " + agent.get_name())
+		"all", "":
+			clear_tile_highlights()
+
+func highlight_known_tiles(agent):
+	clear_tile_highlights()
+
+	# Get the points the agent knows about
+	var known_points :Array = agent.astar.get_point_ids()
+	print("known_points " + str(known_points))
+	for point_id in known_points:
+		var tile_coords :Vector2 = agent.astar.get_point_position(point_id)
+		print("tiles_coords: " + str(tile_coords))
+		if get_cell_tile_data(2, tile_coords) == null:  
+			set_cell(2, tile_coords, 0, Vector2i(highlight_tile.x, highlight_tile.y)) 
+			print("Tile setted")
+	set_layer_enabled(2, true)
+	print("Highlight map complete")
+
+func clear_tile_highlights():
+	for y in rows:
+		for x in cols:
+			var cell := get_cell_source_id(2, Vector2i(x, y))
+			if cell != null:
+				set_cell(2, Vector2i(x, y), -1)
+				#print("Cell cleared")
+	print("Previous highlighted tiles CLEARED!")

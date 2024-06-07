@@ -1,9 +1,9 @@
 [gd_scene load_steps=2 format=3 uid="uid://cj80fllllmlwl"]
 
-[ext_resource type="Script" path="res://scenes/info_card.gd" id="1_wpc8v"]
+[ext_resource type="Script" path="res://scripts/info_card.gd" id="1_nbvcf"]
 
 [node name="InfoCard" type="Node2D"]
-script = ExtResource("1_wpc8v")
+script = ExtResource("1_nbvcf")
 
 [node name="Panel" type="Panel" parent="."]
 offset_right = 400.0
@@ -12,9 +12,9 @@ offset_bottom = 191.0
 [node name="LabelAgentID" type="Label" parent="Panel"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 96.0
+offset_left = 19.0
 offset_top = 8.0
-offset_right = 229.0
+offset_right = 152.0
 offset_bottom = 31.0
 text = "Agent ID: #"
 
@@ -63,4 +63,14 @@ offset_right = 355.0
 offset_bottom = 154.0
 text = "Map Discovery: #%"
 
+[node name="ButtonMap" type="Button" parent="Panel"]
+layout_mode = 0
+offset_left = 304.0
+offset_top = 5.0
+offset_right = 392.0
+offset_bottom = 36.0
+text = "Show Map"
+
 [connection signal="ready" from="." to="." method="_on_ready"]
+[connection signal="mouse_entered" from="Panel" to="." method="_on_InfoCard_mouse_entered"]
+[connection signal="mouse_exited" from="Panel" to="." method="_on_InfoCard_mouse_exited"]

@@ -10,11 +10,7 @@ const RESOURCE_COLLIDER = preload("res://scenes/resource_collider.tscn")
 const TILE_SIZE := Vector2i(64,64)
 const MAX_Y := 100
 
-var AGENTS := [] # stores all created agent instances
-
-
-''' Random number generator '''
-var rng := RandomNumberGenerator.new()
+var agents_array := [] # stores all created agent instances
 
 
 ''' Tiles coordinates based on medieval_tilesheet (TileSet) '''
@@ -58,9 +54,6 @@ static func set_input_arguments(
 	obstacles = ceili(rows * cols * 0.2)
 
 func _ready():
-	# Set a random seed for the RandomNumberGenerator
-	randomize()
-	
 	# Center the tile map
 	var viewport_size: Vector2 = get_viewport_rect().size
 	self.set_position(Vector2(
@@ -82,7 +75,7 @@ func _ready():
 	generate_map(map, available_rows)
 
 	# Place agents into the tile map to start exploring
-	for agent in AGENTS:
+	for agent in agents_array:
 		add_child(agent)
 
 func generate_map(map: Array, available_rows: Array) -> void:
@@ -110,8 +103,8 @@ func generate_map(map: Array, available_rows: Array) -> void:
 				add_collider_for_resource(resource_coords, wood + ((y+1) * (x+1)), "wood")
 				wood -= 1
 			if agents > 0: # in each iteration create one agent for each village
-				AGENTS.append(create_agent(AGENT.instantiate(), 0, village_1_coords)) # agent for village 1
-				AGENTS.append(create_agent(AGENT.instantiate(), 1, village_2_coords)) # agent for village 2
+				agents_array.append(create_agent(AGENT.instantiate(), 0, village_1_coords)) # agent for village 1
+				agents_array.append(create_agent(AGENT.instantiate(), 1, village_2_coords)) # agent for village 2
 				agents -= 1
 			if obstacles > 0: # obstacles tile placement
 				add_foreground_tile(map, available_rows, obstacle_tile_coords)
@@ -126,10 +119,10 @@ func add_foreground_tile(map: Array, available_rows: Array,	tile_coords: Diction
 		  it's also removed from available_rows.
 		- Returns a dictionary containing the placed tile's x and y coordinates in the map.
 	"""
-	var idx_of_y: int = rng.randi_range(0, len(available_rows)-1)
+	var idx_of_y: int = randi_range(0, len(available_rows)-1)
 	var y: int = available_rows[idx_of_y]
 	
-	var idx_of_x: int = rng.randi_range(0, len(map[y])-1)
+	var idx_of_x: int = randi_range(0, len(map[y])-1)
 	var x: int = map[y].pop_at(idx_of_x)
 	
 	if len(map[y]) == 0:

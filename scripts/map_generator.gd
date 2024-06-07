@@ -2,6 +2,7 @@ extends TileMap
 
 
 @onready var timer = %Timer
+@onready var game_manager = %GameManager
 
 
 const AGENT = preload("res://scenes/agent.tscn")
@@ -163,10 +164,12 @@ func create_agent(agent: Node, agent_idx: int, village_coords: Dictionary) -> No
 	"""
 		Initializes and positions an agent at the village with a reference to the tile map and timer.
 	"""
+	agent.id = agent_idx
 	agent.position = map_to_local(Vector2(village_coords.x, village_coords.y))
 	agent.tile_map = self
 	agent.get_child(agent_idx).visible = true
 	agent.timer = timer
+	agent.game_manager = game_manager
 	agent.z_index = 4
 	agent.chromosome = generate_random_chromosome(str(agent_idx)) # agent_idx can be used too for village bit
 	return agent

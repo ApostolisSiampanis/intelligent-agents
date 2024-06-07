@@ -2,7 +2,7 @@ extends CharacterBody2D
 
 
 @onready var label = $Label
-@onready var game_manager = %GameManager
+
 
 @export var id: int
 var available_for_knowledge_exchange := true
@@ -12,9 +12,10 @@ var knowledge_ver := 1
 var agent_knowledge_vers := {}
 var has_new_knowledge := true
 
-const SPEED: int = 300
+const SPEED: int = 150
 
 var timer: Timer
+var game_manager
 var tile_map: TileMap
 var energy := MAX_ENERGY_LEVEL
 const MAX_ENERGY_LEVEL := 100

@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://ddi7i5qaafx3r" path="res://scenes/agent.tscn" id="2_7qair"]
 [ext_resource type="Texture2D" uid="uid://d2j525lq5pcfb" path="res://assets/medievalRTS/RTS_medieval2.png" id="2_ejkp6"]
 [ext_resource type="Script" path="res://scripts/tile_map.gd" id="2_sn78h"]
-[ext_resource type="PackedScene" uid="uid://cyv14pa7n8yb5" path="res://scenes/resource.tscn" id="4_pk8yd"]
+[ext_resource type="PackedScene" uid="uid://cyv14pa7n8yb5" path="res://scenes/resource_collider.tscn" id="4_pk8yd"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7x0qx"]
 texture = ExtResource("1_4m8wj")

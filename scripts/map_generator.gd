@@ -5,6 +5,7 @@ const INFO_CARD = preload("res://scenes/info_card.tscn")
 @onready var v_box_container_info_cards = %VBoxContainerInfoCards
 
 @onready var timer = %Timer
+@onready var game_manager = %GameManager
 
 
 const AGENT = preload("res://scenes/agent.tscn")
@@ -13,11 +14,7 @@ const RESOURCE_COLLIDER = preload("res://scenes/resource_collider.tscn")
 const TILE_SIZE := Vector2i(64,64)
 const MAX_Y := 100
 
-var AGENTS := [] # stores all created agent instances
-
-
-''' Random number generator '''
-var rng := RandomNumberGenerator.new()
+var agents_array := [] # stores all created agent instances
 
 
 ''' Tiles coordinates based on medieval_tilesheet (TileSet) '''
@@ -63,9 +60,6 @@ static func set_input_arguments(
 	obstacles = ceili(rows * cols * 0.2)
 
 func _ready():
-	# Set a random seed for the RandomNumberGenerator
-	randomize()
-	
 	# Center the tile map
 	var viewport_size: Vector2 = get_viewport_rect().size
 	self.set_position(Vector2(
@@ -89,7 +83,7 @@ func _ready():
 	v_box_container_info_cards.set("custom_constants/separation", 10)
 
 	# Place agents into the tile map to start exploring
-	for agent in AGENTS:
+	for agent in agents_array:
 		add_child(agent)
 		
 		# Create an InfoCard for the agent
@@ -135,8 +129,8 @@ func generate_map(map: Array, available_rows: Array) -> void:
 				add_collider_for_resource(resource_coords, wood + ((y+1) * (x+1)), "wood")
 				wood -= 1
 			if agents > 0: # in each iteration create one agent for each village
-				AGENTS.append(create_agent(AGENT.instantiate(), 0, village_1_coords)) # agent for village 1
-				AGENTS.append(create_agent(AGENT.instantiate(), 1, village_2_coords)) # agent for village 2
+				agents_array.append(create_agent(AGENT.instantiate(), 0, village_1_coords)) # agent for village 1
+				agents_array.append(create_agent(AGENT.instantiate(), 1, village_2_coords)) # agent for village 2
 				agents -= 1
 			if obstacles > 0: # obstacles tile placement
 				add_foreground_tile(map, available_rows, obstacle_tile_coords)
@@ -151,10 +145,10 @@ func add_foreground_tile(map: Array, available_rows: Array,	tile_coords: Diction
 		  it's also removed from available_rows.
 		- Returns a dictionary containing the placed tile's x and y coordinates in the map.
 	"""
-	var idx_of_y: int = rng.randi_range(0, len(available_rows)-1)
+	var idx_of_y: int = randi_range(0, len(available_rows)-1)
 	var y: int = available_rows[idx_of_y]
 	
-	var idx_of_x: int = rng.randi_range(0, len(map[y])-1)
+	var idx_of_x: int = randi_range(0, len(map[y])-1)
 	var x: int = map[y].pop_at(idx_of_x)
 	
 	if len(map[y]) == 0:
@@ -195,13 +189,49 @@ func create_agent(agent: Node, agent_idx: int, village_coords: Dictionary) -> No
 	"""
 		Initializes and positions an agent at the village with a reference to the tile map and timer.
 	"""
+	agent.id = agent_idx
 	agent.position = map_to_local(Vector2(village_coords.x, village_coords.y))
 	agent.tile_map = self
 	agent.get_child(agent_idx).visible = true
 	agent.timer = timer
+	agent.game_manager = game_manager
 	agent.z_index = 4
+	agent.chromosome = generate_random_chromosome(str(agent_idx)) # agent_idx can be used too for village bit
 	return agent
 
+func generate_random_chromosome(village_bit: String) -> String:
+	"""
+		- This function generates a random chromosome string starting with a given village bit.
+		- It appends random bits for various traits: energy consumption (1 bit), energy production (1 bit),
+		  speed (1 bit), wood carrying capacity (2 bits), stone carrying capacity (2 bits), and gold
+		  carrying capacity (1 bit).
+		- Returns the complete chromosome string.
+	"""
+	var one_bit := ["0", "1"]
+	var two_bits := ["00", "01", "10", "11"]
+	
+	# Initialize chromosome with the village bit
+	var chromosome := village_bit
+	
+	# Energy Consumption (1 bit)
+	chromosome += one_bit.pick_random()
+	
+	# Energy Production (1 bit)
+	chromosome += one_bit.pick_random()
+	
+	# Speed (1 bit)
+	chromosome += one_bit.pick_random()
+	
+	# Wood Carrying Capacity (2 bits)
+	chromosome += two_bits.pick_random()
+	
+	# Stone Carrying Capacity (2 bits)
+	chromosome += two_bits.pick_random()
+	
+	#  Gold Carrying Capacity (1 bit)
+	chromosome += one_bit.pick_random()
+	
+	return chromosome
 
 class TileInfo:	
 	var type = ""

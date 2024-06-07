@@ -3,9 +3,19 @@ extends CharacterBody2D
 
 @onready var label = $Label
 
-const SPEED: int = 500
+
+@export var id: int
+var available_for_knowledge_exchange := true
+
+var chromosome: String
+var knowledge_ver := 1
+var agent_knowledge_vers := {}
+var has_new_knowledge := true
+
+const SPEED: int = 150
 
 var timer: Timer
+var game_manager
 var tile_map: TileMap
 var energy := MAX_ENERGY_LEVEL
 const MAX_ENERGY_LEVEL := 100
@@ -120,6 +130,9 @@ func decide():
 	var goal_reached = tile_type == current_goal_type
 	
 	if current_search_algorithm == SearchAlgorithm.EXPLORE:
+		if has_new_knowledge:
+			has_new_knowledge = false
+			knowledge_ver
 		visited.push_back(current_tile_pos)
 	elif current_search_algorithm == SearchAlgorithm.ASTAR:
 		goal_reached = goal_reached && astar_path_queue.is_empty()
@@ -177,6 +190,7 @@ func explore(current_tile_pos: Vector2i):
 	
 	if next_tile_pos == null:
 		print("I don't have anything to explore")
+		# TODO: Change goal based on team goals
 		change_goal("")
 		return
 	
@@ -188,9 +202,10 @@ func explore(current_tile_pos: Vector2i):
 		use_astar(current_tile_pos)
 
 func use_astar(current_tile_pos: Vector2i):
+	var target_tile_id
 	if astar_path_queue.is_empty():
 		# Create the path queue
-		var target_tile_id
+		
 		var target_tile_availability
 		if is_backtracking:
 			target_tile_id = get_point_id(not_visited[0])
@@ -239,6 +254,7 @@ func choose_search_algorithm():
 	# Choose EXPLORE algorithm if the current_goal_type doesn't exist or all the tiles do not have available loot
 	if !valuable_tile_point_ids.has(current_goal_type):
 		current_search_algorithm = SearchAlgorithm.EXPLORE
+		has_new_knowledge = true
 		return
 	
 	if current_goal_type == spawn_tile_type:
@@ -252,6 +268,8 @@ func choose_search_algorithm():
 			break
 	
 	current_search_algorithm = SearchAlgorithm.ASTAR if has_available_point else SearchAlgorithm.EXPLORE
+	if current_search_algorithm == SearchAlgorithm.EXPLORE:
+		has_new_knowledge = true
 
 func get_tile_type(current_tile_pos: Vector2i):
 	var tile_data = tile_map.get_cell_tile_data(1, current_tile_pos)
@@ -273,6 +291,10 @@ func has_valuable_tile(resource_tile_pos, resource_type):
 	return valuable_tile_point_ids[resource_type].keys().has(get_point_id(resource_tile_pos))
 
 func _on_timer_timeout():
+	#print("ID " + str(id) + " AStar: " + str(astar.get_point_ids()))
+	#print("ID " + str(id) + " valuable_tile_point_ids: " + str(valuable_tile_point_ids))
+	if !available_for_knowledge_exchange:
+		available_for_knowledge_exchange = !available_for_knowledge_exchange
 	if current_state == State.REFILLING:
 		var new_energy = energy + ENERGY_GAIN_VALUE
 		energy = MAX_ENERGY_LEVEL if new_energy > MAX_ENERGY_LEVEL else new_energy
@@ -283,7 +305,7 @@ func _on_timer_timeout():
 		if current_goal_type != spawn_tile_type && energy <= RETURN_TO_SPAWN_ENERGY_THRESHOLD:
 			change_goal(spawn_tile_type)
 	
-	label.text = str(energy) + "%"
+	label.text = str(energy) + "% ID " + str(id)
 	
 	if energy <= 0:
 		queue_free()
@@ -352,3 +374,20 @@ func on_resource_interact(resource):
 		
 		if loot_quantity > 0:	
 			current_carrying_resource = CarryingResource.new(resource.type, loot_quantity)
+
+func _on_body_entered(body):
+	if body == self: return
+	
+	if !available_for_knowledge_exchange: return
+	
+	# No one can interact at spawn
+	var current_tile_pos = tile_map.local_to_map(position)
+	if current_tile_pos == Vector2i(astar.get_point_position(valuable_tile_point_ids[spawn_tile_type])):
+		return
+	
+	var other_agent_id = body.id
+	if agent_knowledge_vers.has(other_agent_id) && agent_knowledge_vers[other_agent_id] == body.knowledge_ver:
+		print("I don't want to interact with you")
+		return
+	
+	game_manager.merge_knowledge(self, body)

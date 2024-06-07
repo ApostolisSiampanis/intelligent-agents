@@ -33,10 +33,10 @@ func is_mouse_over_gui() -> bool:
 
 func zoom_camera():
 	if Input.is_action_just_pressed("camera_zoom_in"):
-		zoom_camera_to_cursor(0.025)
+		zoom_camera_to_cursor(0.015)
 	
 	if Input.is_action_just_pressed("camera_zoom_out"):
-		zoom_camera_to_cursor(-0.025)
+		zoom_camera_to_cursor(-0.015)
 
 func simple_pan(delta):
 	var move_amount := Vector2.ZERO

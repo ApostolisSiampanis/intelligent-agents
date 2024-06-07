@@ -21,56 +21,63 @@ text = "Agent ID: #"
 [node name="LabelAgentVillage" type="Label" parent="Panel"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 24.0
-offset_top = 134.0
-offset_right = 157.0
-offset_bottom = 157.0
+offset_left = 21.0
+offset_top = 36.0
+offset_right = 154.0
+offset_bottom = 59.0
 text = "Village: #"
 
 [node name="LabelState" type="Label" parent="Panel"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 20.0
-offset_top = 44.0
-offset_right = 79.0
-offset_bottom = 67.0
+offset_left = 222.0
+offset_top = 75.0
+offset_right = 281.0
+offset_bottom = 98.0
 text = "State: "
 
 [node name="LabelEnergy" type="Label" parent="Panel"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 253.0
-offset_top = 42.0
-offset_right = 325.0
-offset_bottom = 65.0
+offset_left = 30.0
+offset_top = 109.0
+offset_right = 102.0
+offset_bottom = 132.0
 text = "Energy: #"
 
 [node name="LabelResource" type="Label" parent="Panel"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 72.0
-offset_top = 85.0
-offset_right = 212.0
-offset_bottom = 108.0
+offset_left = 23.0
+offset_top = 73.0
+offset_right = 163.0
+offset_bottom = 96.0
 text = "Agent Resource:"
 
 [node name="LabelMapDiscovery" type="Label" parent="Panel"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 209.0
-offset_top = 131.0
-offset_right = 355.0
-offset_bottom = 154.0
+offset_left = 222.0
+offset_top = 104.0
+offset_right = 368.0
+offset_bottom = 127.0
 text = "Map Discovery: #%"
 
 [node name="ButtonMap" type="Button" parent="Panel"]
 layout_mode = 0
-offset_left = 304.0
+offset_left = 287.0
 offset_top = 5.0
-offset_right = 392.0
+offset_right = 375.0
 offset_bottom = 36.0
 text = "Show Map"
 
+[node name="ButtonAgent" type="Button" parent="Panel"]
+layout_mode = 0
+offset_left = 287.0
+offset_top = 39.0
+offset_right = 387.0
+offset_bottom = 70.0
+text = "Show Agent"
+
 [connection signal="ready" from="." to="." method="_on_ready"]
-[connection signal="mouse_entered" from="Panel" to="." method="_on_InfoCard_mouse_entered"]
-[connection signal="mouse_exited" from="Panel" to="." method="_on_InfoCard_mouse_exited"]
+[connection signal="pressed" from="Panel/ButtonAgent" to="." method="_on_button_agent_pressed"]

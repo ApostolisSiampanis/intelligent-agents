@@ -17,6 +17,8 @@ signal highlight_map(agent, mode)
 @onready var label_map_discovery = %LabelMapDiscovery
 @onready var button_map = $Panel/ButtonMap
 
+@onready var camera_2d = $Camera2D
+
 
 func _on_ready():
 	update_info()
@@ -44,14 +46,6 @@ func update_info():
 			label_resource.text = "Resource: None"
 		#label_map_discovery.text = "Map Discovery: " + str(agent.map_discovery)
 
-func _on_InfoCard_mouse_entered():
-	emit_signal("highlight_agent", agent, true)
-	agent_highlighted = true
-
-func _on_InfoCard_mouse_exited():
-	emit_signal("highlight_agent", agent, false)
-	agent_highlighted = false
-
 func _on_ButtonHighlightMap_pressed():
 	if map_highlight_mode == "":
 		map_highlight_mode = "known"
@@ -63,9 +57,16 @@ func _on_ButtonHighlightMap_pressed():
 
 func _on_timer_timeout():
 	update_info()
-	# If the map highlight is active, keep highlighting based on current state
 	if map_highlight_mode != "":
 		get_parent().emit_signal("highlight_map", agent, map_highlight_mode)
-	# If the agent is highlighted, keep it highlighted
 	if agent_highlighted:
 		get_parent().emit_signal("highlight_agent", agent, true)
+
+
+func _on_button_agent_pressed():
+	if agent_highlighted:
+		emit_signal("highlight_agent", agent, false)
+		agent_highlighted = false
+	else:
+		emit_signal("highlight_agent", agent, true)
+		agent_highlighted = true

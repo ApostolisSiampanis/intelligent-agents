@@ -52,6 +52,7 @@ script = ExtResource("1_4te8f")
 anchor_mode = 0
 limit_smoothed = true
 script = ExtResource("3_g5pt1")
+zoom_speed = null
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 unique_name_in_owner = true

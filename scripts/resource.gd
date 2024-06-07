@@ -9,8 +9,8 @@ var resources = {
 @onready var label = $Label
 
 var type := "stone"
-const TOTAL_AMOUNT = 11
-var current_amount := TOTAL_AMOUNT
+const TOTAL_QUANTITY = 11
+var current_quantity := TOTAL_QUANTITY
 
 func _on_ready():
 	update_label()
@@ -18,11 +18,11 @@ func _on_ready():
 func _on_body_entered(body):
 	body.on_resource_interact(self)
 
-func loot(amount):
-	var amount_to_return = amount if current_amount >= amount else current_amount
-	current_amount -= amount_to_return
+func loot(quantity):
+	var quantity_to_return = quantity if current_quantity >= quantity else current_quantity
+	current_quantity -= quantity_to_return
 	update_label()
-	return amount_to_return
+	return quantity_to_return
 
 func update_label():
-	label.text = str(current_amount) + "/" + str(TOTAL_AMOUNT)
+	label.text = str(current_quantity) + "/" + str(TOTAL_QUANTITY)

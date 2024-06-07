@@ -24,15 +24,15 @@ const ENERGY_GAIN_VALUE := 10
 var current_goal_type := "stone"
 
 # TODO: Replace with genetic algorithm's data
-var carrying_resource_amount = 5
+var carrying_resource_quantity = 5
 
 class CarryingResource:
 	var type: String
-	var amount: int
+	var quantity: int
 
-	func _init(type, amount):
+	func _init(type, quantity):
 		self.type = type
-		self.amount = amount
+		self.quantity = quantity
 
 var current_carrying_resource: CarryingResource
 
@@ -223,7 +223,7 @@ func redefine_goal(goal_reached: bool):
 			change_goal(spawn_tile_type)
 		else:
 			if current_carrying_resource:
-				print("Leave behind: " + str(current_carrying_resource.amount) + " " + str(current_carrying_resource.type))
+				print("Leave behind: " + str(current_carrying_resource.quantity) + " " + str(current_carrying_resource.type))
 				current_carrying_resource = null
 			change_goal("stone")
 		return
@@ -346,7 +346,7 @@ func find_closest_tile_id(current_tile_pos: Vector2i, tile_goal_type: String):
 	for i in range(valuable_tile_point_ids[tile_goal_type].size()):
 		point_id = dict_keys[i]
 		is_available = saved_tiles[point_id]
-		# If the tile is not available then skip. Not available means there is no amount left on that resource
+		# If the tile is not available then skip. Not available means there is no quantity left on that resource
 		if !is_available: continue
 		steps = astar.get_id_path(get_point_id(current_tile_pos), point_id).size()
 		if closest_tile_point == null:
@@ -362,16 +362,16 @@ func find_closest_tile_id(current_tile_pos: Vector2i, tile_goal_type: String):
 
 func on_resource_interact(resource):
 	if current_goal_type == resource.type && current_carrying_resource == null:
-		var loot_amount = resource.loot(carrying_resource_amount)
+		var loot_quantity = resource.loot(carrying_resource_quantity)
 		var current_tile_pos = tile_map.local_to_map(position)
 		
-		if resource.current_amount == 0:
+		if resource.current_quantity == 0:
 			update_valuable_tiles(current_tile_pos, resource.type, false)
 		elif !has_valuable_tile(current_tile_pos, resource.type):
 			update_valuable_tiles(current_tile_pos, resource.type, true)
 		
-		if loot_amount > 0:	
-			current_carrying_resource = CarryingResource.new(resource.type, loot_amount)
+		if loot_quantity > 0:	
+			current_carrying_resource = CarryingResource.new(resource.type, loot_quantity)
 
 func _on_body_entered(body):
 	if body == self: return

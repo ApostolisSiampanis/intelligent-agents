@@ -7,6 +7,7 @@ extends CharacterBody2D
 @export var id: int
 var available_for_knowledge_exchange := true
 
+var chromosome: String
 var knowledge_ver := 1
 var agent_knowledge_vers := {}
 var has_new_knowledge := true

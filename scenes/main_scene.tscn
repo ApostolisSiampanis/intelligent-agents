@@ -1,9 +1,9 @@
 [gd_scene load_steps=10 format=3 uid="uid://h4f78sugqr74"]
 
-[ext_resource type="Texture2D" uid="uid://b232tmj85wv4e" path="res://assets/medievalRTS/medieval_tilesheet.png" id="1_4m8wj"]
+[ext_resource type="Texture2D" uid="uid://b232tmj85wv4e" path="res://assets/medievalRTS/medieval_tilesheet_1.png" id="1_4m8wj"]
 [ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_m0681"]
 [ext_resource type="PackedScene" uid="uid://ddi7i5qaafx3r" path="res://scenes/agent.tscn" id="2_7qair"]
-[ext_resource type="Texture2D" uid="uid://d2j525lq5pcfb" path="res://assets/medievalRTS/RTS_medieval2.png" id="2_ejkp6"]
+[ext_resource type="Texture2D" uid="uid://d2j525lq5pcfb" path="res://assets/medievalRTS/medieval_tilesheet_2.png" id="2_ejkp6"]
 [ext_resource type="Script" path="res://scripts/tile_map.gd" id="2_sn78h"]
 [ext_resource type="PackedScene" uid="uid://cyv14pa7n8yb5" path="res://scenes/resource_collider.tscn" id="4_pk8yd"]
 

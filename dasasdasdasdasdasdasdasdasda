@@ -1,0 +1,232 @@
+[33mcommit 447f8986709e50c9127d1342bc23c343fd21bd0f[m[33m ([m[1;36mHEAD -> [m[1;32mui-changes[m[33m)[m
+Author: Theodoros Koxanoglou <theokoxan@gmail.com>
+Date:   Thu Jun 6 20:45:30 2024 +0300
+
+    create the basic layout of the agents panel info
+
+[33mcommit 1a69fabfa69451b2923ffe126fa1fd4a2ce29617[m[33m ([m[1;31morigin/map-generator[m[33m)[m
+Author: Dimitris Stylianou <dimitrisstylianou@proton.me>
+Date:   Thu Jun 6 16:41:01 2024 +0300
+
+    Update agent.gd
+
+[33mcommit 7fc8249e2ec545a32898a3a33f86a7fbcd7f92dd[m
+Author: Dimitris Stylianou <dimitrisstylianou@proton.me>
+Date:   Thu Jun 6 16:40:38 2024 +0300
+
+    Update map_generator.gd
+    
+    - Remove unused variables: tile_map, button_exit.
+    - Introduce timer and resource collider references.
+    - Initialize AGENTS array for agent storage.
+    - Rename tiles_placement_into_the_map to generate_map.
+    - Create helper functions for resource colliders and agent creation.
+    - Update generate_map to include collider & agent creation.
+
+[33mcommit c8cbb00921028cf5db13512a62cde8bcdda7ed0d[m
+Author: Dimitris Stylianou <dimitrisstylianou@proton.me>
+Date:   Thu Jun 6 16:19:45 2024 +0300
+
+    Update agent.gd
+    
+    - Update tile_map and timer variables.
+    - Rename other references of 'amount' word with 'quantity'.
+    - Remove setter function set_tile_map.
+
+[33mcommit d6eb77a1f652c6514aa6814a1f33d411d56e963f[m
+Author: Dimitris Stylianou <dimitrisstylianou@proton.me>
+Date:   Thu Jun 6 15:50:56 2024 +0300
+
+    Update camera_movement.gd
+    
+    - Remove unused argument in zoom_camera function.
+
+[33mcommit 858907c30a576c28a465f48d9277a6d8eb748f93[m
+Author: Dimitris Stylianou <dimitrisstylianou@proton.me>
+Date:   Thu Jun 6 15:47:43 2024 +0300
+
+    Update resource.gd
+    
+    - Remove resources dictionary.
+    - Remove init values for type, TOTAL_AMOUNT and current_amount variables.
+    - Change TOTAL_AMOUNT from const to var.
+    - Rename TOTAL_AMOUNT variable to total_quantity.
+    - Rename current_amount variable to current_quantity.
+    - Rename other references of 'amount' with 'quantity'.
+    - Create setter function set_total_quantity.
+
+[33mcommit 1ca501415a3571f2938c830eb994db59cd8bbeab[m
+Author: Dimitris Stylianou <dimitrisstylianou@proton.me>
+Date:   Thu Jun 6 15:29:53 2024 +0300
+
+    Update resource_collider.tscn
+    
+    - Remove Area2D node and its childs (StoneSprite, GoldSprite, WoodSprite).
+    - Create an Area2D node with name ResourceCollider.
+
+[33mcommit dc5d50286cc30947c227e6a3527edfc1149f4447[m
+Author: Dimitris Stylianou <dimitrisstylianou@proton.me>
+Date:   Thu Jun 6 15:26:17 2024 +0300
+
+    Update map_generator.tscn
+    
+    - Add Timer node.
+
+[33mcommit 80322eee0a4512d8650aa5f6cc5de0b20d63e1c1[m
+Author: Dimitris Stylianou <dimitrisstylianou@proton.me>
+Date:   Thu Jun 6 15:22:55 2024 +0300
+
+    Rename scenes\resource.tscn to scenes\resource_collider.tscn
+
+[33mcommit 791833ab96dd89f1b21cf7a266709db4c8ba1966[m
+Author: Dimitris Stylianou <dimitrisstylianou@proton.me>
+Date:   Thu Jun 6 15:16:52 2024 +0300
+
+    Move resource.gd into scripts folder
+
+[33mcommit cc88ad76b397db404f084d12092c154c233fffd3[m
+Author: Dimitris Stylianou <dimitrisstylianou@proton.me>
+Date:   Thu Jun 6 15:10:14 2024 +0300
+
+    Update agent.tscn
+    
+    - Remove the Sprite2D node.
+    - Create two Sprite2D nodes with name Agent_1 and Agent_2.
+
+[33mcommit 15f390643755c7715c8de8628177ee26fc6d3723[m
+Author: Dimitris Stylianou <dimitrisstylianou@proton.me>
+Date:   Thu Jun 6 15:03:39 2024 +0300
+
+    Delete main_scene.tscn
+
+[33mcommit a2150e0bce0c769d22f7b58a6a9fcb1586e9b83e[m
+Author: Dimitris Stylianou <dimitrisstylianou@proton.me>
+Date:   Thu Jun 6 15:03:27 2024 +0300
+
+    Rename RTS_medieval2.png to medieval_tilesheet_2.png
+
+[33mcommit cde03608cf09f0a7df2dc0b73f92873fea298b06[m
+Author: Dimitris Stylianou <dimitrisstylianou@proton.me>
+Date:   Thu Jun 6 15:01:51 2024 +0300
+
+    Rename medieval_tilesheet.png to medieval_tilesheet_1.png
+
+[33mcommit 293fbc91f51785a5e3ed1b16a9d0942cb9c739c7[m
+Author: Dimitris Stylianou <dimitrisstylianou@proton.me>
+Date:   Thu Jun 6 15:00:20 2024 +0300
+
+    Delete icon.svg
+
+[33mcommit 67a0a19c4c6ffb8c0b81f989d59ac8e1735adbc2[m
+Author: Dimitris Stylianou <dimitrisstylianou@proton.me>
+Date:   Thu Jun 6 14:59:50 2024 +0300
+
+    Update change_min_max_values.gd
+    
+    - Remove unnecessary if statements for max and min agents values.
+
+[33mcommit 5ca88befa229aebf864f0b2e325c4e1483d9f67c[m
+Author: Dimitris Stylianou <dimitrisstylianou@proton.me>
+Date:   Thu Jun 6 14:58:00 2024 +0300
+
+    Update input_screen.tscn
+    
+    - Change agents input field label, from total agents to agents per village.
+
+[33mcommit 49cd181600b6f0ff11aa059d53b05ab59f2556c4[m[33m ([m[1;31morigin/ui-changes[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+Merge: 96a6eb4 4d31f0f
+Author: Anthony Roussos <anthony.rouss@proton.me>
+Date:   Wed Jun 5 22:41:13 2024 +0300
+
+    Merge pull request #5 from ApostolisSiampanis/collecting-resources-logic
+    
+    Implement collecting resources logic
+
+[33mcommit 4d31f0f6928359f4c0a720cbdb5d2bf8883e02dc[m[33m ([m[1;31morigin/collecting-resources-logic[m[33m)[m
+Author: Apostolis Siampanis <apostolissiabanis@hotmail.com>
+Date:   Wed Jun 5 22:38:08 2024 +0300
+
+    Remove if statement
+    
+    Co-Authored-By: Anthony Roussos <anthony.rouss@proton.me>
+
+[33mcommit 25221a20fcbf7fb1fcf48de5ed65ddd0115baa23[m
+Author: Anthony Roussos <anthony.rouss@proton.me>
+Date:   Wed Jun 5 22:31:40 2024 +0300
+
+    Fix astar bug
+    
+    Fix find_closest_tile_id method to return the available resource point id
+    
+    Co-Authored-By: Apostolis Siampanis <75365398+ApostolisSiampanis@users.noreply.github.com>
+
+[33mcommit 262f11504bc4b1d8aa740fa432c5b770f9678550[m
+Author: Anthony Roussos <anthony.rouss@proton.me>
+Date:   Wed Jun 5 22:30:25 2024 +0300
+
+    Remove print message
+    
+    Co-Authored-By: Apostolis Siampanis <75365398+ApostolisSiampanis@users.noreply.github.com>
+
+[33mcommit 5ccb46c7dadd14c1413428fd85c2e58bc340fbed[m
+Author: Anthony Roussos <anthony.rouss@proton.me>
+Date:   Wed Jun 5 21:49:59 2024 +0300
+
+    Fix bug with valuable_tile_point_ids
+    
+    Update the valuable_tile_point_ids of the new resource points
+    
+    Co-Authored-By: Apostolis Siampanis <75365398+ApostolisSiampanis@users.noreply.github.com>
+
+[33mcommit 31ec528c542bbaa5941a58012aae8e1b173342ba[m
+Author: Apostolis Siampanis <apostolissiabanis@hotmail.com>
+Date:   Wed Jun 5 17:42:18 2024 +0300
+
+    Add agent's carrying ability
+    
+    Co-Authored-By: Anthony Roussos <anthony.rouss@proton.me>
+
+[33mcommit 964209f68a05f75bcf7a99cf72508b558aca8b12[m
+Author: Anthony Roussos <anthony.rouss@proton.me>
+Date:   Wed Jun 5 14:01:34 2024 +0300
+
+    Add stone resource
+    
+    Co-Authored-By: Apostolis Siampanis <75365398+ApostolisSiampanis@users.noreply.github.com>
+
+[33mcommit 1effc7417c5eb81fbf8c01a6712146b8f0792c19[m
+Author: Anthony Roussos <anthony.rouss@proton.me>
+Date:   Wed Jun 5 14:01:23 2024 +0300
+
+    Update agent.tscn
+    
+    Co-Authored-By: Apostolis Siampanis <75365398+ApostolisSiampanis@users.noreply.github.com>
+
+[33mcommit cf87a8f705651235b2a95a3b14a0927640237f32[m
+Author: Anthony Roussos <anthony.rouss@proton.me>
+Date:   Wed Jun 5 14:01:18 2024 +0300
+
+    Add code for resource interaction
+    
+    Implement logic to interact with resources and update the valuable tiles when needed
+    
+    Co-Authored-By: Apostolis Siampanis <75365398+ApostolisSiampanis@users.noreply.github.com>
+
+[33mcommit 54e5ee70ec2b45b64a7aea6609b58af089ca91f2[m
+Author: Anthony Roussos <anthony.rouss@proton.me>
+Date:   Wed Jun 5 13:59:25 2024 +0300
+
+    Add label and total amount variable
+    
+    Co-Authored-By: Apostolis Siampanis <75365398+ApostolisSiampanis@users.noreply.github.com>
+
+[33mcommit bc6faa03e999574e9955fa5c3ccab6dfb040a651[m
+Author: Apostolis Siampanis <apostolissiabanis@hotmail.com>
+Date:   Tue Jun 4 21:59:43 2024 +0300
+
+    Implement initial code for collecting resources
+    
+    Co-Authored-By: Anthony Roussos <anthony.rouss@proton.me>
+
+[33mcommit 96a6eb489204e3f933efea9f2209364d5f9c52f3[m
+Merge: 3f1241

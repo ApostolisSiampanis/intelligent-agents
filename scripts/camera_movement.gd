@@ -1,8 +1,7 @@
 extends Camera2D
 
-
 @onready var tile_map = $"../TileMap"
-
+@onready var v_box_container_agents_list = %VBoxContainerAgentsList
 @export var zoom_speed: float = 10
 
 var zoom_target: Vector2
@@ -14,9 +13,23 @@ func _ready():
 	zoom_target = zoom
 
 func _process(delta):
-	zoom_camera()
-	simple_pan(delta)
-	click_and_drag()
+	if is_mouse_in_tilemap() and not is_mouse_over_gui():
+		zoom_camera()
+		simple_pan(delta)
+		click_and_drag()
+
+func is_mouse_in_tilemap() -> bool:
+	var mouse_pos = get_global_mouse_position()
+	var tilemap_rect = tile_map.get_used_rect()
+	var tile_size = tile_map.tile_set.tile_size
+	tilemap_rect.position *= tile_size
+	tilemap_rect.size *= tile_size
+	return tilemap_rect.has_point(mouse_pos)
+
+func is_mouse_over_gui() -> bool:
+	var mouse_pos = get_global_mouse_position()
+	return v_box_container_agents_list.get_global_rect().has_point(mouse_pos)
+
 
 func zoom_camera():
 	if Input.is_action_just_pressed("camera_zoom_in"):
@@ -56,13 +69,7 @@ func click_and_drag():
 		position = drag_start_camera_pos - move_vector * 1/zoom.x
 
 func zoom_camera_to_cursor(direction: float) -> void:
-	"""
-		This function adjusts the camera's zoom level and position
-		to create a zooming effect centered on the cursor's location.
-	"""
 	var previous_mouse_position: Vector2 = get_local_mouse_position()
-
 	zoom += zoom * zoom_speed * direction
-	
 	var diff: Vector2 = previous_mouse_position - get_local_mouse_position()
 	offset += diff

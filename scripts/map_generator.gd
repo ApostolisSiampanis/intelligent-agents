@@ -168,8 +168,42 @@ func create_agent(agent: Node, agent_idx: int, village_coords: Dictionary) -> No
 	agent.get_child(agent_idx).visible = true
 	agent.timer = timer
 	agent.z_index = 4
+	agent.chromosome = generate_random_chromosome(str(agent_idx)) # agent_idx can be used too for village bit
 	return agent
 
+func generate_random_chromosome(village_bit: String) -> String:
+	"""
+		- This function generates a random chromosome string starting with a given village bit.
+		- It appends random bits for various traits: energy consumption (1 bit), energy production (1 bit),
+		  speed (1 bit), wood carrying capacity (2 bits), stone carrying capacity (2 bits), and gold
+		  carrying capacity (1 bit).
+		- Returns the complete chromosome string.
+	"""
+	var one_bit := ["0", "1"]
+	var two_bits := ["00", "01", "10", "11"]
+	
+	# Initialize chromosome with the village bit
+	var chromosome := village_bit
+	
+	# Energy Consumption (1 bit)
+	chromosome += one_bit.pick_random()
+	
+	# Energy Production (1 bit)
+	chromosome += one_bit.pick_random()
+	
+	# Speed (1 bit)
+	chromosome += one_bit.pick_random()
+	
+	# Wood Carrying Capacity (2 bits)
+	chromosome += two_bits.pick_random()
+	
+	# Stone Carrying Capacity (2 bits)
+	chromosome += two_bits.pick_random()
+	
+	#  Gold Carrying Capacity (1 bit)
+	chromosome += one_bit.pick_random()
+	
+	return chromosome
 
 class TileInfo:	
 	var type = ""

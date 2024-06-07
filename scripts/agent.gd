@@ -10,8 +10,9 @@ var available_for_knowledge_exchange := true
 
 var knowledge_ver := 1
 var agent_knowledge_vers := {}
+var has_new_knowledge := true
 
-const SPEED: int = 500
+const SPEED: int = 300
 
 var energy := MAX_ENERGY_LEVEL
 const MAX_ENERGY_LEVEL := 100
@@ -124,6 +125,9 @@ func decide():
 	var goal_reached = tile_type == current_goal_type
 	
 	if current_search_algorithm == SearchAlgorithm.EXPLORE:
+		if has_new_knowledge:
+			has_new_knowledge = false
+			knowledge_ver
 		visited.push_back(current_tile_pos)
 	elif current_search_algorithm == SearchAlgorithm.ASTAR:
 		goal_reached = goal_reached && astar_path_queue.is_empty()
@@ -181,6 +185,7 @@ func explore(current_tile_pos: Vector2i):
 	
 	if next_tile_pos == null:
 		print("I don't have anything to explore")
+		# TODO: Change goal based on team goals
 		change_goal("")
 		return
 	
@@ -205,12 +210,8 @@ func use_astar(current_tile_pos: Vector2i):
 		astar_path_queue = astar.get_id_path(get_point_id(current_tile_pos), target_tile_id).slice(1)
 	
 	# Calculate destination for the next tile
-	if astar_path_queue.size() != 0:
-		destination_pos = calculate_destination(current_tile_pos, astar.get_point_position(astar_path_queue[0]))
-		astar_path_queue.remove_at(0)
-	else:
-		print("ID " + str(id) + " AStar: " + str(astar.get_point_ids()))
-		pass
+	destination_pos = calculate_destination(current_tile_pos, astar.get_point_position(astar_path_queue[0]))
+	astar_path_queue.remove_at(0)
 
 func get_point_id(vector: Vector2i):
 	return vector.x * tile_map.MAX_Y + vector.y
@@ -248,6 +249,7 @@ func choose_search_algorithm():
 	# Choose EXPLORE algorithm if the current_goal_type doesn't exist or all the tiles do not have available loot
 	if !valuable_tile_point_ids.has(current_goal_type):
 		current_search_algorithm = SearchAlgorithm.EXPLORE
+		has_new_knowledge = true
 		return
 	
 	if current_goal_type == spawn_tile_type:
@@ -261,6 +263,8 @@ func choose_search_algorithm():
 			break
 	
 	current_search_algorithm = SearchAlgorithm.ASTAR if has_available_point else SearchAlgorithm.EXPLORE
+	if current_search_algorithm == SearchAlgorithm.EXPLORE:
+		has_new_knowledge = true
 
 func get_tile_type(current_tile_pos: Vector2i):
 	var tile_data = tile_map.get_cell_tile_data(1, current_tile_pos)
@@ -285,7 +289,8 @@ func set_tile_map(tile_map: TileMap):
 	self.tile_map = tile_map
 
 func _on_timer_timeout():
-	print("ID " + str(id) + " AStar: " + str(astar.get_point_ids()))
+	#print("ID " + str(id) + " AStar: " + str(astar.get_point_ids()))
+	#print("ID " + str(id) + " valuable_tile_point_ids: " + str(valuable_tile_point_ids))
 	if !available_for_knowledge_exchange:
 		available_for_knowledge_exchange = !available_for_knowledge_exchange
 	if current_state == State.REFILLING:
@@ -298,7 +303,7 @@ func _on_timer_timeout():
 		if current_goal_type != spawn_tile_type && energy <= RETURN_TO_SPAWN_ENERGY_THRESHOLD:
 			change_goal(spawn_tile_type)
 	
-	label.text = str(energy) + "%"
+	label.text = str(energy) + "% ID " + str(id)
 	
 	if energy <= 0:
 		queue_free()

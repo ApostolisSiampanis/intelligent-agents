@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://d2j525lq5pcfb" path="res://assets/medievalRTS/RTS_medieval2.png" id="1_3ai6s"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ynha8"]
-size = Vector2(33, 48)
+size = Vector2(12.75, 10.75)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7gboa"]
 size = Vector2(33, 48)
@@ -12,14 +12,13 @@ size = Vector2(33, 48)
 [node name="Agent" type="CharacterBody2D"]
 script = ExtResource("1_1qcrf")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-0.5, 0)
-shape = SubResource("RectangleShape2D_ynha8")
-
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_3ai6s")
 region_enabled = true
 region_rect = Rect2(2416, 680, 33, 48)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_ynha8")
 
 [node name="Area2D" type="Area2D" parent="."]
 

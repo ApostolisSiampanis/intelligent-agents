@@ -12,3 +12,58 @@ class TeamScore:
 		self.target_wood_amount = target_wood_amount
 		self.target_stone_amount = target_stone_amount
 		self.targer_gold_amount = targer_gold_amount
+
+func merge_knowledge(caller_agent, target_agent):
+	if !target_agent.available_for_knowledge_exchange: return
+	
+	caller_agent.available_for_knowledge_exchange = false
+	target_agent.available_for_knowledge_exchange = false
+	
+	# Merge AStar
+	update_astar(caller_agent, target_agent)
+	update_astar(target_agent, caller_agent)
+	
+	# Merge valuable_tile_point_ids
+	merge_valuable_point_ids(caller_agent, target_agent)
+	
+	print("Knowledge exchange: " + str(caller_agent.id) + "-" + str(target_agent.id))
+
+func update_astar(caller_agent, target_agent):
+	for point_id in target_agent.astar.get_point_ids():
+		
+		if !caller_agent.astar.has_point(point_id):
+			caller_agent.astar.add_point(point_id, target_agent.astar.get_point_position(point_id))
+		
+		for connected_point_id in target_agent.astar.get_point_connections(point_id):
+			
+			if !caller_agent.astar.has_point(connected_point_id):
+				caller_agent.astar.add_point(connected_point_id, target_agent.astar.get_point_position(connected_point_id))
+			
+			if !caller_agent.astar.are_points_connected(point_id, connected_point_id):
+				caller_agent.astar.connect_points(point_id, connected_point_id)
+
+func merge_valuable_point_ids(caller_agent, target_agent):
+	
+	var merged_valuable_point_ids = caller_agent.valuable_tile_point_ids.duplicate(true)
+	var target_village_point = target_agent.valuable_tile_point_ids["village"] 
+	
+	for tile_type in target_agent.valuable_tile_point_ids.keys():
+		if tile_type == "village": continue
+		
+		var target_points = target_agent.valuable_tile_point_ids[tile_type]
+		if !merged_valuable_point_ids.has(tile_type):
+			merged_valuable_point_ids[tile_type] = target_points
+		else:
+			var caller_points = caller_agent.valuable_tile_point_ids[tile_type]
+			for point in target_points.keys():
+				if !caller_points.has(point) || target_points[point] == false:
+					caller_points[point] = target_points[point]
+	
+	caller_agent.valuable_tile_point_ids = merged_valuable_point_ids
+	
+	# Change the village point if they're from a different one
+	if caller_agent.valuable_tile_point_ids["village"] != target_village_point:
+		merged_valuable_point_ids = merged_valuable_point_ids.duplicate(true)
+		merged_valuable_point_ids["village"] = target_village_point
+	
+	target_agent.valuable_tile_point_ids = merged_valuable_point_ids

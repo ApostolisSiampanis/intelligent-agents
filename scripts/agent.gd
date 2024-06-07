@@ -3,6 +3,13 @@ extends CharacterBody2D
 @onready var tile_map = %TileMap
 @onready var timer = %Timer
 @onready var label = $Label
+@onready var game_manager = %GameManager
+
+@export var id: int
+var available_for_knowledge_exchange := true
+
+var knowledge_ver := 1
+var agent_knowledge_vers := {}
 
 const SPEED: int = 500
 
@@ -185,9 +192,10 @@ func explore(current_tile_pos: Vector2i):
 		use_astar(current_tile_pos)
 
 func use_astar(current_tile_pos: Vector2i):
+	var target_tile_id
 	if astar_path_queue.is_empty():
 		# Create the path queue
-		var target_tile_id
+		
 		var target_tile_availability
 		if is_backtracking:
 			target_tile_id = get_point_id(not_visited[0])
@@ -197,8 +205,12 @@ func use_astar(current_tile_pos: Vector2i):
 		astar_path_queue = astar.get_id_path(get_point_id(current_tile_pos), target_tile_id).slice(1)
 	
 	# Calculate destination for the next tile
-	destination_pos = calculate_destination(current_tile_pos, astar.get_point_position(astar_path_queue[0]))
-	astar_path_queue.remove_at(0)
+	if astar_path_queue.size() != 0:
+		destination_pos = calculate_destination(current_tile_pos, astar.get_point_position(astar_path_queue[0]))
+		astar_path_queue.remove_at(0)
+	else:
+		print("ID " + str(id) + " AStar: " + str(astar.get_point_ids()))
+		pass
 
 func get_point_id(vector: Vector2i):
 	return vector.x * tile_map.MAX_Y + vector.y
@@ -273,6 +285,9 @@ func set_tile_map(tile_map: TileMap):
 	self.tile_map = tile_map
 
 func _on_timer_timeout():
+	print("ID " + str(id) + " AStar: " + str(astar.get_point_ids()))
+	if !available_for_knowledge_exchange:
+		available_for_knowledge_exchange = !available_for_knowledge_exchange
 	if current_state == State.REFILLING:
 		var new_energy = energy + ENERGY_GAIN_VALUE
 		energy = MAX_ENERGY_LEVEL if new_energy > MAX_ENERGY_LEVEL else new_energy
@@ -354,4 +369,18 @@ func on_resource_interact(resource):
 			current_carrying_resource = CarryingResource.new(resource.type, loot_amount)
 
 func _on_body_entered(body):
-	print("Hello from an Agent!")
+	if body == self: return
+	
+	if !available_for_knowledge_exchange: return
+	
+	# No one can interact at spawn
+	var current_tile_pos = tile_map.local_to_map(position)
+	if current_tile_pos == Vector2i(astar.get_point_position(valuable_tile_point_ids[spawn_tile_type])):
+		return
+	
+	var other_agent_id = body.id
+	if agent_knowledge_vers.has(other_agent_id) && agent_knowledge_vers[other_agent_id] == body.knowledge_ver:
+		print("I don't want to interact with you")
+		return
+	
+	game_manager.merge_knowledge(self, body)

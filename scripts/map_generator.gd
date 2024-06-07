@@ -261,7 +261,7 @@ func get_adjacent_tiles(current_tile, available_tile_steps):
 
 func _on_highlight_agent(agent, highlight):
 	# Clear previous highlight
-	for other_agent in AGENTS:
+	for other_agent in agents_array:
 		other_agent.modulate = Color.WHITE
 	
 	if highlight:

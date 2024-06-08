@@ -1,20 +1,30 @@
 extends Node
 
 
-const AGENT = preload("res://scenes/agent.tscn")
-
-
 func fertilize(parent_1: Node, parent_2: Node) -> void:
 	"""
-		- This function simulates the fertilization process by performing a two-point crossover
-		  between the chromosomes of two parent nodes.
-		- Additionally, it introduces a mutation with a probability of 0.1 to each parent's chromosome.
+		- This function simulates the fertilization process by performing a
+		  two-point crossover between the chromosomes of two parent nodes.
+		- Additionally, it introduces a mutation with a probability of 0.1
+		  to each parent's chromosome.
+		- Hides both Agent_1 and Agent_2 Sprite2D for each parent and then
+		  shows the appropriate Agent Sprite2D based on the village the parent
+		  belongs to after the crossover.
 	"""
 	two_point_crossover(parent_1, parent_2)
 	parent_1.chromosome =\
 		mutate(parent_1.chromosome) if randf() <= 0.1 else parent_1.chromosome
 	parent_2.chromosome =\
 		mutate(parent_2.chromosome) if randf() <= 0.1 else parent_2.chromosome
+	
+	# Hide both Agent_1 and Agent_2 Sprite2D for each parent
+	for i in range(2):
+		parent_1.get_child(i).visible = false
+		parent_2.get_child(i).visible = false
+	
+	# Show the appropriate Agent Sprite2D based on what village the parent belongs to after the crossover
+	parent_1.get_child(parent_1.chromosome[0]).visible = true
+	parent_2.get_child(parent_2.chromosome[0]).visible = true
 
 func two_point_crossover(parent_1: Node, parent_2: Node) -> void:
 	"""
@@ -50,8 +60,9 @@ func two_point_crossover(parent_1: Node, parent_2: Node) -> void:
 
 func mutate(chromosome: String) -> String:
 	"""
-		This function randomly mutates a single bit within the given chromosome string.
+		This function randomly mutates a single bit (except the village bit)
+		within the given chromosome string.
 	"""
-	var idx := randi_range(0, len(chromosome)-1)
+	var idx := randi_range(1, len(chromosome)-1)
 	chromosome[idx] = "0" if chromosome[idx] == "1" else "1"
 	return chromosome

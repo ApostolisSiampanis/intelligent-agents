@@ -34,7 +34,7 @@ func update_info():
 		label_state.text = "State: " + state_string
 		label_agent_id.text = "Agent ID: " + str(agent.get_name())
 		label_agent_village.text = "Village: " + str(agent.village_type)
-		label_energy.text = "Energy: " + str(agent.energy)
+		label_energy.text = "Energy: " + str(agent.energy) + "%"
 		if agent.current_carrying_resource:
 			label_resource.text = "Resource: " + str(agent.current_carrying_resource.type) + " (" + str(agent.current_carrying_resource.quantity) + ")"
 		else:

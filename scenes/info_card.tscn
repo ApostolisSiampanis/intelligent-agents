@@ -30,37 +30,37 @@ text = "Village: #"
 [node name="LabelState" type="Label" parent="Panel"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 222.0
-offset_top = 75.0
-offset_right = 281.0
-offset_bottom = 98.0
+offset_left = 213.0
+offset_top = 84.0
+offset_right = 272.0
+offset_bottom = 107.0
 text = "State: "
 
 [node name="LabelEnergy" type="Label" parent="Panel"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 30.0
-offset_top = 109.0
-offset_right = 102.0
-offset_bottom = 132.0
+offset_left = 22.0
+offset_top = 110.0
+offset_right = 94.0
+offset_bottom = 133.0
 text = "Energy: #"
 
 [node name="LabelResource" type="Label" parent="Panel"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 23.0
-offset_top = 73.0
-offset_right = 163.0
-offset_bottom = 96.0
+offset_left = 20.0
+offset_top = 77.0
+offset_right = 160.0
+offset_bottom = 100.0
 text = "Agent Resource:"
 
 [node name="LabelMapDiscovery" type="Label" parent="Panel"]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 222.0
-offset_top = 104.0
-offset_right = 368.0
-offset_bottom = 127.0
+offset_left = 211.0
+offset_top = 112.0
+offset_right = 357.0
+offset_bottom = 135.0
 text = "Map Discovery: #%"
 
 [node name="ButtonMap" type="Button" parent="Panel"]

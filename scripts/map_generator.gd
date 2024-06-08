@@ -30,7 +30,7 @@ const wood_tile_coords := {'x': 1, 'y': 4}
 const grass_tile_coords := {'x': 0, 'y': 0}
 const obstacle_tile_coords := {'x': 3, 'y': 1}
 
-const highlight_tile := {'x': 4, 'y': 4}
+const highlight_tile := {'x': 4, 'y': 5}
 
 
 ''' Input fields '''
@@ -307,5 +307,4 @@ func clear_tile_highlights():
 			var cell := get_cell_source_id(2, Vector2i(x, y))
 			if cell != null:
 				set_cell(2, Vector2i(x, y), -1)
-				#print("Cell cleared")
 	print("Previous highlighted tiles CLEARED!")

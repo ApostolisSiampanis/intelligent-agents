@@ -21,9 +21,8 @@ func _process(delta):
 func is_mouse_in_tilemap() -> bool:
 	var mouse_pos = get_global_mouse_position()
 	var tilemap_rect = tile_map.get_used_rect()
-	var tile_size = tile_map.tile_set.tile_size
-	tilemap_rect.position *= tile_size
-	tilemap_rect.size *= tile_size
+	tilemap_rect.position *= CommonVariables.TILE_SIZE
+	tilemap_rect.size *= CommonVariables.TILE_SIZE
 	return tilemap_rect.has_point(mouse_pos)
 
 func is_mouse_over_gui() -> bool:

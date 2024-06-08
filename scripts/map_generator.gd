@@ -13,9 +13,6 @@ const INFO_CARD = preload("res://scenes/info_card.tscn")
 const AGENT = preload("res://scenes/agent.tscn")
 const RESOURCE_COLLIDER = preload("res://scenes/resource_collider.tscn")
 
-const TILE_SIZE := Vector2i(64,64)
-const MAX_Y := 100
-
 var agents_array := [] # stores all created agent instances
 
 
@@ -100,11 +97,12 @@ func _ready():
 		# Wrap the info_card in a MarginContainer
 		var margin_container = MarginContainer.new()
 		margin_container.add_child(info_card)
+		
 		# Add spacing (adjust the values to your preference)
 		margin_container.add_theme_constant_override("margin_bottom", 200)
 		
-		v_box_container_info_cards.add_child(margin_container) # Add the margin container to the VBoxContainer
-
+		# Add the margin container to the VBoxContainer
+		v_box_container_info_cards.add_child(margin_container)
 
 func generate_map(map: Array, available_rows: Array) -> void:
 	"""
@@ -271,7 +269,9 @@ func _on_highlight_agent(agent, highlight):
 	
 	if highlight:
 		var viewport_size: Vector2 = get_viewport_rect().size
-		var agent_center = agent.position + Vector2(TILE_SIZE.x / 2, TILE_SIZE.y / 2)
+		var agent_center =\
+			agent.position + Vector2(CommonVariables.TILE_SIZE.x / 2, 
+									 CommonVariables.TILE_SIZE.y / 2)
 		var new_position = Vector2(
 			viewport_size.x / 2 - agent_center.x,
 			viewport_size.y / 2 - agent_center.y

@@ -105,7 +105,7 @@ func filter_tiles(tiles):
 
 func calculate_destination(current_tile_position, next_tile_position):
 	var tile_dif = calculate_dif(Vector2i(current_tile_position), Vector2i(next_tile_position))
-	return (Vector2i(position) + tile_dif * tile_map.TILE_SIZE)
+	return (Vector2i(position) + tile_dif * CommonVariables.TILE_SIZE)
 
 func calculate_dif(vector1: Vector2i, vector2: Vector2i):
 	return vector2 - vector1
@@ -219,7 +219,7 @@ func use_astar(current_tile_pos: Vector2i):
 	astar_path_queue.remove_at(0)
 
 func get_point_id(vector: Vector2i):
-	return vector.x * tile_map.MAX_Y + vector.y
+	return vector.x * CommonVariables.MAX_Y + vector.y
 
 func redefine_goal(goal_reached: bool):
 	if goal_reached:

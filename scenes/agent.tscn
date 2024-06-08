@@ -16,13 +16,13 @@ script = ExtResource("1_1qcrf")
 visible = false
 texture = ExtResource("2_15li1")
 region_enabled = true
-region_rect = Rect2(2414.22, 1063.11, 36.241, 50.5291)
+region_rect = Rect2(2416.18, 1063.81, 32.1611, 48.3768)
 
 [node name="Agent_2" type="Sprite2D" parent="."]
 visible = false
 texture = ExtResource("2_15li1")
 region_enabled = true
-region_rect = Rect2(2414.19, 870.684, 36.5664, 50.8461)
+region_rect = Rect2(2415.97, 871.727, 32.2964, 48.5119)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_ynha8")

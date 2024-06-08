@@ -80,4 +80,5 @@ offset_bottom = 70.0
 text = "Show Agent"
 
 [connection signal="ready" from="." to="." method="_on_ready"]
+[connection signal="pressed" from="Panel/ButtonMap" to="." method="_on_ButtonHighlightMap_pressed"]
 [connection signal="pressed" from="Panel/ButtonAgent" to="." method="_on_button_agent_pressed"]

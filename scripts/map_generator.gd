@@ -7,6 +7,8 @@ const INFO_CARD = preload("res://scenes/info_card.tscn")
 @onready var timer = %Timer
 @onready var game_manager = %GameManager
 
+@onready var camera_2d = $"../Camera2D"
+
 
 const AGENT = preload("res://scenes/agent.tscn")
 const RESOURCE_COLLIDER = preload("res://scenes/resource_collider.tscn")

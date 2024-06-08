@@ -17,14 +17,9 @@ signal highlight_map(agent, mode)
 @onready var label_map_discovery = %LabelMapDiscovery
 @onready var button_map = $Panel/ButtonMap
 
-@onready var camera_2d = $Camera2D
-
 
 func _on_ready():
 	update_info()
-	button_map.connect("pressed", Callable(self, "_on_ButtonHighlightMap_pressed"))
-	self.connect("mouse_entered", Callable(self, "_on_InfoCard_mouse_entered"))
-	self.connect("mouse_exited", Callable(self, "_on_InfoCard_mouse_exited"))
 
 func update_info():
 	if agent != null:
@@ -58,10 +53,9 @@ func _on_ButtonHighlightMap_pressed():
 func _on_timer_timeout():
 	update_info()
 	if map_highlight_mode != "":
-		get_parent().emit_signal("highlight_map", agent, map_highlight_mode)
+		emit_signal("highlight_map", agent, map_highlight_mode)
 	if agent_highlighted:
-		get_parent().emit_signal("highlight_agent", agent, true)
-
+		emit_signal("highlight_agent", agent, true)
 
 func _on_button_agent_pressed():
 	if agent_highlighted:

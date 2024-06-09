@@ -21,7 +21,7 @@ func _on_button_start_pressed():
 	var goal := calculate_goal(wood, stone, gold, agents)
 	GameManager.VillageScore.set_target_resource_quantity(goal)	
 	
-	MapGenerator.set_input_arguments(rows, cols, stone, wood, gold, agents, goal)
+	MapGenerator.set_input_arguments(rows, cols, stone, wood, gold, agents)
 	get_tree().change_scene_to_file("res://scenes/map_generator.tscn")
 	
 func calculate_goal(wood: int, stone: int, gold: int, agents: int) -> Dictionary:

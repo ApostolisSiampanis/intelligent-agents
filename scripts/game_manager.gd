@@ -1,17 +1,20 @@
 extends Node
 
-class TeamScore:
-	var target_wood_amount: int
-	var target_stone_amount: int
-	var targer_gold_amount: int
-	var current_wood_amount := 0
-	var current_stone_amount := 0
-	var current_gold_amount := 0
+class VillageScore:
+	static var target_wood_quantity: int
+	static var target_stone_quantity: int
+	static var targer_gold_quantity: int
+	var current_wood_quantity := 0
+	var current_stone_quantity := 0
+	var current_gold_quantity := 0
 	
-	func _init(target_wood_amount, target_stone_amount, targer_gold_amount):
-		self.target_wood_amount = target_wood_amount
-		self.target_stone_amount = target_stone_amount
-		self.targer_gold_amount = targer_gold_amount
+	static func set_target_resource_quantity(goal: Dictionary) -> void:
+		"""
+			
+		"""
+		target_wood_quantity = goal.wood
+		target_stone_quantity = goal.stone
+		targer_gold_quantity = goal.gold
 
 func merge_knowledge(caller_agent, target_agent):
 	if !target_agent.available_for_knowledge_exchange: return

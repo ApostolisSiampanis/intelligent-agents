@@ -22,12 +22,12 @@ const village_2_tile_coords := {'x': 7, 'y': 6}
 
 const stone_tile_coords := {'x': 7, 'y': 4}
 const gold_tile_coords := {'x': 9, 'y': 5}
-const wood_tile_coords := {'x': 1, 'y': 4}
+const wood_tile_coords := {'x': 7, 'y': 3}
 
 const grass_tile_coords := {'x': 0, 'y': 0}
 const obstacle_tile_coords := {'x': 3, 'y': 1}
 
-const highlight_tile := {'x': 4, 'y': 5}
+const highlight_tile_coords := {'x': 4, 'y': 5}
 
 
 ''' Input fields '''
@@ -296,7 +296,7 @@ func highlight_known_tiles(agent):
 		var tile_coords :Vector2 = agent.astar.get_point_position(point_id)
 		print("tiles_coords: " + str(tile_coords))
 		if get_cell_tile_data(2, tile_coords) == null:  
-			set_cell(2, tile_coords, 0, Vector2i(highlight_tile.x, highlight_tile.y)) 
+			set_cell(2, tile_coords, 0, Vector2i(highlight_tile_coords.x, highlight_tile_coords.y)) 
 			print("Tile setted")
 	set_layer_enabled(2, true)
 	print("Highlight map complete")

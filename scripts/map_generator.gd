@@ -1,5 +1,5 @@
 extends TileMap
-
+class_name MapGenerator
 const INFO_CARD = preload("res://scenes/info_card.tscn")
 
 @onready var v_box_container_info_cards = %VBoxContainerInfoCards

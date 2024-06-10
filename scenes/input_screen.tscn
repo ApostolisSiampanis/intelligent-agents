@@ -74,7 +74,7 @@ alignment = 1
 
 [node name="LabelTitle" type="Label" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
-text = "Welcome to the Village Resource Battle Simulation!
+text = "Welcome to the Village Resource Battle-Carrying Simulation!
 
 "
 horizontal_alignment = 1

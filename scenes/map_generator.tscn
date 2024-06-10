@@ -53,7 +53,6 @@ script = ExtResource("1_4te8f")
 anchor_mode = 0
 limit_smoothed = true
 script = ExtResource("3_g5pt1")
-zoom_speed = null
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 unique_name_in_owner = true
@@ -86,6 +85,7 @@ anchor_bottom = 1.0
 offset_left = -400.0
 grow_horizontal = 0
 grow_vertical = 2
+theme_override_constants/separation = 0
 
 [node name="LabelMenu" type="Label" parent="UILayer/VBoxContainerAgentsList"]
 layout_mode = 2
@@ -115,6 +115,7 @@ clip_contents = true
 custom_minimum_size = Vector2(400, 200)
 layout_direction = 2
 layout_mode = 2
+theme_override_constants/separation = -10
 
 [node name="Timer" type="Timer" parent="."]
 unique_name_in_owner = true

@@ -22,13 +22,14 @@ extends Node2D
 @onready var agents_line_edit = $CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerAgents/LineEdit
 @onready var label_agents_value = $CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue/LabelAgentsValue
 
+@onready var label_total_resources_number = $CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue/HBoxContainerTotalResources/LabelTotalResourcesNumber
+
 @onready var center_container = $CenterContainer
 
-var total_max_resources = 0
+var total_max_resources = 7 # Default values
 
 func _ready():
 	var viewport_size = get_viewport_rect().size
-
 	center_container.set_position(Vector2(
 		viewport_size.x / 2 - center_container.size.x / 2,
 		viewport_size.y / 2 - center_container.size.y / 2
@@ -55,6 +56,7 @@ func _on_rows_or_columns_changed(new_value):
 	var total_tiles = rows_value * columns_value
 
 	total_max_resources = ceili(total_tiles * 0.01)
+	label_total_resources_number.text = str(total_max_resources)
 
 	var min_gold = max(1, int(total_max_resources * 0.1))
 	var max_gold = max(1, int(total_max_resources * 0.2))
@@ -108,33 +110,39 @@ func _update_resource_sliders():
 	if remaining_resources != 0:
 		if remaining_resources > 0:
 			if current_stones < stones_slider.max_value:
-				stones_slider.value = min(stones_slider.max_value, current_stones + remaining_resources)
-				remaining_resources -= (stones_slider.value - current_stones)
+				var stones_increment = min(stones_slider.max_value - current_stones, remaining_resources)
+				stones_slider.value = current_stones + stones_increment
+				remaining_resources -= stones_increment
 				current_stones = int(stones_slider.value)
 
 			if remaining_resources > 0 and current_wood < wood_slider.max_value:
-				wood_slider.value = min(wood_slider.max_value, current_wood + remaining_resources)
-				remaining_resources -= (wood_slider.value - current_wood)
+				var wood_increment = min(wood_slider.max_value - current_wood, remaining_resources)
+				wood_slider.value = current_wood + wood_increment
+				remaining_resources -= wood_increment
 				current_wood = int(wood_slider.value)
 
 			if remaining_resources > 0 and current_gold < gold_slider.max_value:
-				gold_slider.value = min(gold_slider.max_value, current_gold + remaining_resources)
-				remaining_resources -= (gold_slider.value - current_gold)
+				var gold_increment = min(gold_slider.max_value - current_gold, remaining_resources)
+				gold_slider.value = current_gold + gold_increment
+				remaining_resources -= gold_increment
 				current_gold = int(gold_slider.value)
 		else:
 			if current_stones > stones_slider.min_value:
-				stones_slider.value = max(stones_slider.min_value, current_stones + remaining_resources)
-				remaining_resources -= (stones_slider.value - current_stones)
+				var stones_decrement = min(current_stones - stones_slider.min_value, -remaining_resources)
+				stones_slider.value = current_stones - stones_decrement
+				remaining_resources += stones_decrement
 				current_stones = int(stones_slider.value)
 
 			if remaining_resources < 0 and current_wood > wood_slider.min_value:
-				wood_slider.value = max(wood_slider.min_value, current_wood + remaining_resources)
-				remaining_resources -= (wood_slider.value - current_wood)
+				var wood_decrement = min(current_wood - wood_slider.min_value, -remaining_resources)
+				wood_slider.value = current_wood - wood_decrement
+				remaining_resources += wood_decrement
 				current_wood = int(wood_slider.value)
 
 			if remaining_resources < 0 and current_gold > gold_slider.min_value:
-				gold_slider.value = max(gold_slider.min_value, current_gold + remaining_resources)
-				remaining_resources -= (gold_slider.value - current_gold)
+				var gold_decrement = min(current_gold - gold_slider.min_value, -remaining_resources)
+				gold_slider.value = current_gold - gold_decrement
+				remaining_resources += gold_decrement
 				current_gold = int(gold_slider.value)
 
 	stones_line_edit.text = str(stones_slider.value)

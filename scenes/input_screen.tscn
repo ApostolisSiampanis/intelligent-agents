@@ -93,6 +93,7 @@ vertical_alignment = 1
 autowrap_mode = 3
 
 [node name="GridContainerParameters" type="GridContainer" parent="CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 columns = 3
 
@@ -146,7 +147,7 @@ text = "Agents per village
 horizontal_alignment = 1
 
 [node name="VBoxContainerValue" type="VBoxContainer" parent="CenterContainer/VBoxContainer/GridContainerParameters"]
-custom_minimum_size = Vector2(80, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_constants/separation = 27
 
@@ -166,6 +167,7 @@ text = "(25 - 100)"
 horizontal_alignment = 1
 
 [node name="HBoxContainerTotalResources" type="HBoxContainer" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
 [node name="LabelTotalResources" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue/HBoxContainerTotalResources"]
@@ -294,11 +296,11 @@ custom_minimum_size = Vector2(150, 40)
 layout_mode = 2
 min_value = 2.0
 max_value = 4.0
-value = 2.0
+value = 4.0
 
 [node name="LineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerWood"]
 layout_mode = 2
-text = "2"
+text = "4"
 placeholder_text = "Value"
 alignment = 1
 editable = false

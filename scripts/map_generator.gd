@@ -97,7 +97,7 @@ func _ready():
 		margin_container.add_child(info_card)
 		
 		# Add spacing (adjust the values to your preference)
-		margin_container.add_theme_constant_override("margin_bottom", 200)
+		margin_container.add_theme_constant_override("margin_bottom", 300)
 		
 		# Add the margin container to the VBoxContainer
 		v_box_container_info_cards.add_child(margin_container)

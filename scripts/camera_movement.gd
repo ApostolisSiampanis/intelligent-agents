@@ -1,8 +1,9 @@
 extends Camera2D
 
 @onready var tile_map = $"../TileMap"
-@onready var v_box_container_agents_list = %VBoxContainerAgentsList
 @export var zoom_speed : float = 10
+@onready var v_box_container_village_1_agents_list = %VBoxContainerVillage1AgentsList
+@onready var v_box_container_village_2_agents_list = %VBoxContainerVillage2AgentsList
 
 var zoom_target : Vector2
 
@@ -28,7 +29,7 @@ func _process(delta):
 
 func is_mouse_over_gui() -> bool:
 	var mouse_pos = get_global_mouse_position()
-	return v_box_container_agents_list.get_global_rect().has_point(mouse_pos)
+	return v_box_container_village_1_agents_list.get_global_rect().has_point(mouse_pos) or v_box_container_village_2_agents_list.get_global_rect().has_point(mouse_pos)
 
 func zoom_camera(delta):
 	if Input.is_action_just_pressed("camera_zoom_in"):

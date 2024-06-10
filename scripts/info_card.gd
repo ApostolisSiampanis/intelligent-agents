@@ -55,50 +55,38 @@ func update_chromosome_labels():
 		## Speed
 		#if chromosome[3] == "0":
 			#label_chromosome_speed.text = "Speed: 100"
-			#label_chromosome_speed.modulate = Color(0, 1, 0) # Green
 		#else:
 			#label_chromosome_speed.text = "Speed: 150"
-			#label_chromosome_speed.modulate = Color(1, 0, 0) # Red
-		#
+
 		# Wood capacity
 		var wood_capacity_bits = chromosome.substr(4, 2)
 		match wood_capacity_bits:
 			"00":
 				label_wood_capacity.text = "Wood: 10"
-				label_wood_capacity.modulate = Color(0, 1, 0) # Green
 			"01":
 				label_wood_capacity.text = "Wood: 20"
-				label_wood_capacity.modulate = Color(0, 0, 1) # Blue
 			"10":
 				label_wood_capacity.text = "Wood: 30"
-				label_wood_capacity.modulate = Color(1, 0.5, 0) # Orange
 			"11":
 				label_wood_capacity.text = "Wood: 40"
-				label_wood_capacity.modulate = Color(1, 0, 0) # Red
 		
 		# Stone capacity
 		var stone_capacity_bits = chromosome.substr(6, 2)
 		match stone_capacity_bits:
 			"00":
 				label_stone_capacity.text = "Stone: 5"
-				label_stone_capacity.modulate = Color(0, 1, 0) # Green
 			"01":
 				label_stone_capacity.text = "Stone: 10"
-				label_stone_capacity.modulate = Color(0, 0, 1) # Blue
 			"10":
 				label_stone_capacity.text = "Stone: 15"
-				label_stone_capacity.modulate = Color(1, 0.5, 0) # Orange
 			"11":
 				label_stone_capacity.text = "Stone: 20"
-				label_stone_capacity.modulate = Color(1, 0, 0) # Red
 		
 		# Gold capacity
 		if chromosome[8] == "0":
 			label_gold_capacity.text = "Gold: 1"
-			label_gold_capacity.modulate = Color(0, 1, 0) # Green
 		else:
 			label_gold_capacity.text = "Gold: 3"
-			label_gold_capacity.modulate = Color(0, 0, 1) # Blue
 
 func _on_ButtonHighlightMap_pressed():
 	if map_highlight_mode == "":

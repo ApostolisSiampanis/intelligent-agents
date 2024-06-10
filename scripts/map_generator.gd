@@ -1,22 +1,17 @@
 extends TileMap
 
-const INFO_CARD = preload("res://scenes/info_card.tscn")
-
 @onready var v_box_container_village_1_info_cards = %VBoxContainerVillage1InfoCards
 @onready var v_box_container_village_2_info_cards = %VBoxContainerVillage2InfoCards
-
-
 @onready var timer = %Timer
 @onready var game_manager = %GameManager
-
 @onready var camera_2d = $"../Camera2D"
 
 
 const AGENT = preload("res://scenes/agent.tscn")
 const RESOURCE_COLLIDER = preload("res://scenes/resource_collider.tscn")
+const INFO_CARD = preload("res://scenes/info_card.tscn")
 
 var agents_array := [] # stores all created agent instances
-
 
 ''' Tiles coordinates based on medieval_tilesheet (TileSet) '''
 const village_1_tile_coords := {'x': 5, 'y': 6}
@@ -111,10 +106,8 @@ func generate_map(map: Array, available_rows: Array) -> void:
 				add_collider_for_resource(resource_coords, wood + ((y+1) * (x+1)), "wood")
 				wood -= 1
 			if agents > 0: # in each iteration create one agent for each village
-				var agent_1 := create_agent(AGENT.instantiate(), 0, village_1_coords) # agent for village 1
-				agent_1.id = agents*2-1
-				var agent_2 := create_agent(AGENT.instantiate(), 1, village_2_coords) # agent for village 2
-				agent_2.id = agents*2
+				var agent_1 := create_agent(AGENT.instantiate(), 0, village_1_coords, agents*2-1) # agent for village 1
+				var agent_2 := create_agent(AGENT.instantiate(), 1, village_2_coords, agents*2) # agent for village 2
 				agents_array.append_array([agent_1, agent_2])
 				agents -= 1
 			if obstacles > 0: # obstacles tile placement
@@ -170,11 +163,11 @@ func add_collider_for_resource(resource_coords: Dictionary, quantity: int, type:
 	resource_collider.z_index = 3
 	add_child(resource_collider)
 
-func create_agent(agent: Node, agent_idx: int, village_coords: Dictionary) -> Node:
+func create_agent(agent: Node, agent_idx: int, village_coords: Dictionary, agent_id: int) -> Node:
 	"""
 		Initializes and positions an agent at the village with a reference to the tile map and timer.
 	"""
-	agent.id = agent_idx
+	agent.id = agent_id
 	agent.position = map_to_local(Vector2(village_coords.x, village_coords.y))
 	agent.tile_map = self
 	agent.get_child(agent_idx).visible = true
@@ -185,7 +178,7 @@ func create_agent(agent: Node, agent_idx: int, village_coords: Dictionary) -> No
 	
 	# Create an InfoCard for the agent
 	var info_card = INFO_CARD.instantiate()
-
+	
 	info_card.agent = agent
 	info_card.connect("highlight_agent", Callable(self, "_on_highlight_agent"))
 	info_card.connect("highlight_map", Callable(self, "_on_highlight_map"))
@@ -283,8 +276,8 @@ func _on_highlight_map(agent, mode):
 	match mode:
 		"known":
 			highlight_known_tiles(agent)
-			print("I will highlight the tiles of the agent: " + agent.get_name())
-		"all", "":
+			print("I will highlight the tiles of the agent: " + str(agent.id))
+		"all":
 			clear_tile_highlights()
 
 func highlight_known_tiles(agent):

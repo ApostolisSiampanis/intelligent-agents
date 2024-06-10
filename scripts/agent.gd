@@ -64,7 +64,6 @@ var knowledge_ver := 1
 var agent_knowledge_vers := {}
 var has_new_knowledge := true
 
-# TODO: Remove
 #var timer: Timer
 @onready var timer = %Timer
 
@@ -217,7 +216,6 @@ func explore(current_tile_pos: Vector2i):
 		not_visited.push_front(child_tile_pos)
 		
 		# Add children points to AStart
-		# TODO: Save important tiles to valuable_tiles
 		var child_tile_id = get_point_id(child_tile_pos)
 		if !astar.has_point(child_tile_id):
 			astar.add_point(child_tile_id, child_tile_pos)
@@ -232,8 +230,8 @@ func explore(current_tile_pos: Vector2i):
 		next_tile_pos = not_visited.front()
 	
 	if next_tile_pos == null:
-		print("I don't have anything to explore")
-		# TODO: Change goal based on team goals
+		print("Agent %s returns to village" % str(id))
+		change_goal(spawn_tile_type)
 		return
 	
 	if is_one_step_away(tile_map.local_to_map(position), next_tile_pos):

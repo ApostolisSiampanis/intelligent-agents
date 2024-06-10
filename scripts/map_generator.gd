@@ -2,7 +2,9 @@ extends TileMap
 
 const INFO_CARD = preload("res://scenes/info_card.tscn")
 
-@onready var v_box_container_info_cards = %VBoxContainerInfoCards
+@onready var v_box_container_village_1_info_cards = %VBoxContainerVillage1InfoCards
+@onready var v_box_container_village_2_info_cards = %VBoxContainerVillage2InfoCards
+
 
 @onready var timer = %Timer
 @onready var game_manager = %GameManager
@@ -77,30 +79,12 @@ func _ready():
 	# Map generation
 	generate_map(map, available_rows)
 	
-	v_box_container_info_cards.set("custom_constants/separation", 10)
+	v_box_container_village_1_info_cards.set("custom_constants/separation", 10)
+	v_box_container_village_2_info_cards.set("custom_constants/separation", 10)
 
 	# Place agents into the tile map to start exploring
 	for agent in agents_array:
 		add_child(agent)
-		
-		# Create an InfoCard for the agent
-		var info_card = INFO_CARD.instantiate()
-
-		info_card.agent = agent
-		info_card.connect("highlight_agent", Callable(self, "_on_highlight_agent"))
-		info_card.connect("highlight_map", Callable(self, "_on_highlight_map"))
-		
-		timer.connect("timeout", Callable(info_card, "_on_timer_timeout"))
-		
-		# Wrap the info_card in a MarginContainer
-		var margin_container = MarginContainer.new()
-		margin_container.add_child(info_card)
-		
-		# Add spacing (adjust the values to your preference)
-		margin_container.add_theme_constant_override("margin_bottom", 300)
-		
-		# Add the margin container to the VBoxContainer
-		v_box_container_info_cards.add_child(margin_container)
 
 func generate_map(map: Array, available_rows: Array) -> void:
 	"""
@@ -195,6 +179,29 @@ func create_agent(agent: Node, agent_idx: int, village_coords: Dictionary) -> No
 	agent.game_manager = game_manager
 	agent.z_index = 4
 	agent.chromosome = generate_random_chromosome(str(agent_idx)) # agent_idx can be used too for village bit
+	
+	
+	# Create an InfoCard for the agent
+	var info_card = INFO_CARD.instantiate()
+
+	info_card.agent = agent
+	info_card.connect("highlight_agent", Callable(self, "_on_highlight_agent"))
+	info_card.connect("highlight_map", Callable(self, "_on_highlight_map"))
+	
+	timer.connect("timeout", Callable(info_card, "_on_timer_timeout"))
+	
+	# Wrap the info_card in a MarginContainer
+	var margin_container = MarginContainer.new()
+	margin_container.add_child(info_card)
+	
+	# Add spacing (adjust the values to your preference)
+	margin_container.add_theme_constant_override("margin_bottom", 205)
+	
+	# Add the margin container to the VBoxContainer
+	if agent_idx == 0:
+		v_box_container_village_1_info_cards.add_child(margin_container)
+	else:
+		v_box_container_village_2_info_cards.add_child(margin_container)
 	return agent
 
 func generate_random_chromosome(village_bit: String) -> String:

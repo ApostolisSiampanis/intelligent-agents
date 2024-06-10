@@ -61,9 +61,7 @@ static func set_input_arguments(
 func _ready():
 	# Center the tile map
 	var viewport_size: Vector2 = get_viewport_rect().size
-	self.set_position(Vector2(
-		viewport_size.x / 2 - (float(cols) * 64) / 2,
-		viewport_size.y / 2 - (float(rows) * 64) / 2))
+	camera_2d.center_on_tile_map()
 	
 	# Arrays initialization
 	var map: Array
@@ -266,17 +264,10 @@ func _on_highlight_agent(agent, highlight):
 	
 	if highlight:
 		agent.modulate = Color.FIREBRICK  # or another suitable color
-	
-	if highlight:
-		var viewport_size: Vector2 = get_viewport_rect().size
-		var agent_center =\
-			agent.position + Vector2(CommonVariables.TILE_SIZE.x / 2, 
-									 CommonVariables.TILE_SIZE.y / 2)
-		var new_position = Vector2(
-			viewport_size.x / 2 - agent_center.x,
-			viewport_size.y / 2 - agent_center.y
-		)
-		set_position(new_position)
+		camera_2d.follow_agent(agent)
+	else:
+		camera_2d.stop_following_agent()
+		pass
 
 func _on_highlight_map(agent, mode):
 	match mode:

@@ -357,18 +357,18 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 60
 
+[node name="ButtonStart" type="Button" parent="CenterContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+text = "Start"
+script = ExtResource("3_cl4sr")
+
 [node name="ButtonExit" type="Button" parent="CenterContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 text = "Exit
 "
 script = ExtResource("4_yhgwa")
-
-[node name="ButtonStart" type="Button" parent="CenterContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(100, 40)
-layout_mode = 2
-text = "Start"
-script = ExtResource("3_cl4sr")
 
 [node name="Label2" type="Label" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
@@ -377,5 +377,5 @@ Created by: @anthonyrouss, @ApostolisSiampanis, @dimitrisstyl7, @thkox"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[connection signal="pressed" from="CenterContainer/VBoxContainer/HBoxContainer/ButtonExit" to="CenterContainer/VBoxContainer/HBoxContainer/ButtonExit" method="_on_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/HBoxContainer/ButtonStart" to="CenterContainer/VBoxContainer/HBoxContainer/ButtonStart" method="_on_button_start_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/HBoxContainer/ButtonExit" to="CenterContainer/VBoxContainer/HBoxContainer/ButtonExit" method="_on_pressed"]

@@ -2,9 +2,10 @@ extends Area2D
 
 @onready var label = $Label
 
-var type: String = "stone"
-var total_quantity: int
-var current_quantity: int
+@export var type: Common.TileType = Common.TileType.STONE
+# TODO: Remove
+var total_quantity: int = 11
+var current_quantity: int = 11
 
 
 func set_total_quantity(quantity: int) -> void:

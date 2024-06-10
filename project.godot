@@ -17,7 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-CommonVariables="*res://scripts/common_variables.gd"
+Common="*res://scripts/common.gd"
 
 [display]
 

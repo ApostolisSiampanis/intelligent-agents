@@ -12,10 +12,10 @@ func fertilize(parent_1: Node, parent_2: Node) -> void:
 		  belongs to after the crossover.
 	"""
 	two_point_crossover(parent_1, parent_2)
-	parent_1.chromosome =\
-		mutate(parent_1.chromosome) if randf() <= 0.1 else parent_1.chromosome
-	parent_2.chromosome =\
-		mutate(parent_2.chromosome) if randf() <= 0.1 else parent_2.chromosome
+	parent_1.chromosome.bits =\
+		mutate(parent_1.chromosome) if randf() <= 0.1 else parent_1.chromosome.bits
+	parent_2.chromosome.bits =\
+		mutate(parent_2.chromosome) if randf() <= 0.1 else parent_2.chromosome.bits
 	
 	# Hide both Agent_1 and Agent_2 Sprite2D for each parent
 	for i in range(2):
@@ -34,8 +34,8 @@ func two_point_crossover(parent_1: Node, parent_2: Node) -> void:
 		- Using these points, two child chromosomes are created by swapping segments of the parent chromosomes.
 		- The original chromosomes of parent_1 and parent_2 are then replaced by the new child chromosomes.
 	"""
-	var chromosome_1: String = parent_1.chromosome
-	var chromosome_2: String = parent_2.chromosome
+	var chromosome_1: String = parent_1.chromosome.bits
+	var chromosome_2: String = parent_2.chromosome.bits
 	var same_village := chromosome_1[0] == chromosome_2[0]
 	var valid_points := [2, 3, 4, 6, 8] if same_village else [1, 2, 3, 4, 6, 8]
 	var points := []
@@ -55,8 +55,8 @@ func two_point_crossover(parent_1: Node, parent_2: Node) -> void:
 									chromosome_2.substr(points[1], len(chromosome_1)-points[1])
 	
 	# Parents become the new offsprings
-	parent_1.chromosome = child_chromosome_1
-	parent_2.chromosome = child_chromosome_2
+	parent_1.chromosome.bits = child_chromosome_1
+	parent_2.chromosome.bits = child_chromosome_2
 
 func mutate(chromosome: String) -> String:
 	"""

@@ -13,7 +13,6 @@ size = Vector2(33, 48)
 script = ExtResource("1_1qcrf")
 
 [node name="Agent_1" type="Sprite2D" parent="."]
-visible = false
 texture = ExtResource("2_15li1")
 region_enabled = true
 region_rect = Rect2(2416.18, 1063.81, 32.1611, 48.3768)

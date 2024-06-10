@@ -1,17 +1,22 @@
 extends TileMap
 
+
+class_name MapGenerator
+
+
 @onready var v_box_container_village_1_info_cards = %VBoxContainerVillage1InfoCards
 @onready var v_box_container_village_2_info_cards = %VBoxContainerVillage2InfoCards
 @onready var timer = %Timer
 @onready var game_manager = %GameManager
 @onready var camera_2d = $"../Camera2D"
 
-
+const INFO_CARD = preload("res://scenes/info_card.tscn")
 const AGENT = preload("res://scenes/agent.tscn")
 const RESOURCE_COLLIDER = preload("res://scenes/resource_collider.tscn")
 const INFO_CARD = preload("res://scenes/info_card.tscn")
 
 var agents_array := [] # stores all created agent instances
+
 
 ''' Tiles coordinates based on medieval_tilesheet (TileSet) '''
 const village_1_tile_coords := {'x': 5, 'y': 6}
@@ -19,12 +24,12 @@ const village_2_tile_coords := {'x': 7, 'y': 6}
 
 const stone_tile_coords := {'x': 7, 'y': 4}
 const gold_tile_coords := {'x': 9, 'y': 5}
-const wood_tile_coords := {'x': 1, 'y': 4}
+const wood_tile_coords := {'x': 7, 'y': 3}
 
 const grass_tile_coords := {'x': 0, 'y': 0}
 const obstacle_tile_coords := {'x': 3, 'y': 1}
 
-const highlight_tile := {'x': 4, 'y': 5}
+const highlight_tile_coords := {'x': 4, 'y': 5}
 
 
 ''' Input fields '''
@@ -174,7 +179,9 @@ func create_agent(agent: Node, agent_idx: int, village_coords: Dictionary, agent
 	agent.timer = timer
 	agent.game_manager = game_manager
 	agent.z_index = 4
-	agent.chromosome = generate_random_chromosome(str(agent_idx)) # agent_idx can be used too for village bit
+
+	var chromosome := generate_random_chromosome(str(agent_idx)) # agent_idx can be used too for village bit
+	agent.chromosome = agent.Chromosome.new(chromosome)
 	
 	# Create an InfoCard for the agent
 	var info_card = INFO_CARD.instantiate()
@@ -197,7 +204,7 @@ func create_agent(agent: Node, agent_idx: int, village_coords: Dictionary, agent
 		v_box_container_village_1_info_cards.add_child(margin_container)
 	else:
 		v_box_container_village_2_info_cards.add_child(margin_container)
-	
+
 	return agent
 
 func generate_random_chromosome(village_bit: String) -> String:
@@ -290,7 +297,7 @@ func highlight_known_tiles(agent):
 		var tile_coords :Vector2 = agent.astar.get_point_position(point_id)
 		print("tiles_coords: " + str(tile_coords))
 		if get_cell_tile_data(2, tile_coords) == null:  
-			set_cell(2, tile_coords, 0, Vector2i(highlight_tile.x, highlight_tile.y)) 
+			set_cell(2, tile_coords, 0, Vector2i(highlight_tile_coords.x, highlight_tile_coords.y)) 
 			print("Tile setted")
 	set_layer_enabled(2, true)
 	print("Highlight map complete")

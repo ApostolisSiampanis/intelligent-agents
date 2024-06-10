@@ -10,7 +10,6 @@ signal highlight_agent(agent, highlight)
 signal highlight_map(agent, mode)
 
 @onready var label_agent_id = %LabelAgentID
-@onready var label_agent_village = %LabelAgentVillage
 @onready var label_state = %LabelState
 @onready var label_energy = %LabelEnergy
 @onready var label_resource = %LabelResource
@@ -53,14 +52,6 @@ func update_chromosome_labels():
 	if agent != null and agent.chromosome != null:
 		var chromosome = agent.chromosome
 		
-		# Village type
-		if chromosome[0] == "0":
-			label_agent_village.text = "Village: 1"
-			label_agent_village.modulate = Color(0, 15, 1) # Blue
-		else:
-			label_agent_village.text = "Village: 2"
-			label_agent_village.modulate = Color(1, 0, 0) # Red
-#
 		## Speed
 		#if chromosome[3] == "0":
 			#label_chromosome_speed.text = "Speed: 100"

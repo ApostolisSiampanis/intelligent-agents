@@ -13,7 +13,6 @@ class_name MapGenerator
 const INFO_CARD = preload("res://scenes/info_card.tscn")
 const AGENT = preload("res://scenes/agent.tscn")
 const RESOURCE_COLLIDER = preload("res://scenes/resource_collider.tscn")
-const INFO_CARD = preload("res://scenes/info_card.tscn")
 
 var agents_array := [] # stores all created agent instances
 

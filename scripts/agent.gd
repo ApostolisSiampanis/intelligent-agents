@@ -19,7 +19,6 @@ class Chromosome:
 		"""
 			Method to decode chromosome and initialize its state
 		"""
-		
 		energy_loss_value = 1 if bits[1] == "0" else 2
 		energy_gain_value = 5 if bits[2] == "0" else 10
 		speed = 300 if bits[3] == "0" else 350
@@ -60,9 +59,7 @@ class CarryingResource:
 var available_for_knowledge_exchange := true
 
 var chromosome: Chromosome
-@export var bits: String
 var village: Village
-
 var knowledge_ver := 1
 var agent_knowledge_vers := {}
 var has_new_knowledge := true
@@ -111,11 +108,7 @@ var visited = []
 var spawn_tile_type: Common.TileType
 
 func _on_ready():
-	
-	# TODO: Remove
-	chromosome = Chromosome.new(bits)
 	village = game_manager.get_village(self)
-	village.set_target_resource_quantity({'wood': 10, 'stone': 30, 'gold': 5})
 	
 	var current_tile_pos = tile_map.local_to_map(position)
 	spawn_tile_type = Common.get_tile_type(get_tile_type_str(current_tile_pos))

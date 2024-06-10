@@ -102,6 +102,13 @@ theme_override_constants/separation = 0
 layout_mode = 2
 text = "
 Village 2
+"
+horizontal_alignment = 1
+
+[node name="LabelVillage2Goal" type="Label" parent="UILayer/VBoxContainerVillage2AgentsList"]
+layout_mode = 2
+text = "Goal
+Wood: Stone: Gold:
  "
 horizontal_alignment = 1
 
@@ -140,6 +147,13 @@ theme_override_constants/separation = 0
 layout_mode = 2
 text = "
 Village 1
+"
+horizontal_alignment = 1
+
+[node name="LabelVillage1Goal" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList"]
+layout_mode = 2
+text = "Goal
+Wood: Stone: Gold:
  "
 horizontal_alignment = 1
 

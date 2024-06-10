@@ -121,8 +121,6 @@ func _on_ready():
 	# Initialize AStar
 	astar = AStar2D.new()
 	
-	current_goal = Common.TileType.STONE
-	
 	# Initialize not_visited tiles
 	not_visited.append(current_tile_pos)
 	
@@ -182,7 +180,7 @@ func decide():
 	if current_search_algorithm == SearchAlgorithm.EXPLORE:
 		if has_new_knowledge:
 			has_new_knowledge = false
-			knowledge_ver
+			knowledge_ver += 1
 		visited.push_back(current_tile_pos)
 	elif current_search_algorithm == SearchAlgorithm.ASTAR:
 		goal_reached = goal_reached && astar_path_queue.is_empty()
@@ -338,8 +336,6 @@ func has_valuable_tile(tile_pos, tile_type: Common.TileType):
 	return valuable_tile_point_ids[tile_type_s].keys().has(get_point_id(tile_pos))
 
 func _on_timer_timeout():
-	#print("ID " + str(id) + " AStar: " + str(astar.get_point_ids()))
-	#print("ID " + str(id) + " valuable_tile_point_ids: " + str(valuable_tile_point_ids))
 	if !available_for_knowledge_exchange:
 		available_for_knowledge_exchange = !available_for_knowledge_exchange
 	if current_state == State.REFILLING:
@@ -441,7 +437,28 @@ func _on_body_entered(body):
 	var other_agent_id = body.id
 	if not (agent_knowledge_vers.has(other_agent_id) && agent_knowledge_vers[other_agent_id] == body.knowledge_ver):
 		game_manager.merge_knowledge(self, body)
-		
-	var want_to_fertilize = true
-	if want_to_fertilize:
-		pass
+	
+	game_manager.fertilize(self, body, self.wants_to_fertilize(body))
+
+func wants_to_fertilize(other_agent: Agent):
+	var counter = 0
+	
+	if other_agent.chromosome.energy_loss_value < chromosome.energy_loss_value:
+		counter += 1
+	
+	if other_agent.chromosome.energy_gain_value > chromosome.energy_gain_value:
+		counter += 1
+	
+	if other_agent.chromosome.speed > chromosome.speed:
+		counter += 1
+	
+	if (village.target_wood_quantity - village.current_wood_quantity) > 0 && other_agent.chromosome.wood_carry_capacity > chromosome.wood_carry_capacity:
+		counter += 1
+	
+	if (village.target_stone_quantity - village.current_stone_quantity) > 0 && other_agent.chromosome.stone_carry_capacity > chromosome.stone_carry_capacity:
+		counter += 1
+	
+	if (village.target_gold_quantity - village.current_gold_quantity) > 0 && other_agent.chromosome.gold_carry_capacity > chromosome.gold_carry_capacity:
+		counter += 1
+	
+	return counter > 0

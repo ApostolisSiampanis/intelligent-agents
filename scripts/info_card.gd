@@ -4,7 +4,7 @@ var agent: Node
 var map_highlighted: bool = false
 
 var agent_highlighted: bool = false  # To track if the agent is highlighted
-var map_highlight_mode: String = ""  # To track the map highlight mode (known, unknown, or none)
+var map_highlight_mode: String = "all"  # To track the map highlight mode (known, unknown, or none)
 
 signal highlight_agent(agent, highlight)
 signal highlight_map(agent, mode)
@@ -17,8 +17,7 @@ signal highlight_map(agent, mode)
 @onready var label_wood_capacity = %LabelWoodCapacity
 @onready var label_stone_capacity = %LabelStoneCapacity
 @onready var label_gold_capacity = %LabelGoldCapacity
-
-@onready var button_map = $Panel/ButtonMap
+@onready var button_map = $Panel/VBoxContainer/HBoxContainer4/ButtonMap
 
 
 func _on_ready():
@@ -89,17 +88,16 @@ func update_chromosome_labels():
 			label_gold_capacity.text = "Gold: 3"
 
 func _on_ButtonHighlightMap_pressed():
-	if map_highlight_mode == "":
+	if map_highlight_mode == "all":
 		map_highlight_mode = "known"
 	elif map_highlight_mode == "known":
 		map_highlight_mode = "all"
-	else:
-		map_highlight_mode = ""
+
 	emit_signal("highlight_map", agent, map_highlight_mode)
 
 func _on_timer_timeout():
 	update_info()
-	if map_highlight_mode != "":
+	if map_highlight_mode != "all":
 		emit_signal("highlight_map", agent, map_highlight_mode)
 	if agent_highlighted:
 		emit_signal("highlight_agent", agent, true)

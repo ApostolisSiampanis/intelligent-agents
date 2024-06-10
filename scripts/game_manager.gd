@@ -124,3 +124,9 @@ func get_village(agent: Agent) -> Village:
 			village_2.add_agent(agent)
 			village = village_2
 	return village
+
+func fertilize(caller_agent: Agent, target_agent: Agent, caller_wants_to_fertilize: bool):
+	if !(caller_wants_to_fertilize && target_agent.wants_to_fertilize(caller_agent)): return
+	
+	# Both want to fertilize
+	Fertilizer.fertilize(caller_agent, target_agent)

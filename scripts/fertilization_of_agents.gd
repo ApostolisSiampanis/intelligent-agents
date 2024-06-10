@@ -1,7 +1,8 @@
 extends Node
 
+class_name Fertilizer
 
-func fertilize(parent_1: Node, parent_2: Node) -> void:
+static func fertilize(parent_1: Agent, parent_2: Agent) -> void:
 	"""
 		- This function simulates the fertilization process by performing a
 		  two-point crossover between the chromosomes of two parent nodes.
@@ -13,9 +14,9 @@ func fertilize(parent_1: Node, parent_2: Node) -> void:
 	"""
 	two_point_crossover(parent_1, parent_2)
 	parent_1.chromosome.bits =\
-		mutate(parent_1.chromosome) if randf() <= 0.1 else parent_1.chromosome.bits
+		mutate(parent_1.chromosome.bits) if randf() <= 0.1 else parent_1.chromosome.bits
 	parent_2.chromosome.bits =\
-		mutate(parent_2.chromosome) if randf() <= 0.1 else parent_2.chromosome.bits
+		mutate(parent_2.chromosome.bits) if randf() <= 0.1 else parent_2.chromosome.bits
 	
 	# Hide both Agent_1 and Agent_2 Sprite2D for each parent
 	for i in range(2):
@@ -23,10 +24,10 @@ func fertilize(parent_1: Node, parent_2: Node) -> void:
 		parent_2.get_child(i).visible = false
 	
 	# Show the appropriate Agent Sprite2D based on what village the parent belongs to after the crossover
-	parent_1.get_child(parent_1.chromosome[0]).visible = true
-	parent_2.get_child(parent_2.chromosome[0]).visible = true
+	parent_1.get_child(int(parent_1.chromosome.bits[0])).visible = true
+	parent_2.get_child(int(parent_2.chromosome.bits[0])).visible = true
 
-func two_point_crossover(parent_1: Node, parent_2: Node) -> void:
+static func two_point_crossover(parent_1: Agent, parent_2: Agent) -> void:
 	"""
 		- This function performs a two-point crossover on the chromosomes of two parent nodes.
 		- A set of valid crossover points is defined based on whether the parents belong to the same village.
@@ -55,10 +56,10 @@ func two_point_crossover(parent_1: Node, parent_2: Node) -> void:
 									chromosome_2.substr(points[1], len(chromosome_1)-points[1])
 	
 	# Parents become the new offsprings
-	parent_1.chromosome.bits = child_chromosome_1
-	parent_2.chromosome.bits = child_chromosome_2
+	parent_1.chromosome = parent_1.Chromosome.new(child_chromosome_1)
+	parent_2.chromosome = parent_2.Chromosome.new(child_chromosome_2)
 
-func mutate(chromosome: String) -> String:
+static func mutate(chromosome: String) -> String:
 	"""
 		This function randomly mutates a single bit (except the village bit)
 		within the given chromosome string.

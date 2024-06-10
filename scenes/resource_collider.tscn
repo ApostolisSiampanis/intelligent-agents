@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/resource.gd" id="1_ngksa"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_a8k3f"]
-size = Vector2(32, 32)
+size = Vector2(16, 16)
 
 [node name="ResourceCollider" type="Area2D"]
 script = ExtResource("1_ngksa")

@@ -23,7 +23,8 @@ func _on_button_start_pressed():
 	
 func calculate_goal(wood: int, stone: int, gold: int, agents: int) -> Dictionary:
 	"""
-		
+		This function calculates the resource gathering goals based on the number
+		of agents and predefined maximum carry capacities.
 	"""
 	var wood_goal: int = agents * Common.RESOURCE_MAXIMUM_CARRY_CAPACITY_PER_AGENT.wood * 2
 	var stone_goal: int = agents * Common.RESOURCE_MAXIMUM_CARRY_CAPACITY_PER_AGENT.stone * 2

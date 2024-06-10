@@ -196,7 +196,8 @@ func create_agent(agent: Node, agent_idx: int, village_coords: Dictionary) -> No
 	agent.timer = timer
 	agent.game_manager = game_manager
 	agent.z_index = 4
-	agent.chromosome = generate_random_chromosome(str(agent_idx)) # agent_idx can be used too for village bit
+	var chromosome := generate_random_chromosome(str(agent_idx)) # agent_idx can be used too for village bit
+	agent.chromosome = agent.Chromosome.new(chromosome)
 	return agent
 
 func generate_random_chromosome(village_bit: String) -> String:

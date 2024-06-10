@@ -43,7 +43,7 @@ text = "State: "
 [node name="LabelAgentCapacity" type="Label" parent="Panel/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Agent Capacity:"
+text = "Resource Carrying Capacity:"
 horizontal_alignment = 1
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Panel/VBoxContainer"]

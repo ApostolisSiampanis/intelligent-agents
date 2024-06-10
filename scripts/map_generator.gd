@@ -111,8 +111,11 @@ func generate_map(map: Array, available_rows: Array) -> void:
 				add_collider_for_resource(resource_coords, wood + ((y+1) * (x+1)), "wood")
 				wood -= 1
 			if agents > 0: # in each iteration create one agent for each village
-				agents_array.append(create_agent(AGENT.instantiate(), 0, village_1_coords)) # agent for village 1
-				agents_array.append(create_agent(AGENT.instantiate(), 1, village_2_coords)) # agent for village 2
+				var agent_1 := create_agent(AGENT.instantiate(), 0, village_1_coords) # agent for village 1
+				agent_1.id = agents*2-1
+				var agent_2 := create_agent(AGENT.instantiate(), 1, village_2_coords) # agent for village 2
+				agent_2.id = agents*2
+				agents_array.append_array([agent_1, agent_2])
 				agents -= 1
 			if obstacles > 0: # obstacles tile placement
 				add_foreground_tile(map, available_rows, obstacle_tile_coords)
@@ -180,7 +183,6 @@ func create_agent(agent: Node, agent_idx: int, village_coords: Dictionary) -> No
 	agent.z_index = 4
 	agent.chromosome = generate_random_chromosome(str(agent_idx)) # agent_idx can be used too for village bit
 	
-	
 	# Create an InfoCard for the agent
 	var info_card = INFO_CARD.instantiate()
 
@@ -202,6 +204,7 @@ func create_agent(agent: Node, agent_idx: int, village_coords: Dictionary) -> No
 		v_box_container_village_1_info_cards.add_child(margin_container)
 	else:
 		v_box_container_village_2_info_cards.add_child(margin_container)
+	
 	return agent
 
 func generate_random_chromosome(village_bit: String) -> String:

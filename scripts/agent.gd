@@ -440,8 +440,6 @@ func on_resource_interact(resource):
 func _on_body_entered(body):
 	if body == self: return
 	
-	if !available_for_knowledge_exchange: return
-	
 	# No one can interact at spawn
 	var current_tile_pos = tile_map.local_to_map(position)
 	if current_tile_pos == Vector2i(astar.get_point_position(valuable_tile_point_ids[spawn_tile_type])):

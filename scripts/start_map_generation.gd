@@ -25,7 +25,7 @@ func calculate_goal(wood: int, stone: int, gold: int, agents: int) -> Dictionary
 	"""
 		
 	"""
-	var wood_goal: int = agents * CommonVariables.RESOURCE_MAXIMUM_CAPACITY_PER_AGENT.wood * 2
-	var stone_goal: int = agents * CommonVariables.RESOURCE_MAXIMUM_CAPACITY_PER_AGENT.stone * 2
-	var gold_goal: int = agents * CommonVariables.RESOURCE_MAXIMUM_CAPACITY_PER_AGENT.gold * 2
+	var wood_goal: int = agents * Common.RESOURCE_MAXIMUM_CARRY_CAPACITY_PER_AGENT.wood * 2
+	var stone_goal: int = agents * Common.RESOURCE_MAXIMUM_CARRY_CAPACITY_PER_AGENT.stone * 2
+	var gold_goal: int = agents * Common.RESOURCE_MAXIMUM_CARRY_CAPACITY_PER_AGENT.gold * 2
 	return {'wood': wood_goal, 'stone': stone_goal, 'gold': gold_goal}

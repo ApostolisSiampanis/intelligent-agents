@@ -84,7 +84,7 @@ const RETURN_TO_SPAWN_ENERGY_THRESHOLD := MAX_ENERGY_LEVEL / 3
 
 var village_type = "Green"
 
-var current_goal: CommonVariables.TileType
+var current_goal: Common.TileType
 
 var current_carrying_resource: CarryingResource
 
@@ -110,7 +110,7 @@ var valuable_tile_point_ids: Dictionary = {}
 var not_visited = []
 var visited = []
 
-var spawn_tile_type: CommonVariables.TileType
+var spawn_tile_type: Common.TileType
 
 func _on_ready():
 	
@@ -120,7 +120,7 @@ func _on_ready():
 	village.set_target_resource_quantity({'wood': 10, 'stone': 30, 'gold': 5})
 	
 	var current_tile_pos = tile_map.local_to_map(position)
-	spawn_tile_type = CommonVariables.get_tile_type(get_tile_type_str(current_tile_pos))
+	spawn_tile_type = Common.get_tile_type(get_tile_type_str(current_tile_pos))
 	valuable_tile_point_ids[spawn_tile_type] = get_point_id(current_tile_pos)
 	
 	label.text = str(energy) + "%"
@@ -131,7 +131,7 @@ func _on_ready():
 	# Initialize AStar
 	astar = AStar2D.new()
 	
-	current_goal = CommonVariables.TileType.STONE
+	current_goal = Common.TileType.STONE
 	
 	# Initialize not_visited tiles
 	not_visited.append(current_tile_pos)
@@ -153,19 +153,19 @@ func filter_tiles(tiles):
 		if tiles[i].type == "wall":
 			continue
 		
-		var adj_tile_type = CommonVariables.get_tile_type(tiles[i].type)
+		var adj_tile_type = Common.get_tile_type(tiles[i].type)
 		if adj_tile_type == current_goal:
 			walkable_tiles.push_front(tiles[i])
 		elif !visited.has(tiles[i].position):
 			walkable_tiles.append(tiles[i])
 		
-		if adj_tile_type in [CommonVariables.TileType.WOOD, CommonVariables.TileType.STONE, CommonVariables.TileType.GOLD] && !has_valuable_tile(tiles[i].position, adj_tile_type):
+		if adj_tile_type in [Common.TileType.WOOD, Common.TileType.STONE, Common.TileType.GOLD] && !has_valuable_tile(tiles[i].position, adj_tile_type):
 			update_valuable_tiles(tiles[i].position, adj_tile_type, true)
 	return walkable_tiles
 
 func calculate_destination(current_tile_position, next_tile_position):
 	var tile_dif = calculate_dif(Vector2i(current_tile_position), Vector2i(next_tile_position))
-	return (Vector2i(position) + tile_dif * CommonVariables.TILE_SIZE)
+	return (Vector2i(position) + tile_dif * Common.TILE_SIZE)
 
 func calculate_dif(vector1: Vector2i, vector2: Vector2i):
 	return vector2 - vector1
@@ -181,7 +181,7 @@ func walk(delta):
 
 func decide():
 	var current_tile_pos = tile_map.local_to_map(position)
-	var tile_type = CommonVariables.get_tile_type(get_tile_type_str(current_tile_pos))
+	var tile_type = Common.get_tile_type(get_tile_type_str(current_tile_pos))
 	
 	if is_backtracking && astar_path_queue.is_empty():
 		is_backtracking = false
@@ -270,13 +270,13 @@ func use_astar(current_tile_pos: Vector2i):
 	astar_path_queue.remove_at(0)
 
 func get_point_id(vector: Vector2i):
-	return vector.x * CommonVariables.MAX_Y + vector.y
+	return vector.x * Common.MAX_Y + vector.y
 
 func redefine_goal(goal_reached: bool):
 	if !goal_reached: return
 	
 	# If the agent is at spawn, blah
-	if current_goal == CommonVariables.TileType.VILLAGE:
+	if current_goal == Common.TileType.VILLAGE:
 		
 		# Drop any carrying resources
 		if current_carrying_resource:
@@ -295,7 +295,7 @@ func redefine_goal(goal_reached: bool):
 		else:
 			choose_search_algorithm()
 
-func change_goal(goal_type: CommonVariables.TileType):
+func change_goal(goal_type: Common.TileType):
 	current_goal = goal_type
 	choose_search_algorithm()
 
@@ -333,7 +333,7 @@ func get_tile_type_str(current_tile_pos: Vector2i):
 	if tile_data == null: tile_data = tile_map.get_cell_tile_data(0, current_tile_pos)
 	return tile_data.get_custom_data("type")
 
-func update_valuable_tiles(current_tile_pos: Vector2i, tile_type: CommonVariables.TileType, is_available: bool):
+func update_valuable_tiles(current_tile_pos: Vector2i, tile_type: Common.TileType, is_available: bool):
 	var current_tile_point_id = get_point_id(current_tile_pos)
 	var tile = {
 		current_tile_point_id: is_available
@@ -343,8 +343,8 @@ func update_valuable_tiles(current_tile_pos: Vector2i, tile_type: CommonVariable
 	else:
 		valuable_tile_point_ids[tile_type].merge(tile, true)
 
-func has_valuable_tile(tile_pos, tile_type: CommonVariables.TileType):
-	var tile_type_s = CommonVariables.TileType.find_key(tile_type)
+func has_valuable_tile(tile_pos, tile_type: Common.TileType):
+	var tile_type_s = Common.TileType.find_key(tile_type)
 	if !valuable_tile_point_ids.has(tile_type_s): return false
 	return valuable_tile_point_ids[tile_type_s].keys().has(get_point_id(tile_pos))
 
@@ -368,7 +368,7 @@ func _on_timer_timeout():
 	if energy <= 0:
 		queue_free()
 
-func find_closest_tile_id(current_tile_pos: Vector2i, tile_goal_type: CommonVariables.TileType):
+func find_closest_tile_id(current_tile_pos: Vector2i, tile_goal_type: Common.TileType):
 	"""
 		Returns the closest tile id based on AStar knowledge
 		
@@ -424,9 +424,9 @@ func on_resource_interact(resource):
 	if current_goal == resource.type && !current_carrying_resource:
 		var carry_capacity = 0
 		match resource.type:
-			CommonVariables.TileType.WOOD: carry_capacity = chromosome.wood_carry_capacity
-			CommonVariables.TileType.STONE: carry_capacity = chromosome.stone_carry_capacity
-			CommonVariables.TileType.GOLD: carry_capacity = chromosome.gold_carry_capacity
+			Common.TileType.WOOD: carry_capacity = chromosome.wood_carry_capacity
+			Common.TileType.STONE: carry_capacity = chromosome.stone_carry_capacity
+			Common.TileType.GOLD: carry_capacity = chromosome.gold_carry_capacity
 		
 		var loot_quantity = resource.loot(carry_capacity)
 		var current_tile_pos = tile_map.local_to_map(position)
@@ -453,4 +453,3 @@ func _on_body_entered(body):
 		return
 	
 	game_manager.merge_knowledge(self, body)
-

@@ -2,7 +2,7 @@ extends Area2D
 
 @onready var label = $Label
 
-@export var type: CommonVariables.TileType = CommonVariables.TileType.STONE
+@export var type: Common.TileType = Common.TileType.STONE
 # TODO: Remove
 var total_quantity: int = 11
 var current_quantity: int = 11

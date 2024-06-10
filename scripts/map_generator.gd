@@ -270,8 +270,8 @@ func _on_highlight_agent(agent, highlight):
 	if highlight:
 		var viewport_size: Vector2 = get_viewport_rect().size
 		var agent_center =\
-			agent.position + Vector2(CommonVariables.TILE_SIZE.x / 2, 
-									 CommonVariables.TILE_SIZE.y / 2)
+			agent.position + Vector2(Common.TILE_SIZE.x / 2, 
+									 Common.TILE_SIZE.y / 2)
 		var new_position = Vector2(
 			viewport_size.x / 2 - agent_center.x,
 			viewport_size.y / 2 - agent_center.y

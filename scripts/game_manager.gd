@@ -24,9 +24,9 @@ func assign_resource_goal(agent: Agent) -> void:
 	var next_resource_goal = Village.ResourceType.get(village.calc_capability_dict(agent).keys()[0])
 	var tile_type
 	match next_resource_goal:
-		Village.ResourceType.WOOD: tile_type = CommonVariables.TileType.WOOD
-		Village.ResourceType.STONE: tile_type = CommonVariables.TileType.STONE
-		Village.ResourceType.GOLD: tile_type = CommonVariables.TileType.GOLD
+		Village.ResourceType.WOOD: tile_type = Common.TileType.WOOD
+		Village.ResourceType.STONE: tile_type = Common.TileType.STONE
+		Village.ResourceType.GOLD: tile_type = Common.TileType.GOLD
 	
 	agent.change_goal(tile_type)
 
@@ -72,10 +72,10 @@ func update_astar(caller_agent: Agent, target_agent: Agent) -> void:
 
 func merge_valuable_point_ids(caller_agent: Agent, target_agent: Agent) -> void:
 	var merged_valuable_point_ids = caller_agent.valuable_tile_point_ids.duplicate(true)
-	var target_village_point = target_agent.valuable_tile_point_ids[CommonVariables.TileType.VILLAGE] 
+	var target_village_point = target_agent.valuable_tile_point_ids[Common.TileType.VILLAGE] 
 	
 	for tile_type in target_agent.valuable_tile_point_ids.keys():
-		if tile_type == CommonVariables.TileType.VILLAGE: continue
+		if tile_type == Common.TileType.VILLAGE: continue
 		
 		var target_points = target_agent.valuable_tile_point_ids[tile_type]
 		if !merged_valuable_point_ids.has(tile_type):
@@ -90,8 +90,8 @@ func merge_valuable_point_ids(caller_agent: Agent, target_agent: Agent) -> void:
 	
 	# Change the village point if they're from a different one
 	merged_valuable_point_ids = merged_valuable_point_ids.duplicate(true)
-	if caller_agent.valuable_tile_point_ids[CommonVariables.TileType.VILLAGE] != target_village_point:
-		merged_valuable_point_ids[CommonVariables.TileType.VILLAGE] = target_village_point
+	if caller_agent.valuable_tile_point_ids[Common.TileType.VILLAGE] != target_village_point:
+		merged_valuable_point_ids[Common.TileType.VILLAGE] = target_village_point
 	
 	target_agent.valuable_tile_point_ids = merged_valuable_point_ids
 

@@ -96,7 +96,7 @@ func calc_resource_significance_metric(resource_type: ResourceType) -> float:
 	return remaining_resource_quantity / float(agents_total_carry_cap)
 
 func has_knowledge(agent: Agent, resource_type: ResourceType) -> bool:
-	var resource_tile_type = CommonVariables.get_tile_type_from_resource(resource_type)
+	var resource_tile_type = Common.get_tile_type_from_resource(resource_type)
 	var found := false
 	for tile_type in agent.valuable_tile_point_ids.keys():
 		if tile_type != resource_tile_type: continue

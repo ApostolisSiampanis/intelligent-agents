@@ -1,22 +1,39 @@
 extends Node
 
-class VillageScore:
-	static var target_wood_quantity: int
-	static var target_stone_quantity: int
-	static var targer_gold_quantity: int
-	var current_wood_quantity := 0
-	var current_stone_quantity := 0
-	var current_gold_quantity := 0
-	
-	static func set_target_resource_quantity(goal: Dictionary) -> void:
-		"""
-			
-		"""
-		target_wood_quantity = goal.wood
-		target_stone_quantity = goal.stone
-		targer_gold_quantity = goal.gold
+class_name GameManager
 
-func merge_knowledge(caller_agent, target_agent):
+var village_1: Village
+var village_2: Village
+
+func drop_resource(agent: Agent) -> void:
+	var resource = agent.current_carrying_resource
+	if resource == null: return
+	
+	var village = get_village(agent)
+	
+	village.add_resource(resource)
+	agent.current_carrying_resource = null
+	
+	# Check for game end
+	if is_game_finished(village):
+		print("Game finished")
+		agent.current_state = agent.State.IDLE
+
+func assign_resource_goal(agent: Agent) -> void:
+	var village = get_village(agent)
+	var next_resource_goal = Village.ResourceType.get(village.calc_capability_dict(agent).keys()[0])
+	var tile_type
+	match next_resource_goal:
+		Village.ResourceType.WOOD: tile_type = CommonVariables.TileType.WOOD
+		Village.ResourceType.STONE: tile_type = CommonVariables.TileType.STONE
+		Village.ResourceType.GOLD: tile_type = CommonVariables.TileType.GOLD
+	
+	agent.change_goal(tile_type)
+
+func is_game_finished(village: Village) -> bool:
+	return village.is_goal_completed()
+
+func merge_knowledge(caller_agent: Agent, target_agent: Agent) -> void:
 	if !target_agent.available_for_knowledge_exchange: return
 	
 	if caller_agent.agent_knowledge_vers.has(target_agent.id) && caller_agent.agent_knowledge_vers[target_agent.id] == target_agent.knowledge_ver: return
@@ -39,7 +56,7 @@ func merge_knowledge(caller_agent, target_agent):
 	target_agent.agent_knowledge_vers[caller_agent.id] = caller_agent.knowledge_ver
 	print("Knowledge exchange: " + str(caller_agent.id) + "-" + str(target_agent.id))
 
-func update_astar(caller_agent, target_agent):
+func update_astar(caller_agent: Agent, target_agent: Agent) -> void:
 	for point_id in target_agent.astar.get_point_ids():
 		
 		if !caller_agent.astar.has_point(point_id):
@@ -53,12 +70,12 @@ func update_astar(caller_agent, target_agent):
 			if !caller_agent.astar.are_points_connected(point_id, connected_point_id):
 				caller_agent.astar.connect_points(point_id, connected_point_id)
 
-func merge_valuable_point_ids(caller_agent, target_agent):
+func merge_valuable_point_ids(caller_agent: Agent, target_agent: Agent) -> void:
 	var merged_valuable_point_ids = caller_agent.valuable_tile_point_ids.duplicate(true)
-	var target_village_point = target_agent.valuable_tile_point_ids["village"] 
+	var target_village_point = target_agent.valuable_tile_point_ids[CommonVariables.TileType.VILLAGE] 
 	
 	for tile_type in target_agent.valuable_tile_point_ids.keys():
-		if tile_type == "village": continue
+		if tile_type == CommonVariables.TileType.VILLAGE: continue
 		
 		var target_points = target_agent.valuable_tile_point_ids[tile_type]
 		if !merged_valuable_point_ids.has(tile_type):
@@ -73,12 +90,12 @@ func merge_valuable_point_ids(caller_agent, target_agent):
 	
 	# Change the village point if they're from a different one
 	merged_valuable_point_ids = merged_valuable_point_ids.duplicate(true)
-	if caller_agent.valuable_tile_point_ids["village"] != target_village_point:
-		merged_valuable_point_ids["village"] = target_village_point
+	if caller_agent.valuable_tile_point_ids[CommonVariables.TileType.VILLAGE] != target_village_point:
+		merged_valuable_point_ids[CommonVariables.TileType.VILLAGE] = target_village_point
 	
 	target_agent.valuable_tile_point_ids = merged_valuable_point_ids
 
-func merge_explore_tiles(caller_agent, target_agent):
+func merge_explore_tiles(caller_agent: Agent, target_agent: Agent) -> void:
 	var merged_visited_tiles_pos = caller_agent.visited.duplicate()
 	for tile in target_agent.visited:
 		if !merged_visited_tiles_pos.has(tile):
@@ -94,3 +111,16 @@ func merge_explore_tiles(caller_agent, target_agent):
 	
 	caller_agent.not_visited = merged_not_visited_tiles_pos
 	target_agent.not_visited = merged_not_visited_tiles_pos.duplicate()
+
+func get_village(agent: Agent) -> Village:
+	var village
+	match agent.chromosome.bits[0]:
+		"0":
+			if village_1 == null: village_1 = Village.new()
+			village_1.add_agent(agent)
+			village = village_1
+		"1":
+			if village_2 == null: village_2 = Village.new()
+			village_2.add_agent(agent)
+			village = village_2
+	return village

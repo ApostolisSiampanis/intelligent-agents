@@ -82,8 +82,6 @@ const MAX_ENERGY_LEVEL := 100
 const SPAWN_REFILL_ENERGY_THRESHOLD := MAX_ENERGY_LEVEL / 2
 const RETURN_TO_SPAWN_ENERGY_THRESHOLD := MAX_ENERGY_LEVEL / 3
 
-var village_type = "Green"
-
 var current_goal: Common.TileType
 
 var current_carrying_resource: CarryingResource

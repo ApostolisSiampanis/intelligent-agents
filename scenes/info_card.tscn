@@ -6,79 +6,87 @@
 script = ExtResource("1_nbvcf")
 
 [node name="Panel" type="Panel" parent="."]
-offset_right = 400.0
+offset_right = 409.0
 offset_bottom = 191.0
 
-[node name="LabelAgentID" type="Label" parent="Panel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 131.0
+grow_horizontal = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="LabelAgentID" type="Label" parent="Panel/VBoxContainer"]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 19.0
-offset_top = 8.0
-offset_right = 152.0
-offset_bottom = 31.0
+layout_mode = 2
 text = "Agent ID: #"
+horizontal_alignment = 1
 
-[node name="LabelAgentVillage" type="Label" parent="Panel"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 21.0
-offset_top = 36.0
-offset_right = 154.0
-offset_bottom = 59.0
-text = "Village: #"
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 25
+alignment = 1
 
-[node name="LabelState" type="Label" parent="Panel"]
+[node name="LabelEnergy" type="Label" parent="Panel/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 213.0
-offset_top = 84.0
-offset_right = 272.0
-offset_bottom = 107.0
-text = "State: "
-
-[node name="LabelEnergy" type="Label" parent="Panel"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 22.0
-offset_top = 110.0
-offset_right = 94.0
-offset_bottom = 133.0
+layout_mode = 2
 text = "Energy: #"
 
-[node name="LabelResource" type="Label" parent="Panel"]
+[node name="LabelState" type="Label" parent="Panel/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 20.0
-offset_top = 77.0
-offset_right = 160.0
-offset_bottom = 100.0
-text = "Agent Resource:"
+layout_mode = 2
+text = "State: "
 
-[node name="LabelMapDiscovery" type="Label" parent="Panel"]
+[node name="LabelAgentCapacity" type="Label" parent="Panel/VBoxContainer"]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 211.0
-offset_top = 112.0
-offset_right = 357.0
-offset_bottom = 135.0
-text = "Map Discovery: #%"
+layout_mode = 2
+text = "Resource Carrying Capacity:"
+horizontal_alignment = 1
 
-[node name="ButtonMap" type="Button" parent="Panel"]
-layout_mode = 0
-offset_left = 287.0
-offset_top = 5.0
-offset_right = 375.0
-offset_bottom = 36.0
+[node name="HBoxContainer2" type="HBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="LabelStoneCapacity" type="Label" parent="Panel/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Stone: #%"
+
+[node name="LabelWoodCapacity" type="Label" parent="Panel/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Wood: #%"
+
+[node name="LabelGoldCapacity" type="Label" parent="Panel/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Gold: #%"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="LabelResource" type="Label" parent="Panel/VBoxContainer/HBoxContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Carrying: NONE"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="ButtonMap" type="Button" parent="Panel/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
 text = "Show Map"
 
-[node name="ButtonAgent" type="Button" parent="Panel"]
-layout_mode = 0
-offset_left = 287.0
-offset_top = 39.0
-offset_right = 387.0
-offset_bottom = 70.0
+[node name="ButtonAgent" type="Button" parent="Panel/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
 text = "Show Agent"
 
 [connection signal="ready" from="." to="." method="_on_ready"]
-[connection signal="pressed" from="Panel/ButtonMap" to="." method="_on_ButtonHighlightMap_pressed"]
-[connection signal="pressed" from="Panel/ButtonAgent" to="." method="_on_button_agent_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/HBoxContainer4/ButtonMap" to="." method="_on_ButtonHighlightMap_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/HBoxContainer4/ButtonAgent" to="." method="_on_button_agent_pressed"]

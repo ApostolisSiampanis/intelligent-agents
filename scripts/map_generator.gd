@@ -1,17 +1,19 @@
 extends TileMap
+
+
 class_name MapGenerator
-const INFO_CARD = preload("res://scenes/info_card.tscn")
 
-@onready var v_box_container_info_cards = %VBoxContainerInfoCards
 
+@onready var v_box_container_village_1_info_cards = %VBoxContainerVillage1InfoCards
+@onready var v_box_container_village_2_info_cards = %VBoxContainerVillage2InfoCards
 @onready var timer = %Timer
 @onready var game_manager = %GameManager
-
 @onready var camera_2d = $"../Camera2D"
 
-
+const INFO_CARD = preload("res://scenes/info_card.tscn")
 const AGENT = preload("res://scenes/agent.tscn")
 const RESOURCE_COLLIDER = preload("res://scenes/resource_collider.tscn")
+const INFO_CARD = preload("res://scenes/info_card.tscn")
 
 var agents_array := [] # stores all created agent instances
 
@@ -61,9 +63,7 @@ static func set_input_arguments(
 func _ready():
 	# Center the tile map
 	var viewport_size: Vector2 = get_viewport_rect().size
-	self.set_position(Vector2(
-		viewport_size.x / 2 - (float(cols) * 64) / 2,
-		viewport_size.y / 2 - (float(rows) * 64) / 2))
+	camera_2d.center_on_tile_map()
 	
 	# Arrays initialization
 	var map: Array
@@ -79,30 +79,12 @@ func _ready():
 	# Map generation
 	generate_map(map, available_rows)
 	
-	v_box_container_info_cards.set("custom_constants/separation", 10)
+	v_box_container_village_1_info_cards.set("custom_constants/separation", 10)
+	v_box_container_village_2_info_cards.set("custom_constants/separation", 10)
 
 	# Place agents into the tile map to start exploring
 	for agent in agents_array:
 		add_child(agent)
-		
-		# Create an InfoCard for the agent
-		var info_card = INFO_CARD.instantiate()
-
-		info_card.agent = agent
-		info_card.connect("highlight_agent", Callable(self, "_on_highlight_agent"))
-		info_card.connect("highlight_map", Callable(self, "_on_highlight_map"))
-		
-		timer.connect("timeout", Callable(info_card, "_on_timer_timeout"))
-		
-		# Wrap the info_card in a MarginContainer
-		var margin_container = MarginContainer.new()
-		margin_container.add_child(info_card)
-		
-		# Add spacing (adjust the values to your preference)
-		margin_container.add_theme_constant_override("margin_bottom", 200)
-		
-		# Add the margin container to the VBoxContainer
-		v_box_container_info_cards.add_child(margin_container)
 
 func generate_map(map: Array, available_rows: Array) -> void:
 	"""
@@ -129,8 +111,9 @@ func generate_map(map: Array, available_rows: Array) -> void:
 				add_collider_for_resource(resource_coords, wood + ((y+1) * (x+1)), "wood")
 				wood -= 1
 			if agents > 0: # in each iteration create one agent for each village
-				agents_array.append(create_agent(AGENT.instantiate(), 0, village_1_coords)) # agent for village 1
-				agents_array.append(create_agent(AGENT.instantiate(), 1, village_2_coords)) # agent for village 2
+				var agent_1 := create_agent(AGENT.instantiate(), 0, village_1_coords, agents*2-1) # agent for village 1
+				var agent_2 := create_agent(AGENT.instantiate(), 1, village_2_coords, agents*2) # agent for village 2
+				agents_array.append_array([agent_1, agent_2])
 				agents -= 1
 			if obstacles > 0: # obstacles tile placement
 				add_foreground_tile(map, available_rows, obstacle_tile_coords)
@@ -185,19 +168,43 @@ func add_collider_for_resource(resource_coords: Dictionary, quantity: int, type:
 	resource_collider.z_index = 3
 	add_child(resource_collider)
 
-func create_agent(agent: Node, agent_idx: int, village_coords: Dictionary) -> Node:
+func create_agent(agent: Node, agent_idx: int, village_coords: Dictionary, agent_id: int) -> Node:
 	"""
 		Initializes and positions an agent at the village with a reference to the tile map and timer.
 	"""
-	agent.id = agent_idx
+	agent.id = agent_id
 	agent.position = map_to_local(Vector2(village_coords.x, village_coords.y))
 	agent.tile_map = self
 	agent.get_child(agent_idx).visible = true
 	agent.timer = timer
 	agent.game_manager = game_manager
 	agent.z_index = 4
+
 	var chromosome := generate_random_chromosome(str(agent_idx)) # agent_idx can be used too for village bit
 	agent.chromosome = agent.Chromosome.new(chromosome)
+	
+	# Create an InfoCard for the agent
+	var info_card = INFO_CARD.instantiate()
+	
+	info_card.agent = agent
+	info_card.connect("highlight_agent", Callable(self, "_on_highlight_agent"))
+	info_card.connect("highlight_map", Callable(self, "_on_highlight_map"))
+	
+	timer.connect("timeout", Callable(info_card, "_on_timer_timeout"))
+	
+	# Wrap the info_card in a MarginContainer
+	var margin_container = MarginContainer.new()
+	margin_container.add_child(info_card)
+	
+	# Add spacing (adjust the values to your preference)
+	margin_container.add_theme_constant_override("margin_bottom", 205)
+	
+	# Add the margin container to the VBoxContainer
+	if agent_idx == 0:
+		v_box_container_village_1_info_cards.add_child(margin_container)
+	else:
+		v_box_container_village_2_info_cards.add_child(margin_container)
+
 	return agent
 
 func generate_random_chromosome(village_bit: String) -> String:
@@ -267,24 +274,17 @@ func _on_highlight_agent(agent, highlight):
 	
 	if highlight:
 		agent.modulate = Color.FIREBRICK  # or another suitable color
-	
-	if highlight:
-		var viewport_size: Vector2 = get_viewport_rect().size
-		var agent_center =\
-			agent.position + Vector2(Common.TILE_SIZE.x / 2, 
-									 Common.TILE_SIZE.y / 2)
-		var new_position = Vector2(
-			viewport_size.x / 2 - agent_center.x,
-			viewport_size.y / 2 - agent_center.y
-		)
-		set_position(new_position)
+		camera_2d.follow_agent(agent)
+	else:
+		camera_2d.stop_following_agent()
+		pass
 
 func _on_highlight_map(agent, mode):
 	match mode:
 		"known":
 			highlight_known_tiles(agent)
-			print("I will highlight the tiles of the agent: " + agent.get_name())
-		"all", "":
+			print("I will highlight the tiles of the agent: " + str(agent.id))
+		"all":
 			clear_tile_highlights()
 
 func highlight_known_tiles(agent):

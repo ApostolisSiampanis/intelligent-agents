@@ -22,11 +22,14 @@ extends Node2D
 @onready var agents_line_edit = $CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput/HBoxContainerAgents/LineEdit
 @onready var label_agents_value = $CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue/LabelAgentsValue
 
+@onready var label_total_resources_number = $CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue/HBoxContainerTotalResources/LabelTotalResourcesNumber
+
 @onready var center_container = $CenterContainer
+
+var total_max_resources = 7 # Default values
 
 func _ready():
 	var viewport_size = get_viewport_rect().size
-
 	center_container.set_position(Vector2(
 		viewport_size.x / 2 - center_container.size.x / 2,
 		viewport_size.y / 2 - center_container.size.y / 2
@@ -38,6 +41,10 @@ func _ready():
 	columns_slider.connect("value_changed", Callable(self, "_on_slider_value_changed"))
 	columns_line_edit.connect("text_changed", Callable(self, "_on_rows_or_columns_changed"))
 
+	stones_slider.connect("value_changed", Callable(self, "_on_resource_slider_value_changed"))
+	wood_slider.connect("value_changed", Callable(self, "_on_resource_slider_value_changed"))
+	gold_slider.connect("value_changed", Callable(self, "_on_resource_slider_value_changed"))
+
 func _on_slider_value_changed(value):
 	rows_line_edit.text = str(rows_slider.value)
 	columns_line_edit.text = str(columns_slider.value)
@@ -48,7 +55,8 @@ func _on_rows_or_columns_changed(new_value):
 	var columns_value = int(columns_line_edit.text)
 	var total_tiles = rows_value * columns_value
 
-	var total_max_resources = ceili(total_tiles * 0.01)
+	total_max_resources = ceili(total_tiles * 0.01)
+	label_total_resources_number.text = str(total_max_resources)
 
 	var min_gold = max(1, int(total_max_resources * 0.1))
 	var max_gold = max(1, int(total_max_resources * 0.2))
@@ -61,7 +69,6 @@ func _on_rows_or_columns_changed(new_value):
 
 	var min_agents = max(1, int(total_max_resources * 0.1))
 	var max_agents = max(1, int(total_max_resources * 0.2))
-
 
 	stones_slider.min_value = min_stones
 	stones_slider.max_value = max_stones
@@ -86,3 +93,61 @@ func _on_rows_or_columns_changed(new_value):
 	agents_slider.value = agents_slider.min_value
 	agents_line_edit.text = str(agents_slider.min_value)
 	label_agents_value.text = "(" + str(agents_slider.min_value) + " - " + str(agents_slider.max_value) + ")"
+
+	_update_resource_sliders()
+
+func _on_resource_slider_value_changed(value):
+	_update_resource_sliders()
+
+func _update_resource_sliders():
+	var current_stones = int(stones_slider.value)
+	var current_wood = int(wood_slider.value)
+	var current_gold = int(gold_slider.value)
+
+	var total_allocated = current_stones + current_wood + current_gold
+	var remaining_resources = total_max_resources - total_allocated
+
+	if remaining_resources != 0:
+		if remaining_resources > 0:
+			if current_stones < stones_slider.max_value:
+				var stones_increment = min(stones_slider.max_value - current_stones, remaining_resources)
+				stones_slider.value = current_stones + stones_increment
+				remaining_resources -= stones_increment
+				current_stones = int(stones_slider.value)
+
+			if remaining_resources > 0 and current_wood < wood_slider.max_value:
+				var wood_increment = min(wood_slider.max_value - current_wood, remaining_resources)
+				wood_slider.value = current_wood + wood_increment
+				remaining_resources -= wood_increment
+				current_wood = int(wood_slider.value)
+
+			if remaining_resources > 0 and current_gold < gold_slider.max_value:
+				var gold_increment = min(gold_slider.max_value - current_gold, remaining_resources)
+				gold_slider.value = current_gold + gold_increment
+				remaining_resources -= gold_increment
+				current_gold = int(gold_slider.value)
+		else:
+			if current_stones > stones_slider.min_value:
+				var stones_decrement = min(current_stones - stones_slider.min_value, -remaining_resources)
+				stones_slider.value = current_stones - stones_decrement
+				remaining_resources += stones_decrement
+				current_stones = int(stones_slider.value)
+
+			if remaining_resources < 0 and current_wood > wood_slider.min_value:
+				var wood_decrement = min(current_wood - wood_slider.min_value, -remaining_resources)
+				wood_slider.value = current_wood - wood_decrement
+				remaining_resources += wood_decrement
+				current_wood = int(wood_slider.value)
+
+			if remaining_resources < 0 and current_gold > gold_slider.min_value:
+				var gold_decrement = min(current_gold - gold_slider.min_value, -remaining_resources)
+				gold_slider.value = current_gold - gold_decrement
+				remaining_resources += gold_decrement
+				current_gold = int(gold_slider.value)
+
+	stones_line_edit.text = str(stones_slider.value)
+	wood_line_edit.text = str(wood_slider.value)
+	gold_line_edit.text = str(gold_slider.value)
+	label_stones_value.text = "(" + str(stones_slider.min_value) + " - " + str(stones_slider.max_value) + ")"
+	label_wood_value.text = "(" + str(wood_slider.min_value) + " - " + str(wood_slider.max_value) + ")"
+	label_gold_value.text = "(" + str(gold_slider.min_value) + " - " + str(gold_slider.max_value) + ")"

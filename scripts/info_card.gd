@@ -37,7 +37,7 @@ func update_info():
 			agent.State.IDLE: state_string = "IDLE"
 		label_state.text = "State: " + state_string
 	
-		label_agent_id.text = "Agent ID: " + str(agent.get_name())
+		label_agent_id.text = "Agent ID: " + str(agent.id)
 
 		label_energy.text = "Energy: " + str(agent.energy) + "%"
 		

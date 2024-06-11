@@ -24,18 +24,3 @@ func _on_slider_value_changed(value):
 	line_edit.text = str(value)
 	last_valid_value = value
 	updating_slider = false
-
-func _on_line_edit_text_changed(new_text):
-	if updating_slider:
-		return
-	updating_line_edit = true
-	var value = new_text.to_float()
-	if not is_nan(value):
-		if value >= slider.min_value and value <= slider.max_value:
-			slider.value = value
-			last_valid_value = value
-			print("Input was correct " + str(last_valid_value))
-	else:
-		# Value is not a number
-		line_edit.text = str(last_valid_value)
-	updating_line_edit = false

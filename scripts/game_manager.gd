@@ -9,15 +9,18 @@ func drop_resource(agent: Agent) -> void:
 	var resource = agent.current_carrying_resource
 	if resource == null: return
 	
-	var village = get_village(agent)
+	var village = agent.village
 	
 	village.add_resource(resource)
 	agent.current_carrying_resource = null
 	
 	# Check for game end
-	if is_game_finished(village):
-		print("Game finished")
-		agent.current_state = agent.State.IDLE
+	if is_game_finished(village): finish_game()
+
+func eliminate(agent: Agent) -> void:
+	var village = agent.village
+	village.remove_agent(agent)
+	if village.agents.is_empty(): finish_game()
 
 func assign_resource_goal(agent: Agent) -> void:
 	var village = get_village(agent)
@@ -130,3 +133,7 @@ func fertilize(caller_agent: Agent, target_agent: Agent, caller_wants_to_fertili
 	
 	# Both want to fertilize
 	Fertilizer.fertilize(caller_agent, target_agent)
+
+func finish_game():
+	# TODO: Add reason
+	print("Game finished")

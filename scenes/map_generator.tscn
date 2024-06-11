@@ -114,7 +114,7 @@ horizontal_alignment = 1
 
 [node name="LabelVillage1GoalRemaining" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer"]
 layout_mode = 2
-text = "Wanted resources to reach the goal:"
+text = "Remaining resources to reach the goal:"
 horizontal_alignment = 1
 
 [node name="HBoxContainerVillage1Goal" type="HBoxContainer" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer"]
@@ -191,7 +191,7 @@ horizontal_alignment = 1
 
 [node name="LabelVillage2GoalRemaining" type="Label" parent="UILayer/VBoxContainerVillage2AgentsList/PanelVillage1Status2/VBoxContainer"]
 layout_mode = 2
-text = "Wanted resources to reach the goal:"
+text = "Remaining resources to reach the goal:"
 horizontal_alignment = 1
 
 [node name="HBoxContainerVillage2Goal" type="HBoxContainer" parent="UILayer/VBoxContainerVillage2AgentsList/PanelVillage1Status2/VBoxContainer"]

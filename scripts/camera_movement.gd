@@ -10,12 +10,11 @@ var zoom_target : Vector2
 var drag_start_mouse_pos = Vector2.ZERO
 var drag_start_camera_pos = Vector2.ZERO
 var is_dragging : bool = false
-var followed_agent : Node = null
+var followed_agent : Agent = null
 
 func _ready():
 	zoom_target = zoom
 	center_on_tile_map()
-	pass
 
 func _process(delta):
 	if followed_agent:

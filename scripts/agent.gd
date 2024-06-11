@@ -21,7 +21,7 @@ class Chromosome:
 		"""
 		energy_loss_value = 1 if bits[1] == "0" else 2
 		energy_gain_value = 5 if bits[2] == "0" else 10
-		speed = 300 if bits[3] == "0" else 350
+		speed = 250 if bits[3] == "0" else 300
 		gold_carry_capacity = 1 if get_carry_capacity_bits(Village.ResourceType.GOLD) == "0" else 3
 		
 		var wood_bits = get_carry_capacity_bits(Village.ResourceType.WOOD)
@@ -127,7 +127,6 @@ func _on_ready():
 	
 	current_state = State.DECIDING
 	choose_search_algorithm()
-	print("Agent is at x: " + str(position.x) + " y: " + str(position.y))
 
 func _physics_process(delta):
 	if current_state == State.IDLE || current_state == State.REFILLING: return
@@ -199,7 +198,6 @@ func decide():
 func explore(current_tile_pos: Vector2i):
 	var next_tile_pos = not_visited.pop_front()
 	
-	# TODO: Remove
 	if next_tile_pos == null:
 		change_goal(spawn_tile_type)
 		return
@@ -275,7 +273,6 @@ func redefine_goal(goal_reached: bool):
 		
 		# Drop any carrying resources
 		if current_carrying_resource:
-			print("Drop resource: " + str(current_carrying_resource.quantity) + " " + str(current_carrying_resource.type))
 			game_manager.drop_resource(self)
 		
 		# Check if agent needs to refill
@@ -352,7 +349,8 @@ func _on_timer_timeout():
 		if energy == MAX_ENERGY_LEVEL:
 			current_state = State.DECIDING
 	else:
-		energy -= chromosome.energy_loss_value
+		var new_energy := energy - chromosome.energy_loss_value
+		energy = 0 if new_energy < 0 else new_energy
 		if current_goal != spawn_tile_type && energy <= RETURN_TO_SPAWN_ENERGY_THRESHOLD:
 			change_goal(spawn_tile_type)
 	

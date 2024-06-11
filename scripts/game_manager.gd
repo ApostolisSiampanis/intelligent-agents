@@ -24,6 +24,10 @@ func _ready():
 	_update_remaining_resources()
 	
 func drop_resource(agent: Agent) -> void:
+	""" 
+		- Handles the dropping of resources by an agent. 
+		- Updates the resource counts for the village and checks if the game has finished. 
+	"""
 	var resource = agent.current_carrying_resource
 	if resource == null: return
 	
@@ -62,11 +66,20 @@ func set_village_labels(label_stone, label_wood, label_gold, village):
 	label_gold.text = "Gold: %s " % str(village_gold)
 
 func eliminate(agent: Agent) -> void:
+	""" 
+		- Removes an agent from its village. 
+		- If the village has no more agents, finishes the game.
+	"""
+
 	var village = agent.village
 	village.remove_agent(agent)
 	if village.agents.is_empty(): finish_game()
 
 func assign_resource_goal(agent: Agent) -> void:
+	""" 
+		Assigns a new resource goal to an agent based on its village's needs.
+	"""
+
 	var village = get_village(agent)
 	var next_resource_goal = Village.ResourceType.get(village.calc_capability_dict(agent).keys()[0])
 	var tile_type
@@ -85,6 +98,10 @@ func is_game_finished(village: Village) -> bool:
 	return village.is_goal_completed()
 
 func merge_knowledge(caller_agent: Agent, target_agent: Agent) -> void:
+	""" 
+		Merges the knowledge between two agents. 
+	"""
+
 	if !target_agent.available_for_knowledge_exchange: return
 	
 	if caller_agent.agent_knowledge_vers.has(target_agent.id) && caller_agent.agent_knowledge_vers[target_agent.id] == target_agent.knowledge_ver: return
@@ -107,6 +124,10 @@ func merge_knowledge(caller_agent: Agent, target_agent: Agent) -> void:
 	target_agent.agent_knowledge_vers[caller_agent.id] = caller_agent.knowledge_ver
 
 func update_astar(caller_agent: Agent, target_agent: Agent) -> void:
+	""" 
+		- Updates the Astar pathfinding graph of the caller agent with information from the target agent.
+	"""
+
 	for point_id in target_agent.astar.get_point_ids():
 		
 		if !caller_agent.astar.has_point(point_id):
@@ -121,6 +142,10 @@ func update_astar(caller_agent: Agent, target_agent: Agent) -> void:
 				caller_agent.astar.connect_points(point_id, connected_point_id)
 
 func merge_valuable_point_ids(caller_agent: Agent, target_agent: Agent) -> void:
+	""" 
+		Merges the valuable point IDs of resources between two agents. 
+	"""
+
 	var merged_valuable_point_ids = caller_agent.valuable_tile_point_ids.duplicate(true)
 	var target_village_point = target_agent.valuable_tile_point_ids[Common.TileType.VILLAGE] 
 	
@@ -146,6 +171,10 @@ func merge_valuable_point_ids(caller_agent: Agent, target_agent: Agent) -> void:
 	target_agent.valuable_tile_point_ids = merged_valuable_point_ids
 
 func merge_explore_tiles(caller_agent: Agent, target_agent: Agent) -> void:
+	""" 
+		Merges the explored and unexplored tiles between two agents. 
+	"""
+
 	var merged_visited_tiles_pos = caller_agent.visited.duplicate()
 	for tile in target_agent.visited:
 		if !merged_visited_tiles_pos.has(tile):
@@ -163,6 +192,10 @@ func merge_explore_tiles(caller_agent: Agent, target_agent: Agent) -> void:
 	target_agent.not_visited = merged_not_visited_tiles_pos.duplicate()
 
 func get_village(agent: Agent) -> Village:
+	""" 
+		Returns the village to which an agent belongs, based on its chromosome. 
+	"""
+
 	var village
 	match agent.chromosome.bits[0]:
 		"0":
@@ -176,12 +209,22 @@ func get_village(agent: Agent) -> Village:
 	return village
 
 func reproduce(caller_agent: Agent, target_agent: Agent, caller_wants_to_reproduce: bool):
+	""" 
+		Handles the reproduction process between two agents if both are willing to reproduce. 
+	"""
+
 	if !(caller_wants_to_reproduce && target_agent.wants_to_reproduce(caller_agent)): return
 	
 	# Both want to reproduce
 	Reproducer.reproduce(caller_agent, target_agent)
 
 func finish_game():
+	""" 
+		- Ends the game.
+		- Determines the winning village
+		- Updates the UI accordingly.
+	"""
+
 	# Determine which village won
 	var village_1_won = village_1.is_goal_completed()
 	var village_2_won = village_2.is_goal_completed()

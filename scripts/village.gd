@@ -47,6 +47,10 @@ func is_goal_completed() -> bool:
 	return true
 
 func add_resource(resource: Agent.CarryingResource):
+	""" 
+		Adds the quantity of a specific resource to the village's current resources.
+	"""
+
 	match resource.type:
 		Village.ResourceType.WOOD:
 			current_wood_quantity += resource.quantity
@@ -56,6 +60,10 @@ func add_resource(resource: Agent.CarryingResource):
 			current_gold_quantity += resource.quantity
 
 func calc_capability_dict(agent: Agent):
+	""" 
+		Calculates a dictionary of resource types and their corresponding capabilities for an agent. 
+	"""
+
 	var cap_dict = {}
 	
 	for resource_type in ResourceType.keys():
@@ -70,6 +78,10 @@ func calc_capability_dict(agent: Agent):
 	return cap_dict
 
 func calc_capability(agent: Agent, resource_type: ResourceType) -> float:
+	""" 
+		Calculates the capability of an agent for a specific resource type. 
+	"""
+
 	var capability = calc_resource_significance_metric(resource_type)
 	if capability == 0.0: return capability
 	
@@ -82,6 +94,10 @@ func calc_capability(agent: Agent, resource_type: ResourceType) -> float:
 	return capability
 
 func calc_resource_significance_metric(resource_type: ResourceType) -> float:
+	""" 
+		Calculates the significance of a resource type based on remaining quantity and agents' carrying capacity.
+	"""
+
 	var remaining_resource_quantity = 0
 	var agents_total_carry_cap = 0
 	match resource_type:
@@ -122,11 +138,19 @@ func has_knowledge(agent: Agent, resource_type: ResourceType) -> bool:
 	return found
 
 func calc_working_agents_metric(resource_type: ResourceType) -> float:
+	""" 
+		Calculates the metric based on the number of agents assigned to a resource type.
+	"""
+
 	if assigned_goals.is_empty(): return 1.0
 	if !assigned_goals.has(resource_type): return 1.0
 	return 1 - (assigned_goals[resource_type].size() / agents.size())
 
 func calc_chromosome_metric(agent: Agent, resource_type: ResourceType) -> float:
+	""" 
+		Calculates the chromosome metric for an agent based on its carrying capacity bits. 
+	"""
+
 	var capacity_bits = agent.chromosome.get_carry_capacity_bits(resource_type)
 	var factor = 0.0
 	

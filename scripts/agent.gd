@@ -39,6 +39,9 @@ class Chromosome:
 			"11": stone_carry_capacity = 20
 	
 	func get_carry_capacity_bits(resource: Village.ResourceType) -> String:
+		"""
+			Returns the bits string representing the carry capacity for the given resource type.
+		"""
 		match resource:
 			Village.ResourceType.WOOD: return bits.substr(4,2)
 			Village.ResourceType.STONE: return bits.substr(6,2)
@@ -108,6 +111,10 @@ var visited = []
 var spawn_tile_type: Common.TileType
 
 func _on_ready():
+	"""
+		- Initializes the agent when it's added to the scene. 
+		- Sets up the initial state, connects signals, and initializes variables.
+	"""
 	village = game_manager.get_village(self)
 	
 	var current_tile_pos = tile_map.local_to_map(position)
@@ -129,12 +136,18 @@ func _on_ready():
 	choose_search_algorithm()
 
 func _physics_process(delta):
+	"""
+		Handles the agent's state and movement logic each frame.
+	"""
 	if current_state == State.IDLE || current_state == State.REFILLING: return
 	match current_state:
 		State.WALKING: walk(delta)
 		State.DECIDING: decide()
 
 func filter_tiles(tiles):
+	"""
+		Filters the given tiles to remove walls and prioritize tiles based on the current goal and whether they have been visited.
+	"""
 	tiles.shuffle()
 	var walkable_tiles := []
 	for i in range(tiles.size()):
@@ -152,22 +165,37 @@ func filter_tiles(tiles):
 	return walkable_tiles
 
 func calculate_destination(current_tile_position, next_tile_position):
+	"""
+		Calculates the destination position based on the difference between the current and next tile positions.
+	"""
 	var tile_dif = calculate_dif(Vector2i(current_tile_position), Vector2i(next_tile_position))
 	return (Vector2i(position) + tile_dif * Common.TILE_SIZE)
 
 func calculate_dif(vector1: Vector2i, vector2: Vector2i):
+	"""
+		Calculates the difference between two vectors.
+	"""
 	return vector2 - vector1
 
 func is_one_step_away(current_tile_position, next_tile_position):
+	"""
+		Checks if the next tile position is one step away from the current tile position.
+	"""
 	var tile_dif = calculate_dif(Vector2i(current_tile_position), Vector2i(next_tile_position))
 	return available_tile_steps.has(tile_dif)
 
 func walk(delta):
+	"""
+		Handles the walking logic of the agent towards the destination position.
+	"""
 	position = position.move_toward(destination_pos, chromosome.speed * delta)
 	if Vector2i(position.x, position.y) == destination_pos:
 		current_state = State.DECIDING
 
 func decide():
+	"""
+		Makes a decision on what action the agent should take based on its current state and goal.
+	"""
 	var current_tile_pos = tile_map.local_to_map(position)
 	var tile_type = Common.get_tile_type(get_tile_type_str(current_tile_pos))
 	
@@ -196,6 +224,9 @@ func decide():
 	current_state = State.WALKING
 
 func explore(current_tile_pos: Vector2i):
+	"""
+		Explores the environment by finding the next tile to move to and updating the AStar graph.
+	"""
 	var next_tile_pos = not_visited.pop_front()
 	
 	if next_tile_pos == null:
@@ -243,6 +274,9 @@ func explore(current_tile_pos: Vector2i):
 		use_astar(current_tile_pos)
 
 func use_astar(current_tile_pos: Vector2i):
+	"""
+		Uses the A* algorithm to find the shortest path to the goal and updates the destination.
+	"""
 	var target_tile_id
 	if astar_path_queue.is_empty():
 		# Create the path queue
@@ -264,9 +298,15 @@ func use_astar(current_tile_pos: Vector2i):
 	astar_path_queue.remove_at(0)
 
 func get_point_id(vector: Vector2i):
+	"""
+		Returns a unique point ID for the specified position.
+	"""
 	return vector.x * Common.MAX_Y + vector.y
 
 func redefine_goal(goal_reached: bool):
+	"""
+		Redefines the goal based on whether the current goal is reached and the agent's energy level.
+	"""
 	if !goal_reached: return
 	
 	if current_goal == Common.TileType.VILLAGE:
@@ -288,10 +328,16 @@ func redefine_goal(goal_reached: bool):
 			choose_search_algorithm()
 
 func change_goal(goal_type: Common.TileType):
+	"""
+		Changes the agent's goal to the specified goal.
+	"""
 	current_goal = goal_type
 	choose_search_algorithm()
 
 func choose_search_algorithm():
+	"""
+		Chooses the search algorithm based on the agent's state and goal.
+	"""
 	if current_goal == null:
 		current_search_algorithm = SearchAlgorithm.NONE
 		return
@@ -321,11 +367,17 @@ func choose_search_algorithm():
 		has_new_knowledge = true
 
 func get_tile_type_str(current_tile_pos: Vector2i):
+	"""
+		Returns the tile type string for the specified position.
+	"""
 	var tile_data = tile_map.get_cell_tile_data(1, current_tile_pos)
 	if tile_data == null: tile_data = tile_map.get_cell_tile_data(0, current_tile_pos)
 	return tile_data.get_custom_data("type")
 
 func update_valuable_tiles(current_tile_pos: Vector2i, tile_type: Common.TileType, is_available: bool):
+	"""
+		Updates the list of valuable tiles based on the specified resource and whether to add or remove the tile.
+	"""
 	var current_tile_point_id = get_point_id(current_tile_pos)
 	var tile = {
 		current_tile_point_id: is_available
@@ -336,11 +388,17 @@ func update_valuable_tiles(current_tile_pos: Vector2i, tile_type: Common.TileTyp
 		valuable_tile_point_ids[tile_type].merge(tile, true)
 
 func has_valuable_tile(tile_pos, tile_type: Common.TileType):
+	"""
+		Checks if the specified tile is a valuable tile for the given resource.
+	"""
 	var tile_type_s = Common.TileType.find_key(tile_type)
 	if !valuable_tile_point_ids.has(tile_type_s): return false
 	return valuable_tile_point_ids[tile_type_s].keys().has(get_point_id(tile_pos))
 
 func _on_timer_timeout():
+	"""
+		Handles the timer timeout signal by reducing the agent's energy and updating the label.
+	"""
 	if !available_for_knowledge_exchange:
 		available_for_knowledge_exchange = !available_for_knowledge_exchange
 	if current_state == State.REFILLING:

@@ -1,10 +1,10 @@
 extends Node
 
-class_name Fertilizer
+class_name Reproducer
 
-static func fertilize(parent_1: Agent, parent_2: Agent) -> void:
+static func reproduce(parent_1: Agent, parent_2: Agent) -> void:
 	"""
-		- This function simulates the fertilization process by performing a
+		- This function simulates the reproduction process by performing a
 		  two-point crossover between the chromosomes of two parent nodes.
 		- Additionally, it introduces a mutation with a probability of 0.1
 		  to each parent's chromosome.

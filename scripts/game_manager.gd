@@ -132,7 +132,7 @@ func fertilize(caller_agent: Agent, target_agent: Agent, caller_wants_to_fertili
 	if !(caller_wants_to_fertilize && target_agent.wants_to_fertilize(caller_agent)): return
 	
 	# Both want to fertilize
-	Fertilizer.fertilize(caller_agent, target_agent)
+	Reproducer.reproduce(caller_agent, target_agent)
 
 func finish_game():
 	# TODO: Add reason

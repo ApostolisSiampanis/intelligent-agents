@@ -5,7 +5,20 @@ class_name MapGenerator
 
 
 @onready var v_box_container_village_1_info_cards = %VBoxContainerVillage1InfoCards
+@onready var label_village_1_stone = %LabelVillage1Stone
+@onready var label_village_1_wood = %LabelVillage1Wood
+@onready var label_village_1_gold = %LabelVillage1Gold
+
 @onready var v_box_container_village_2_info_cards = %VBoxContainerVillage2InfoCards
+@onready var label_village_2_stone = %LabelVillage2Stone
+@onready var label_village_2_wood = %LabelVillage2Wood
+@onready var label_village_2_gold = %LabelVillage2Gold
+
+@onready var label_goal_stone = %LabelGoalStone
+@onready var label_goal_wood = %LabelGoalWood
+@onready var label_goal_gold = %LabelGoalGold
+
+
 @onready var timer = %Timer
 @onready var game_manager = %GameManager
 @onready var camera_2d = $"../Camera2D"
@@ -84,6 +97,10 @@ func _ready():
 	# Place agents into the tile map to start exploring
 	for agent in agents_array:
 		add_child(agent)
+		
+	label_goal_stone.text = "Stone: %s " % str(game_manager.village_1.target_stone_quantity)
+	label_goal_wood.text = "Wood: %s " % str(game_manager.village_1.target_wood_quantity)
+	label_goal_gold.text = "Gold: %s " % str(game_manager.village_1.target_gold_quantity)
 
 func generate_map(map: Array, available_rows: Array) -> void:
 	"""
@@ -190,6 +207,7 @@ func create_agent(agent: Node, agent_idx: int, village_coords: Dictionary, agent
 	info_card.connect("highlight_map", Callable(self, "_on_highlight_map"))
 	
 	timer.connect("timeout", Callable(info_card, "_on_timer_timeout"))
+	timer.connect("timeout", Callable(self, "_update_remaining_resources"))
 	
 	# Wrap the info_card in a MarginContainer
 	var margin_container = MarginContainer.new()
@@ -308,3 +326,27 @@ func clear_tile_highlights():
 			if cell != null:
 				set_cell(2, Vector2i(x, y), -1)
 	print("Previous highlighted tiles CLEARED!")
+
+
+	label_goal_stone.text = "Stone: %s " % str(game_manager.village_1.target_stone_quantity)
+	label_goal_wood.text = "Wood: %s " % str(game_manager.village_1.target_wood_quantity)
+	label_goal_gold.text = "Gold: %s " % str(game_manager.village_1.target_gold_quantity)
+
+func _update_remaining_resources():
+	var village_1_stone = game_manager.village_1.target_stone_quantity - game_manager.village_1.current_stone_quantity
+	var village_1_wood = game_manager.village_1.target_wood_quantity - game_manager.village_1.current_wood_quantity
+	var village_1_gold = game_manager.village_1.target_gold_quantity - game_manager.village_1.current_gold_quantity
+	
+	label_village_1_stone.text = "Stone: %s " % str(village_1_stone)
+	label_village_1_wood.text = "Wood: %s " % str(village_1_wood)
+	label_village_1_gold.text = "Gold: %s " % str(village_1_gold)
+	
+	var village_2_stone = game_manager.village_2.target_stone_quantity - game_manager.village_2.current_stone_quantity
+	var village_2_wood = game_manager.village_2.target_wood_quantity - game_manager.village_2.current_wood_quantity
+	var village_2_gold = game_manager.village_2.target_gold_quantity - game_manager.village_2.current_gold_quantity
+	
+	label_village_2_stone.text = "Stone: %s " % str(village_2_stone)
+	label_village_2_wood.text = "Wood: %s " % str(village_2_wood)
+	label_village_2_gold.text = "Gold: %s " % str(village_2_gold)
+	
+	

@@ -239,7 +239,7 @@ theme_override_constants/separation = -10
 
 [node name="PanelGoal" type="Panel" parent="UILayer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(400, 140)
+custom_minimum_size = Vector2(400, 200)
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -286,6 +286,11 @@ text = "Wood: %"
 unique_name_in_owner = true
 layout_mode = 2
 text = "Gold: %"
+
+[node name="LabelFinishedGameMessage" type="Label" parent="UILayer/PanelGoal/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 1
 
 [node name="Timer" type="Timer" parent="."]
 unique_name_in_owner = true

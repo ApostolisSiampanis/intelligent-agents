@@ -283,7 +283,6 @@ func _on_highlight_map(agent, mode):
 	match mode:
 		"known":
 			highlight_known_tiles(agent)
-			print("I will highlight the tiles of the agent: " + str(agent.id))
 		"all":
 			clear_tile_highlights()
 
@@ -292,15 +291,11 @@ func highlight_known_tiles(agent):
 
 	# Get the points the agent knows about
 	var known_points :Array = agent.astar.get_point_ids()
-	print("known_points " + str(known_points))
 	for point_id in known_points:
 		var tile_coords :Vector2 = agent.astar.get_point_position(point_id)
-		print("tiles_coords: " + str(tile_coords))
 		if get_cell_tile_data(2, tile_coords) == null:  
 			set_cell(2, tile_coords, 0, Vector2i(highlight_tile_coords.x, highlight_tile_coords.y)) 
-			print("Tile setted")
 	set_layer_enabled(2, true)
-	print("Highlight map complete")
 
 func clear_tile_highlights():
 	for y in rows:
@@ -308,4 +303,3 @@ func clear_tile_highlights():
 			var cell := get_cell_source_id(2, Vector2i(x, y))
 			if cell != null:
 				set_cell(2, Vector2i(x, y), -1)
-	print("Previous highlighted tiles CLEARED!")

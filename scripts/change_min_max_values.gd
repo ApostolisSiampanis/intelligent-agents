@@ -26,7 +26,7 @@ extends Node2D
 
 @onready var center_container = $CenterContainer
 
-var total_max_resources = 7 # Default values
+var total_max_resources: int
 
 func _ready():
 	var viewport_size = get_viewport_rect().size

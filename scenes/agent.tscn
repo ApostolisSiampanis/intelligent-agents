@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://ddi7i5qaafx3r"]
+[gd_scene load_steps=6 format=3 uid="uid://ddi7i5qaafx3r"]
 
 [ext_resource type="Script" path="res://scripts/agent.gd" id="1_1qcrf"]
 [ext_resource type="Texture2D" uid="uid://d2j525lq5pcfb" path="res://assets/medievalRTS/medieval_tilesheet_2.png" id="2_15li1"]
+[ext_resource type="Texture2D" uid="uid://b232tmj85wv4e" path="res://assets/medievalRTS/medieval_tilesheet_1.png" id="3_sc7dv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ynha8"]
 size = Vector2(12.75, 10.75)
@@ -40,6 +41,12 @@ offset_right = 24.0
 offset_bottom = -25.0
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 horizontal_alignment = 1
+
+[node name="Grave" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("3_sc7dv")
+region_enabled = true
+region_rect = Rect2(1014, 334, 20, 36)
 
 [connection signal="ready" from="." to="." method="_on_ready"]
 [connection signal="body_entered" from="Area2D" to="." method="_on_body_entered"]

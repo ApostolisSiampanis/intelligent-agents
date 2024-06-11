@@ -56,6 +56,12 @@ class CarryingResource:
 @onready var label = $Label
 @export var id: int
 
+@onready var agent_1 = $Agent_1
+@onready var agent_2 = $Agent_2
+@onready var grave = $Grave
+@onready var collision_shape_2d = $CollisionShape2D
+@onready var area_2d = $Area2D
+
 var available_for_knowledge_exchange := true
 
 var chromosome: Chromosome
@@ -87,7 +93,7 @@ var available_tile_steps: Array[Vector2i] = [
 	Vector2i(0, 1), Vector2i(0, -1)  # Vertical movement
 ]
 
-enum State { WALKING, DECIDING, REFILLING, IDLE }
+enum State { WALKING, DECIDING, REFILLING, IDLE, ELIMINATED }
 enum SearchAlgorithm { EXPLORE, ASTAR, NONE }
 
 var current_state: State
@@ -358,8 +364,7 @@ func _on_timer_timeout():
 	
 	label.text = str(energy) + "% ID " + str(id)
 	
-	if energy <= 0:
-		queue_free()
+	if energy <= 0: self.get_eliminated()
 
 func find_closest_tile_id(current_tile_pos: Vector2i, tile_goal_type: Common.TileType):
 	"""

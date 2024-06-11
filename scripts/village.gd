@@ -16,11 +16,22 @@ var assigned_goals := {}
 
 static func set_target_resource_quantity(goal: Dictionary) -> void:
 	"""
-		
+		Sets the target quantities for wood, stone, and gold based on
+		the provided dictionary.
 	"""
 	target_wood_quantity = goal.wood
 	target_stone_quantity = goal.stone
 	target_gold_quantity = goal.gold
+
+static func resource_type_to_str(type: ResourceType) -> String:
+	"""
+		Converts a ResourceType enum value to its corresponding string representation.
+	"""
+	match type:
+		ResourceType.WOOD: return 'wood'
+		ResourceType.STONE: return 'stone'
+		ResourceType.GOLD: return 'gold'
+		_: return 'resource'
 
 func add_agent(agent):
 	if agents.has(agent): return
@@ -59,7 +70,6 @@ func calc_capability_dict(agent: Agent):
 	return cap_dict
 
 func calc_capability(agent: Agent, resource_type: ResourceType) -> float:
-	# TODO: Do not calculate capability if one resource is left
 	var capability = calc_resource_significance_metric(resource_type)
 	if capability == 0.0: return capability
 	

@@ -64,14 +64,14 @@ var knowledge_ver := 1
 var agent_knowledge_vers := {}
 var has_new_knowledge := true
 
-#var timer: Timer
-@onready var timer = %Timer
+var timer: Timer
+#@onready var timer = %Timer
 
-#var game_manager: GameManager
-@onready var game_manager = %GameManager
+var game_manager: GameManager
+#@onready var game_manager = %GameManager
 
-#var tile_map: TileMap
-@onready var tile_map = %TileMap
+var tile_map: TileMap
+#@onready var tile_map = %TileMap
 
 var energy := MAX_ENERGY_LEVEL
 const MAX_ENERGY_LEVEL := 100
@@ -198,6 +198,11 @@ func decide():
 func explore(current_tile_pos: Vector2i):
 	var next_tile_pos = not_visited.pop_front()
 	
+	# TODO: Remove
+	if next_tile_pos == null:
+		change_goal(spawn_tile_type)
+		return
+	
 	# Add next tile point to AStar
 	var next_tile_id = get_point_id(next_tile_pos)
 	if !astar.has_point(next_tile_id):
@@ -228,7 +233,6 @@ func explore(current_tile_pos: Vector2i):
 		next_tile_pos = not_visited.front()
 	
 	if next_tile_pos == null:
-		print("Agent %s returns to village" % str(id))
 		change_goal(spawn_tile_type)
 		return
 	
@@ -251,7 +255,11 @@ func use_astar(current_tile_pos: Vector2i):
 			target_tile_id = find_closest_tile_id(current_tile_pos, current_goal)
 		
 		astar_path_queue = astar.get_id_path(get_point_id(current_tile_pos), target_tile_id).slice(1)
-	 
+		
+		if astar_path_queue.is_empty():
+			change_goal(spawn_tile_type)
+			return
+		
 	# Calculate destination for the next tile
 	destination_pos = calculate_destination(current_tile_pos, astar.get_point_position(astar_path_queue[0]))
 	astar_path_queue.remove_at(0)
@@ -462,3 +470,19 @@ func wants_to_fertilize(other_agent: Agent):
 		counter += 1
 	
 	return counter > 0
+
+func get_eliminated():
+	timer.timeout.disconnect(_on_timer_timeout)
+	set_physics_process(false)
+	collision_shape_2d.disabled = true
+	area_2d.monitoring = false
+	
+	current_state = State.ELIMINATED
+	
+	if chromosome.bits[0] == "0":
+		agent_1.visible = false
+	else:
+		agent_2.visible = false
+	grave.visible = true
+	
+	game_manager.eliminate(self)

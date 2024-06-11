@@ -76,7 +76,6 @@ func stop_following_agent():
 func center_on_tile_map():
 	# Ensure that cols and rows are initialized
 	if tile_map == null:
-		print("Tile map dimensions are not set.")
 		return
 
 	var viewport_size: Vector2 = get_viewport_rect().size

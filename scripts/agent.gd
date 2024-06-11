@@ -71,15 +71,10 @@ var agent_knowledge_vers := {}
 var has_new_knowledge := true
 
 var timer: Timer
-#@onready var timer = %Timer
-
 var game_manager: GameManager
-#@onready var game_manager = %GameManager
-
 var tile_map: TileMap
-#@onready var tile_map = %TileMap
-
 var energy := MAX_ENERGY_LEVEL
+
 const MAX_ENERGY_LEVEL := 100
 const SPAWN_REFILL_ENERGY_THRESHOLD := MAX_ENERGY_LEVEL / 2
 const RETURN_TO_SPAWN_ENERGY_THRESHOLD := MAX_ENERGY_LEVEL / 3
@@ -276,7 +271,6 @@ func get_point_id(vector: Vector2i):
 func redefine_goal(goal_reached: bool):
 	if !goal_reached: return
 	
-	# If the agent is at spawn, blah
 	if current_goal == Common.TileType.VILLAGE:
 		
 		# Drop any carrying resources

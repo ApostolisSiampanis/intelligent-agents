@@ -238,6 +238,7 @@ layout_mode = 2
 theme_override_constants/separation = -10
 
 [node name="PanelGoal" type="Panel" parent="UILayer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(400, 140)
 anchors_preset = 5
 anchor_left = 0.5
@@ -266,6 +267,7 @@ text = "Each village should collect:"
 horizontal_alignment = 1
 
 [node name="HBoxContainerGoal" type="HBoxContainer" parent="UILayer/PanelGoal/VBoxContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 alignment = 1

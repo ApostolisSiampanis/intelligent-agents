@@ -2,9 +2,25 @@ extends Node
 
 class_name GameManager
 
+@onready var label_village_1_stone = %LabelVillage1Stone
+@onready var label_village_1_wood = %LabelVillage1Wood
+@onready var label_village_1_gold = %LabelVillage1Gold
+
+@onready var label_village_2_stone = %LabelVillage2Stone
+@onready var label_village_2_wood = %LabelVillage2Wood
+@onready var label_village_2_gold = %LabelVillage2Gold
+
+@onready var label_goal_stone = %LabelGoalStone
+@onready var label_goal_wood = %LabelGoalWood
+@onready var label_goal_gold = %LabelGoalGold
+
 var village_1: Village
 var village_2: Village
 
+func _ready():
+	set_goal_labels()
+	_update_remaining_resources()
+	
 func drop_resource(agent: Agent) -> void:
 	var resource = agent.current_carrying_resource
 	if resource == null: return
@@ -14,10 +30,26 @@ func drop_resource(agent: Agent) -> void:
 	village.add_resource(resource)
 	agent.current_carrying_resource = null
 	
-	# TODO: Update remaining resources labels
+	_update_remaining_resources()
 	
 	# Check for game end
 	if is_game_finished(village): finish_game()
+	
+	
+	
+func set_goal_labels():
+	label_goal_stone.text = "Stone: %s " % str(village_2.target_stone_quantity)
+	label_goal_wood.text = "Wood: %s " % str(village_2.target_wood_quantity)
+	label_goal_gold.text = "Gold: %s " % str(village_2.target_gold_quantity)
+	
+func set_village_labels(label_stone, label_wood, label_gold, village):
+	var village_stone = village.target_stone_quantity - village.current_stone_quantity
+	var village_wood = village.target_wood_quantity - village.current_wood_quantity
+	var village_gold = village.target_gold_quantity - village.current_gold_quantity
+	
+	label_stone.text = "Stone: %s " % str(village_stone)
+	label_wood.text = "Wood: %s " % str(village_wood)
+	label_gold.text = "Gold: %s " % str(village_gold)
 
 func eliminate(agent: Agent) -> void:
 	var village = agent.village
@@ -34,6 +66,10 @@ func assign_resource_goal(agent: Agent) -> void:
 		Village.ResourceType.GOLD: tile_type = Common.TileType.GOLD
 	
 	agent.change_goal(tile_type)
+	
+func _update_remaining_resources():
+	set_village_labels(label_village_1_stone, label_village_1_wood, label_village_1_gold, village_1)
+	set_village_labels(label_village_2_stone, label_village_2_wood, label_village_2_gold, village_2)
 
 func is_game_finished(village: Village) -> bool:
 	return village.is_goal_completed()

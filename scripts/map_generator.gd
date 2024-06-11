@@ -184,7 +184,7 @@ func add_collider_for_resource(resource_coords: Dictionary, quantity: int, type_
 	resource_collider.z_index = 3
 	add_child(resource_collider)
 
-func create_agent(agent: Node, agent_idx: int, village_coords: Dictionary, agent_id: int) -> Node:
+func create_agent(agent: Agent, agent_idx: int, village_coords: Dictionary, agent_id: int) -> Agent:
 	"""
 		Initializes and positions an agent at the village with a reference to the tile map and timer.
 	"""
@@ -294,7 +294,6 @@ func _on_highlight_agent(agent, highlight):
 		camera_2d.follow_agent(agent)
 	else:
 		camera_2d.stop_following_agent()
-		pass
 
 func _on_highlight_map(agent, mode):
 	match mode:
@@ -327,12 +326,13 @@ func clear_tile_highlights():
 				set_cell(2, Vector2i(x, y), -1)
 	print("Previous highlighted tiles CLEARED!")
 
-
+	# TODO: Move them to the GameManager
 	label_goal_stone.text = "Stone: %s " % str(game_manager.village_1.target_stone_quantity)
 	label_goal_wood.text = "Wood: %s " % str(game_manager.village_1.target_wood_quantity)
 	label_goal_gold.text = "Gold: %s " % str(game_manager.village_1.target_gold_quantity)
 
 func _update_remaining_resources():
+	# TODO: Move them to the GameManager
 	var village_1_stone = game_manager.village_1.target_stone_quantity - game_manager.village_1.current_stone_quantity
 	var village_1_wood = game_manager.village_1.target_wood_quantity - game_manager.village_1.current_wood_quantity
 	var village_1_gold = game_manager.village_1.target_gold_quantity - game_manager.village_1.current_gold_quantity
@@ -348,5 +348,4 @@ func _update_remaining_resources():
 	label_village_2_stone.text = "Stone: %s " % str(village_2_stone)
 	label_village_2_wood.text = "Wood: %s " % str(village_2_wood)
 	label_village_2_gold.text = "Gold: %s " % str(village_2_gold)
-	
 	

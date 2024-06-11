@@ -199,4 +199,4 @@ func finish_game():
 	print("Game finished")
 	
 	## Stop the physics processing
-	#get_tree().paused = true
+	Engine.time_scale = 0

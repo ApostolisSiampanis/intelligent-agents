@@ -8,6 +8,8 @@ extends Button
 @onready var line_edit_agents = $"../../GridContainerParameters/VBoxContainerInput/HBoxContainerAgents/LineEdit"
 
 func _on_button_start_pressed():
+	Engine.time_scale = 1
+	
 	var rows: int = line_edit_row.text.to_int()
 	var cols: int = line_edit_column.text.to_int()
 	var stone: int = line_edit_stone.text.to_int()

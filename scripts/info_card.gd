@@ -36,9 +36,9 @@ func update_info():
 			agent.State.IDLE: state_string = "IDLE"
 		label_state.text = "State: " + state_string
 	
-		label_agent_id.text = "Agent ID: %" % str(agent.id)
+		label_agent_id.text = "Agent ID: %s" % str(agent.id)
 
-		label_energy.text = "Energy: %s%" % str(agent.energy)
+		label_energy.text = "Energy: %s" % str(agent.energy) + "%"
 		
 		if agent.current_carrying_resource:
 			label_resource.text = "Carrying: " + str(agent.current_carrying_resource.type) + " (" + str(agent.current_carrying_resource.quantity) + ")"
@@ -50,12 +50,6 @@ func update_info():
 func update_chromosome_labels():
 	if agent != null and agent.chromosome != null:
 		var chromosome = agent.chromosome
-		
-		## Speed
-		#if chromosome[3] == "0":
-			#label_chromosome_speed.text = "Speed: 100"
-		#else:
-			#label_chromosome_speed.text = "Speed: 150"
 
 		# Wood capacity
 		label_wood_capacity.text = "Wood: %s" % str(chromosome.wood_carry_capacity)
@@ -64,7 +58,7 @@ func update_chromosome_labels():
 		label_stone_capacity.text = "Stone: %s" % str(chromosome.stone_carry_capacity)
 		
 		# Gold capacity
-		label_stone_capacity.text = "Gold: %s" % str(chromosome.gold_carry_capacity)
+		label_gold_capacity.text = "Gold: %s" % str(chromosome.gold_carry_capacity)
 
 func _on_ButtonHighlightMap_pressed():
 	if map_highlight_mode == "all":

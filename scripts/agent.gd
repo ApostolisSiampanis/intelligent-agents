@@ -443,17 +443,17 @@ func _on_body_entered(body):
 	if current_tile_pos == Vector2i(astar.get_point_position(valuable_tile_point_ids[spawn_tile_type])):
 		return
 	
-	var available_for_fertilization = false
-	if not available_for_knowledge_exchange and not available_for_fertilization:
+	var available_for_reproduction = false
+	if not available_for_knowledge_exchange and not available_for_reproduction:
 		return
 	
 	var other_agent_id = body.id
 	if not (agent_knowledge_vers.has(other_agent_id) && agent_knowledge_vers[other_agent_id] == body.knowledge_ver):
 		game_manager.merge_knowledge(self, body)
 	
-	game_manager.fertilize(self, body, self.wants_to_fertilize(body))
+	game_manager.reproduce(self, body, self.wants_to_reproduce(body))
 
-func wants_to_fertilize(other_agent: Agent):
+func wants_to_reproduce(other_agent: Agent):
 	var counter = 0
 	
 	if other_agent.chromosome.energy_loss_value < chromosome.energy_loss_value:

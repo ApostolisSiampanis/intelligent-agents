@@ -14,6 +14,8 @@ class_name GameManager
 @onready var label_goal_wood = %LabelGoalWood
 @onready var label_goal_gold = %LabelGoalGold
 
+@onready var label_finished_game_message = %LabelFinishedGameMessage
+
 var village_1: Village
 var village_2: Village
 
@@ -34,7 +36,6 @@ func drop_resource(agent: Agent) -> void:
 	
 	# Check for game end
 	if is_game_finished(village): finish_game()
-	
 	
 	
 func set_goal_labels():
@@ -173,5 +174,29 @@ func reproduce(caller_agent: Agent, target_agent: Agent, caller_wants_to_reprodu
 	Reproducer.reproduce(caller_agent, target_agent)
 
 func finish_game():
-	# TODO: Add reason
+	# Determine which village won
+	var village_1_won = village_1.is_goal_completed()
+	var village_2_won = village_2.is_goal_completed()
+	
+	if village_1_won and not village_2.agents.is_empty():
+		label_finished_game_message.text = "Village 1 WON!"
+		# Update remaining resources to 0 for Village 1
+		label_village_1_stone.text = "Stone: 0"
+		label_village_1_wood.text = "Wood: 0"
+		label_village_1_gold.text = "Gold: 0"
+	elif village_2_won and not village_1.agents.is_empty():
+		label_finished_game_message.text = "Village 2 WON!"
+		# Update remaining resources to 0 for Village 2
+		label_village_2_stone.text = "Stone: 0"
+		label_village_2_wood.text = "Wood: 0"
+		label_village_2_gold.text = "Gold: 0"
+	else:
+		if village_1_won:
+			label_finished_game_message.text = "Village 1 WON!"
+		else:
+			label_finished_game_message.text = "Village 2 WON!"
+	
 	print("Game finished")
+	
+	## Stop the physics processing
+	#get_tree().paused = true

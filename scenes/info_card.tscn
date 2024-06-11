@@ -40,6 +40,11 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "State: "
 
+[node name="LabelSpeed" type="Label" parent="Panel/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Speed: "
+
 [node name="LabelAgentCapacity" type="Label" parent="Panel/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -80,6 +85,7 @@ layout_mode = 2
 alignment = 1
 
 [node name="ButtonMap" type="Button" parent="Panel/VBoxContainer/HBoxContainer4"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Show Map"
 

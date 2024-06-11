@@ -17,7 +17,8 @@ signal highlight_map(agent, mode)
 @onready var label_wood_capacity = %LabelWoodCapacity
 @onready var label_stone_capacity = %LabelStoneCapacity
 @onready var label_gold_capacity = %LabelGoldCapacity
-@onready var button_map = $Panel/VBoxContainer/HBoxContainer4/ButtonMap
+@onready var label_speed = %LabelSpeed
+@onready var button_map = %ButtonMap
 
 
 func _on_ready():
@@ -34,15 +35,15 @@ func update_info():
 			agent.State.DECIDING: state_string = "DECIDING"
 			agent.State.REFILLING: state_string = "REFILLING"
 			agent.State.IDLE: state_string = "IDLE"
-		label_state.text = "State: " + state_string
+		label_state.text = "State: " + state_string + " "
 	
 		label_agent_id.text = "Agent ID: %s" % str(agent.id)
 
-		label_energy.text = "Energy: %s" % str(agent.energy) + "%"
+		label_energy.text = "Energy: %s" % str(agent.energy) + "% "
 		
 		var carrying_resource := agent.current_carrying_resource
 		if carrying_resource:
-			label_resource.text = "Carrying: " + Village.resource_type_to_str(carrying_resource.type) + " (" + str(agent.current_carrying_resource.quantity) + ")"
+			label_resource.text = "Carrying: " + Village.resource_type_to_str(carrying_resource.type) + " (" + str(agent.current_carrying_resource.quantity) + ") "
 		else:
 			label_resource.text = "Resource: None"
 			
@@ -52,21 +53,17 @@ func update_chromosome_labels():
 	if agent != null and agent.chromosome != null:
 		var chromosome = agent.chromosome
 		
-		# TODO:
 		# Speed
-		#if chromosome[3] == "0":
-			#label_chromosome_speed.text = "Speed: 100"
-		#else:
-			#label_chromosome_speed.text = "Speed: 150"
+		label_speed.text = "Speed: %s " % str(chromosome.speed)
 
 		# Wood capacity
-		label_wood_capacity.text = "Wood: %s" % str(chromosome.wood_carry_capacity)
+		label_wood_capacity.text = "Wood: %s " % str(chromosome.wood_carry_capacity)
 		
 		# Stone capacity
-		label_stone_capacity.text = "Stone: %s" % str(chromosome.stone_carry_capacity)
+		label_stone_capacity.text = "Stone: %s " % str(chromosome.stone_carry_capacity)
 		
 		# Gold capacity
-		label_gold_capacity.text = "Gold: %s" % str(chromosome.gold_carry_capacity)
+		label_gold_capacity.text = "Gold: %s " % str(chromosome.gold_carry_capacity)
 
 func _on_ButtonHighlightMap_pressed():
 	if map_highlight_mode == "all":

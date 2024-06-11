@@ -24,7 +24,9 @@ texture_region_size = Vector2i(64, 64)
 3:1/0/custom_data_0 = "wall"
 4:5/0 = 0
 7:3/0 = 0
+7:3/0/custom_data_0 = "wood"
 0:0/0 = 0
+0:0/0/custom_data_0 = "grass"
 
 [sub_resource type="TileSet" id="TileSet_vw3px"]
 tile_size = Vector2i(64, 64)

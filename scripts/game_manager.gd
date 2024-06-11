@@ -44,9 +44,18 @@ func set_goal_labels():
 	label_goal_gold.text = "Gold: %s " % str(village_2.target_gold_quantity)
 	
 func set_village_labels(label_stone, label_wood, label_gold, village):
-	var village_stone = village.target_stone_quantity - village.current_stone_quantity
-	var village_wood = village.target_wood_quantity - village.current_wood_quantity
-	var village_gold = village.target_gold_quantity - village.current_gold_quantity
+	var remaining_wood: int = village.target_wood_quantity - village.current_wood_quantity
+	remaining_wood = 0 if remaining_wood < 0 else remaining_wood
+	
+	var remaining_stone: int = village.target_stone_quantity - village.current_stone_quantity
+	remaining_stone = 0 if remaining_stone < 0 else remaining_stone
+	
+	var remaining_gold: int = village.target_gold_quantity - village.current_gold_quantity
+	remaining_gold = 0 if remaining_gold < 0 else remaining_gold
+	
+	var village_wood = remaining_wood
+	var village_stone = remaining_stone
+	var village_gold = remaining_gold
 	
 	label_stone.text = "Stone: %s " % str(village_stone)
 	label_wood.text = "Wood: %s " % str(village_wood)
@@ -96,7 +105,6 @@ func merge_knowledge(caller_agent: Agent, target_agent: Agent) -> void:
 	target_agent.knowledge_ver += 1
 	caller_agent.agent_knowledge_vers[target_agent.id] = target_agent.knowledge_ver
 	target_agent.agent_knowledge_vers[caller_agent.id] = caller_agent.knowledge_ver
-	print("Knowledge exchange: " + str(caller_agent.id) + "-" + str(target_agent.id))
 
 func update_astar(caller_agent: Agent, target_agent: Agent) -> void:
 	for point_id in target_agent.astar.get_point_ids():
@@ -195,8 +203,6 @@ func finish_game():
 			label_finished_game_message.text = "Village 1 WON!"
 		else:
 			label_finished_game_message.text = "Village 2 WON!"
-	
-	print("Game finished")
 	
 	## Stop the physics processing
 	Engine.time_scale = 0

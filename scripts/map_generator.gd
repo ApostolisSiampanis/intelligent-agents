@@ -10,24 +10,21 @@ class_name MapGenerator
 @onready var game_manager = %GameManager
 @onready var camera_2d = $"../Camera2D"
 
+var agents_array := [] # stores all created agent instances
+
 const INFO_CARD = preload("res://scenes/info_card.tscn")
 const AGENT = preload("res://scenes/agent.tscn")
 const RESOURCE_COLLIDER = preload("res://scenes/resource_collider.tscn")
-
-var agents_array := [] # stores all created agent instances
 
 
 ''' Tiles coordinates based on medieval_tilesheet (TileSet) '''
 const village_1_tile_coords := {'x': 5, 'y': 6}
 const village_2_tile_coords := {'x': 7, 'y': 6}
-
 const stone_tile_coords := {'x': 7, 'y': 4}
 const gold_tile_coords := {'x': 9, 'y': 5}
 const wood_tile_coords := {'x': 7, 'y': 3}
-
 const grass_tile_coords := {'x': 0, 'y': 0}
 const obstacle_tile_coords := {'x': 3, 'y': 1}
-
 const highlight_tile_coords := {'x': 4, 'y': 5}
 
 
@@ -39,16 +36,18 @@ static var wood: int # number of wood resources
 static var gold: int # number of gold resources
 static var agents: int # number of agents per village
 static var obstacles: int  # number of obstacles
+static var resource_quantity_per_source: Dictionary # resource quantity per source
 
 
 ''' Functions '''
 static func set_input_arguments(
 	rows_arg: int, cols_arg: int, stone_arg: int,
-	wood_arg: int, gold_arg: int, agents_arg: int
+	wood_arg: int, gold_arg: int, agents_arg: int,
+	resource_quantity_per_source_arg: Dictionary
 ) -> void:
 	"""
-		- This static method sets the values of static variables
-		  rows, cols, stone, wood, gold, and agents based on user input.
+		- This static method sets the values of static variables rows, cols, stone,
+		  wood, gold, agents and resource_quantity_per_source based on user input.
 		- Calculates the number of obstacles based on rows and cols.
 	"""
 	rows = rows_arg
@@ -57,6 +56,7 @@ static func set_input_arguments(
 	wood = wood_arg
 	gold = gold_arg
 	agents = agents_arg
+	resource_quantity_per_source = resource_quantity_per_source_arg
 	obstacles = ceili(rows * cols * 0.2)
 
 func _ready():
@@ -74,7 +74,7 @@ func _ready():
 		map.append([])
 		for x in range(1, cols-1):
 			map[y].append(x)
-			
+	
 	# Map generation
 	generate_map(map, available_rows)
 	
@@ -97,18 +97,18 @@ func generate_map(map: Array, available_rows: Array) -> void:
 		for x in cols:
 			add_background_tile(x, y) # background tile placement
 			
+			if wood > 0: # wood tile placement
+				resource_coords = add_foreground_tile(map, available_rows, wood_tile_coords)
+				add_collider_for_resource(resource_coords, resource_quantity_per_source.wood, "wood")
+				wood -= 1
 			if stone > 0: # stone tile placement
 				resource_coords = add_foreground_tile(map, available_rows, stone_tile_coords)
-				add_collider_for_resource(resource_coords, stone + ((y+1) * (x+1)), "stone")
+				add_collider_for_resource(resource_coords, resource_quantity_per_source.stone, "stone")
 				stone -= 1
 			if gold > 0: # gold tile placement
 				resource_coords = add_foreground_tile(map, available_rows, gold_tile_coords)
-				add_collider_for_resource(resource_coords, gold + ((y+1) * (x+1)), "gold")
+				add_collider_for_resource(resource_coords, resource_quantity_per_source.gold, "gold")
 				gold -= 1
-			if wood > 0: # wood tile placement
-				resource_coords = add_foreground_tile(map, available_rows, wood_tile_coords)
-				add_collider_for_resource(resource_coords, wood + ((y+1) * (x+1)), "wood")
-				wood -= 1
 			if agents > 0: # in each iteration create one agent for each village
 				var agent_1 := create_agent(AGENT.instantiate(), 0, village_1_coords, agents*2-1) # agent for village 1
 				var agent_2 := create_agent(AGENT.instantiate(), 1, village_2_coords, agents*2) # agent for village 2
@@ -155,7 +155,7 @@ func add_background_tile(x: int, y: int) -> void:
 		set_cell(0, Vector2i(x, y),
 				 0, Vector2i(grass_tile_coords.x, grass_tile_coords.y))
 
-func add_collider_for_resource(resource_coords: Dictionary, quantity: int, type: String) -> void:
+func add_collider_for_resource(resource_coords: Dictionary, quantity: int, type_str: String) -> void:
 	"""
 		Adds a collider for a resource at the specified coordinates with quantity and type.
 	"""
@@ -163,7 +163,7 @@ func add_collider_for_resource(resource_coords: Dictionary, quantity: int, type:
 	var coords := map_to_local(Vector2i(resource_coords.x, resource_coords.y))
 	resource_collider.position = coords
 	resource_collider.set_total_quantity(quantity)
-	resource_collider.type = type
+	resource_collider.type = Common.get_tile_type(type_str)
 	resource_collider.z_index = 3
 	add_child(resource_collider)
 

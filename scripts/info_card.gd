@@ -1,6 +1,6 @@
 extends Node2D
 
-var agent: Node
+var agent: Agent
 var map_highlighted: bool = false
 
 var agent_highlighted: bool = false  # To track if the agent is highlighted
@@ -40,8 +40,9 @@ func update_info():
 
 		label_energy.text = "Energy: %s" % str(agent.energy) + "%"
 		
-		if agent.current_carrying_resource:
-			label_resource.text = "Carrying: " + str(agent.current_carrying_resource.type) + " (" + str(agent.current_carrying_resource.quantity) + ")"
+		var carrying_resource := agent.current_carrying_resource
+		if carrying_resource:
+			label_resource.text = "Carrying: " + Village.resource_type_to_str(carrying_resource.type) + " (" + str(agent.current_carrying_resource.quantity) + ")"
 		else:
 			label_resource.text = "Resource: None"
 			
@@ -50,6 +51,13 @@ func update_info():
 func update_chromosome_labels():
 	if agent != null and agent.chromosome != null:
 		var chromosome = agent.chromosome
+		
+		# TODO:
+		# Speed
+		#if chromosome[3] == "0":
+			#label_chromosome_speed.text = "Speed: 100"
+		#else:
+			#label_chromosome_speed.text = "Speed: 150"
 
 		# Wood capacity
 		label_wood_capacity.text = "Wood: %s" % str(chromosome.wood_carry_capacity)

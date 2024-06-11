@@ -26,6 +26,9 @@ func add_agent(agent):
 	if agents.has(agent): return
 	agents.append(agent)
 
+func remove_agent(agent):
+	agents.erase(agent)
+
 func is_goal_completed() -> bool:
 	if current_wood_quantity < target_wood_quantity: return false
 	if current_stone_quantity < target_stone_quantity: return false

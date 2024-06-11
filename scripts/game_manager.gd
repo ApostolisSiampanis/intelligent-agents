@@ -14,6 +14,8 @@ func drop_resource(agent: Agent) -> void:
 	village.add_resource(resource)
 	agent.current_carrying_resource = null
 	
+	# TODO: Update remaining resources labels
+	
 	# Check for game end
 	if is_game_finished(village): finish_game()
 

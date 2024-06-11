@@ -86,6 +86,80 @@ text = "Back to
 menu"
 script = ExtResource("5_l6ovq")
 
+[node name="VBoxContainerVillage1AgentsList" type="VBoxContainer" parent="UILayer"]
+unique_name_in_owner = true
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 400.0
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="PanelVillage1Status" type="Panel" parent="UILayer/VBoxContainerVillage1AgentsList"]
+custom_minimum_size = Vector2(0, 140)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 128.0
+grow_horizontal = 2
+
+[node name="LabelMenu" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer"]
+layout_mode = 2
+text = "
+Village 1
+"
+horizontal_alignment = 1
+
+[node name="LabelVillage1GoalRemaining" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer"]
+layout_mode = 2
+text = "Wanted resources to reach the goal:"
+horizontal_alignment = 1
+
+[node name="HBoxContainerVillage1Goal" type="HBoxContainer" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+alignment = 1
+
+[node name="LabelVillage1Stone" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/HBoxContainerVillage1Goal"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Stone: %"
+
+[node name="LabelVillage1Wood" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/HBoxContainerVillage1Goal"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Wood: %"
+
+[node name="LabelVillage1Gold" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/HBoxContainerVillage1Goal"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Gold: %"
+
+[node name="PanelAgentsStatus" type="Panel" parent="UILayer/VBoxContainerVillage1AgentsList"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UILayer/VBoxContainerVillage1AgentsList/PanelAgentsStatus"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainerVillage1InfoCards" type="VBoxContainer" parent="UILayer/VBoxContainerVillage1AgentsList/PanelAgentsStatus/ScrollContainer"]
+unique_name_in_owner = true
+y_sort_enabled = true
+clip_contents = true
+custom_minimum_size = Vector2(400, 400)
+layout_direction = 2
+layout_mode = 2
+theme_override_constants/separation = -10
+
 [node name="VBoxContainerVillage2AgentsList" type="VBoxContainer" parent="UILayer"]
 unique_name_in_owner = true
 anchors_preset = 11
@@ -97,19 +171,48 @@ grow_horizontal = 0
 grow_vertical = 2
 theme_override_constants/separation = 0
 
-[node name="LabelMenu" type="Label" parent="UILayer/VBoxContainerVillage2AgentsList"]
+[node name="PanelVillage1Status2" type="Panel" parent="UILayer/VBoxContainerVillage2AgentsList"]
+custom_minimum_size = Vector2(0, 140)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/VBoxContainerVillage2AgentsList/PanelVillage1Status2"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 128.0
+grow_horizontal = 2
+
+[node name="LabelMenu" type="Label" parent="UILayer/VBoxContainerVillage2AgentsList/PanelVillage1Status2/VBoxContainer"]
 layout_mode = 2
 text = "
 Village 2
 "
 horizontal_alignment = 1
 
-[node name="LabelVillage2Goal" type="Label" parent="UILayer/VBoxContainerVillage2AgentsList"]
+[node name="LabelVillage2GoalRemaining" type="Label" parent="UILayer/VBoxContainerVillage2AgentsList/PanelVillage1Status2/VBoxContainer"]
 layout_mode = 2
-text = "Goal
-Wood: Stone: Gold:
- "
+text = "Wanted resources to reach the goal:"
 horizontal_alignment = 1
+
+[node name="HBoxContainerVillage2Goal" type="HBoxContainer" parent="UILayer/VBoxContainerVillage2AgentsList/PanelVillage1Status2/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+alignment = 1
+
+[node name="LabelVillage2Stone" type="Label" parent="UILayer/VBoxContainerVillage2AgentsList/PanelVillage1Status2/VBoxContainer/HBoxContainerVillage2Goal"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Stone: %"
+
+[node name="LabelVillage2Wood" type="Label" parent="UILayer/VBoxContainerVillage2AgentsList/PanelVillage1Status2/VBoxContainer/HBoxContainerVillage2Goal"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Wood: %"
+
+[node name="LabelVillage2Gold" type="Label" parent="UILayer/VBoxContainerVillage2AgentsList/PanelVillage1Status2/VBoxContainer/HBoxContainerVillage2Goal"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Gold: %"
 
 [node name="PanelAgentsStatus" type="Panel" parent="UILayer/VBoxContainerVillage2AgentsList"]
 custom_minimum_size = Vector2(400, 0)
@@ -134,50 +237,53 @@ layout_direction = 2
 layout_mode = 2
 theme_override_constants/separation = -10
 
-[node name="VBoxContainerVillage1AgentsList" type="VBoxContainer" parent="UILayer"]
-unique_name_in_owner = true
-anchors_preset = 9
-anchor_bottom = 1.0
-offset_right = 400.0
-grow_vertical = 2
-theme_override_constants/separation = 0
+[node name="PanelGoal" type="Panel" parent="UILayer"]
+custom_minimum_size = Vector2(400, 140)
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_bottom = 140.0
+grow_horizontal = 2
 
-[node name="LabelMenu" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/PanelGoal"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 128.0
+grow_horizontal = 2
+
+[node name="LabelGoal" type="Label" parent="UILayer/PanelGoal/VBoxContainer"]
 layout_mode = 2
 text = "
-Village 1
+Goal
+
 "
 horizontal_alignment = 1
 
-[node name="LabelVillage1Goal" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList"]
+[node name="LabelVillage1GoalRemaining" type="Label" parent="UILayer/PanelGoal/VBoxContainer"]
 layout_mode = 2
-text = "Goal
-Wood: Stone: Gold:
- "
+text = "Each village should collect:"
 horizontal_alignment = 1
 
-[node name="PanelAgentsStatus" type="Panel" parent="UILayer/VBoxContainerVillage1AgentsList"]
-custom_minimum_size = Vector2(400, 0)
+[node name="HBoxContainerGoal" type="HBoxContainer" parent="UILayer/PanelGoal/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
-size_flags_vertical = 3
+alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="UILayer/VBoxContainerVillage1AgentsList/PanelAgentsStatus"]
-custom_minimum_size = Vector2(400, 0)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="VBoxContainerVillage1InfoCards" type="VBoxContainer" parent="UILayer/VBoxContainerVillage1AgentsList/PanelAgentsStatus/ScrollContainer"]
+[node name="LabelGoalStone" type="Label" parent="UILayer/PanelGoal/VBoxContainer/HBoxContainerGoal"]
 unique_name_in_owner = true
-y_sort_enabled = true
-clip_contents = true
-custom_minimum_size = Vector2(400, 400)
-layout_direction = 2
 layout_mode = 2
-theme_override_constants/separation = -10
+text = "Stone: %"
+
+[node name="LabelGoalWood" type="Label" parent="UILayer/PanelGoal/VBoxContainer/HBoxContainerGoal"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Wood: %"
+
+[node name="LabelGoalGold" type="Label" parent="UILayer/PanelGoal/VBoxContainer/HBoxContainerGoal"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Gold: %"
 
 [node name="Timer" type="Timer" parent="."]
 unique_name_in_owner = true

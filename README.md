@@ -47,6 +47,11 @@ This project simulates two competing teams of intelligent agents tasked with gat
 
 The project was implemented using Godot Engine 4.2.2. Godot was chosen due to its lightweight, open-source nature, and its suitability for 2D simulations. Free assets from Kenney.nl were used to create the visual elements of the simulation.
 
+## Documentation and Resources
+
+- Full project details can be found in the [Project-documentation.pdf](./doc/Documentation.pdf)
+- A detailed walkthrough video is available: [Project-video.mp4](./video/video_presentation.mp4)
+
 ## Screenshots
 ### Main Menu
 <img width="750" src="https://github.com/ApostolisSiampanis/intelligent-agents/blob/main/screenshots/Picture1.png">

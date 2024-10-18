@@ -49,8 +49,8 @@ The project was implemented using Godot Engine 4.2.2. Godot was chosen due to it
 
 ## Documentation and Resources
 
-- Full project details can be found in the [Project-documentation.pdf](./doc/Documentation.pdf)
-- A detailed walkthrough video is available: [Project-video.mp4](./video/video_presentation.mp4)
+- Full project details can be found in the [Project-documentation.pdf](./doc/Project-documentation.pdf)
+- A detailed walkthrough video is available: [Project-video.mp4](./video/Project-video.mp4)
 
 ## Screenshots
 ### Main Menu

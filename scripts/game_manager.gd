@@ -348,10 +348,25 @@ func set_village_1_priority(resource_type: Village.ResourceType, auto_mode: bool
 	"""
 		Sets the resource priority for Village 1.
 		Called from the UI when user selects a resource.
+		Resumes the game after initial selection.
 	"""
+	DebugLogger.write_log("[GAME MANAGER] set_village_1_priority called - Type: " + str(Village.ResourceType.find_key(resource_type)) + " Auto: " + str(auto_mode))
+	
 	if village_1 != null:
+		DebugLogger.write_log("[GAME MANAGER] Village 1 found, calling set_user_resource_priority")
 		village_1.set_user_resource_priority(resource_type, auto_mode)
 		village_1_priority_changed.emit(resource_type, auto_mode)
+		
+		DebugLogger.write_log("[GAME MANAGER] Village 1 state - is_priority_selected: " + str(village_1.is_priority_selected))
+		DebugLogger.write_log("[GAME MANAGER] Village 1 state - control_mode: " + str(village_1.control_mode))
+		DebugLogger.write_log("[GAME MANAGER] Village 1 state - user_selected_resource: " + str(Village.ResourceType.find_key(village_1.user_selected_resource)))
+		
+		# Resume game after initial selection
+		if Engine.time_scale == 0:
+			DebugLogger.write_log("[GAME MANAGER] Resuming game (Engine.time_scale = 1.0)")
+			Engine.time_scale = 1.0
+	else:
+		DebugLogger.write_log("[GAME MANAGER] ERROR: village_1 is null!")
 
 func check_resource_availability(resource_type: Village.ResourceType) -> bool:
 	"""

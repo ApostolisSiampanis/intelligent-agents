@@ -161,74 +161,29 @@ horizontal_alignment = 1
 layout_mode = 2
 alignment = 1
 
-[node name="ButtonWood" type="TextureButton" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer/HBoxContainerButtons"]
-custom_minimum_size = Vector2(50, 50)
+[node name="ButtonWood" type="Button" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer/HBoxContainerButtons"]
+custom_minimum_size = Vector2(80, 50)
 layout_mode = 2
 tooltip_text = "Prioritize Wood"
-texture_normal = ExtResource("1_qqf7x")
-texture_pressed = ExtResource("1_qqf7x")
-texture_hover = ExtResource("1_qqf7x")
-ignore_texture_size = true
-stretch_mode = 5
+text = "🌲 WOOD"
 
-[node name="Label" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer/HBoxContainerButtons/ButtonWood"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "WOOD"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="ButtonStone" type="TextureButton" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer/HBoxContainerButtons"]
-custom_minimum_size = Vector2(50, 50)
+[node name="ButtonStone" type="Button" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer/HBoxContainerButtons"]
+custom_minimum_size = Vector2(80, 50)
 layout_mode = 2
 tooltip_text = "Prioritize Stone"
-texture_normal = ExtResource("1_qqf7x")
-texture_pressed = ExtResource("1_qqf7x")
-texture_hover = ExtResource("1_qqf7x")
-ignore_texture_size = true
-stretch_mode = 5
+text = "🪨 STONE"
 
-[node name="Label" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer/HBoxContainerButtons/ButtonStone"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "STONE"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="ButtonGold" type="TextureButton" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer/HBoxContainerButtons"]
-custom_minimum_size = Vector2(50, 50)
+[node name="ButtonGold" type="Button" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer/HBoxContainerButtons"]
+custom_minimum_size = Vector2(80, 50)
 layout_mode = 2
 tooltip_text = "Prioritize Gold"
-texture_normal = ExtResource("1_qqf7x")
-texture_pressed = ExtResource("1_qqf7x")
-texture_hover = ExtResource("1_qqf7x")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Label" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer/HBoxContainerButtons/ButtonGold"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "GOLD"
-horizontal_alignment = 1
-vertical_alignment = 1
+text = "💰 GOLD"
 
 [node name="ButtonAuto" type="Button" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer/HBoxContainerButtons"]
-custom_minimum_size = Vector2(50, 50)
+custom_minimum_size = Vector2(80, 50)
 layout_mode = 2
 tooltip_text = "Auto Mode - AI decides priority"
-text = "AUTO"
+text = "🤖 AUTO"
 
 [node name="LabelCurrentPriority" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer"]
 layout_mode = 2

@@ -22,6 +22,15 @@ var color_selected = Color(0.3, 0.8, 0.3, 1)  # Green
 var color_auto_selected = Color(0.2, 0.6, 1.0, 1)  # Blue
 
 func _ready():
+	# Verify all nodes are loaded
+	if button_wood == null or button_stone == null or button_gold == null or button_auto == null:
+		push_error("Resource priority panel buttons not found!")
+		return
+	
+	if label_current_priority == null or label_win_probability == null or label_warning == null:
+		push_error("Resource priority panel labels not found!")
+		return
+	
 	# Connect button signals
 	button_wood.pressed.connect(_on_button_wood_pressed)
 	button_stone.pressed.connect(_on_button_stone_pressed)
@@ -35,6 +44,10 @@ func _ready():
 	label_win_probability.text = "Win Probability: --%"
 
 func _process(_delta):
+	# Safety check for labels
+	if label_win_probability == null or label_current_priority == null:
+		return
+	
 	# Update winning probability every frame
 	if game_manager != null and has_made_initial_selection:
 		var probability = game_manager.calculate_winning_probability()
@@ -47,18 +60,22 @@ func _process(_delta):
 			label_current_priority.text = "Current Priority: %s (AUTO)" % resource_name
 
 func _on_button_wood_pressed():
+	DebugLogger.write_log("[PRIORITY PANEL] Wood button pressed")
 	select_resource(Village.ResourceType.WOOD, false)
 	label_warning.text = ""
 
 func _on_button_stone_pressed():
+	DebugLogger.write_log("[PRIORITY PANEL] Stone button pressed")
 	select_resource(Village.ResourceType.STONE, false)
 	label_warning.text = ""
 
 func _on_button_gold_pressed():
+	DebugLogger.write_log("[PRIORITY PANEL] Gold button pressed")
 	select_resource(Village.ResourceType.GOLD, false)
 	label_warning.text = ""
 
 func _on_button_auto_pressed():
+	DebugLogger.write_log("[PRIORITY PANEL] Auto button pressed")
 	select_resource(Village.ResourceType.WOOD, true)  # Default, will be overridden
 	label_warning.text = ""
 
@@ -67,16 +84,25 @@ func select_resource(resource_type: Village.ResourceType, auto: bool):
 		Called when user selects a resource priority.
 		Updates the game manager and visual feedback.
 	"""
+	DebugLogger.write_log("[PRIORITY PANEL] select_resource called - Type: " + str(Village.ResourceType.find_key(resource_type)) + " Auto: " + str(auto))
+	
 	current_selection = resource_type
 	is_auto_mode = auto
 	has_made_initial_selection = true
 	
 	# Update game manager
 	if game_manager != null:
+		DebugLogger.write_log("[PRIORITY PANEL] Game manager found, calling set_village_1_priority")
 		game_manager.set_village_1_priority(resource_type, auto)
+	else:
+		DebugLogger.write_log("[PRIORITY PANEL] ERROR: game_manager is null!")
 	
 	# Update visual feedback
 	update_button_states()
+	
+	# Safety check for label
+	if label_current_priority == null:
+		return
 	
 	if auto:
 		label_current_priority.text = "Current Priority: AUTO MODE"
@@ -86,8 +112,12 @@ func select_resource(resource_type: Village.ResourceType, auto: bool):
 
 func update_button_states():
 	"""
-		Updates button visual states based on current selection.
+		Updates visual state of all buttons based on current selection.
 	"""
+	# Safety check for buttons
+	if button_wood == null or button_stone == null or button_gold == null or button_auto == null:
+		return
+	
 	# Reset all buttons to normal
 	button_wood.modulate = color_normal
 	button_stone.modulate = color_normal
@@ -110,12 +140,16 @@ func show_resource_depleted_warning(resource_type: Village.ResourceType):
 	"""
 		Shows a warning when the selected resource is depleted.
 	"""
+	# Safety check for label
+	if label_warning == null:
+		return
+	
 	var resource_name = Village.ResourceType.find_key(resource_type)
 	label_warning.text = "WARNING: %s resources depleted!\nAgents will search for more." % resource_name
 	
 	# Auto-hide warning after 5 seconds
 	await get_tree().create_timer(5.0).timeout
-	if label_warning.text.contains(resource_name):
+	if label_warning != null and label_warning.text.contains(resource_name):
 		label_warning.text = ""
 
 func pause_game_for_selection():
@@ -124,7 +158,9 @@ func pause_game_for_selection():
 	"""
 	if not has_made_initial_selection:
 		Engine.time_scale = 0
-		label_current_priority.text = "⚠ SELECT RESOURCE PRIORITY TO START ⚠"
+		# Safety check for label
+		if label_current_priority != null:
+			label_current_priority.text = "⚠ SELECT RESOURCE PRIORITY TO START ⚠"
 
 func resume_game_after_selection():
 	"""

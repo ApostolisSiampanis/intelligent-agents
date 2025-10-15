@@ -109,6 +109,7 @@ var not_visited = []
 var visited = []
 
 var spawn_tile_type: Common.TileType
+var last_known_priority: Village.ResourceType = Village.ResourceType.WOOD  # Track priority changes
 
 func _on_ready():
 	"""
@@ -132,8 +133,12 @@ func _on_ready():
 	# Initialize not_visited tiles
 	not_visited.append(current_tile_pos)
 	
-	current_state = State.DECIDING
-	choose_search_algorithm()
+	# If this is a user-controlled village, wait for priority selection
+	if village != null and village.control_mode == Village.ControlMode.USER_CONTROLLED:
+		current_state = State.IDLE
+	else:
+		current_state = State.DECIDING
+		choose_search_algorithm()
 
 func _physics_process(delta):
 	"""
@@ -141,8 +146,29 @@ func _physics_process(delta):
 	"""
 	# If this is a user-controlled village agent and no priority is selected yet, stay idle
 	if village != null and village.control_mode == Village.ControlMode.USER_CONTROLLED and not village.is_priority_selected:
+		if current_state != State.IDLE:
+			DebugLogger.write_log("[AGENT " + str(id) + "] Waiting for priority selection, setting to IDLE")
 		current_state = State.IDLE
 		return
+	
+	# If we were idle and now priority is selected, switch to deciding state
+	if current_state == State.IDLE and village != null and village.is_priority_selected:
+		DebugLogger.write_log("[AGENT " + str(id) + "] Priority selected! Transitioning from IDLE to DECIDING")
+		last_known_priority = village.user_selected_resource  # Track initial priority
+		current_state = State.DECIDING
+		choose_search_algorithm()
+	
+	# Check if user changed priority while agent is active (not idle, not carrying resources)
+	if village != null and village.control_mode == Village.ControlMode.USER_CONTROLLED and village.is_priority_selected:
+		if current_state != State.IDLE and current_carrying_resource == null:
+			var current_priority = village.user_selected_resource
+			if current_priority != last_known_priority:
+				DebugLogger.write_log("[AGENT " + str(id) + "] Priority changed from " + str(Village.ResourceType.find_key(last_known_priority)) + " to " + str(Village.ResourceType.find_key(current_priority)) + " - Reassigning goal")
+				last_known_priority = current_priority
+				# Force goal reassignment
+				game_manager.assign_resource_goal(self)
+				current_state = State.DECIDING
+				choose_search_algorithm()
 	
 	if current_state == State.IDLE || current_state == State.REFILLING: return
 	match current_state:

@@ -187,7 +187,20 @@ func create_agent(agent: Agent, agent_idx: int, village_coords: Dictionary, agen
 		Initializes and positions an agent at the village with a reference to the tile map and timer.
 	"""
 	agent.id = agent_id
-	agent.position = map_to_local(Vector2(village_coords.x, village_coords.y))
+	var tile_pos = Vector2(village_coords.x, village_coords.y)
+	var world_pos = map_to_local(tile_pos)
+	
+	# Add small random offset to prevent agents stacking on exact same position
+	var offset_range = 20.0  # Pixels
+	var random_offset = Vector2(
+		randf_range(-offset_range, offset_range),
+		randf_range(-offset_range, offset_range)
+	)
+	world_pos += random_offset
+	
+	DebugLogger.write_log("[MAP_GEN] Creating agent " + str(agent_id) + " (village " + str(agent_idx) + ") at tile " + str(tile_pos) + " -> world " + str(world_pos) + " (offset: " + str(random_offset) + ")")
+	
+	agent.position = world_pos
 	agent.tile_map = self
 	agent.get_child(agent_idx).visible = true
 	agent.timer = timer

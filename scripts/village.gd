@@ -191,9 +191,11 @@ func set_user_resource_priority(resource: ResourceType, auto_mode: bool = false)
 		Sets the resource priority for user-controlled village.
 		Called when user selects a resource button in the UI.
 	"""
+	DebugLogger.write_log("[VILLAGE] set_user_resource_priority called - Resource: " + str(ResourceType.find_key(resource)) + " Auto: " + str(auto_mode))
 	user_selected_resource = resource
 	is_auto_mode = auto_mode
 	is_priority_selected = true
+	DebugLogger.write_log("[VILLAGE] Updated state - is_priority_selected: " + str(is_priority_selected) + " control_mode: " + str(control_mode))
 
 func get_current_priority_resource() -> ResourceType:
 	"""

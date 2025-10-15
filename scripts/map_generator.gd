@@ -10,6 +10,7 @@ class_name MapGenerator
 @onready var timer = %Timer
 @onready var game_manager = %GameManager
 @onready var camera_2d = $"../Camera2D"
+@onready var resource_priority_panel = %ResourcePriorityPanel
 
 var agents_array := [] # stores all created agent instances
 
@@ -85,6 +86,15 @@ func _ready():
 	# Place agents into the tile map to start exploring
 	for agent in agents_array:
 		add_child(agent)
+	
+	# Connect resource priority panel with game manager
+	if resource_priority_panel != null:
+		resource_priority_panel.game_manager = game_manager
+		resource_priority_panel.pause_game_for_selection()
+		
+		# Connect to priority changed signal
+		if game_manager != null:
+			game_manager.village_1_priority_changed.connect(_on_village_1_priority_changed)
 		
 func generate_map(map: Array, available_rows: Array) -> void:
 	"""
@@ -166,6 +176,10 @@ func add_collider_for_resource(resource_coords: Dictionary, quantity: int, type_
 	resource_collider.set_total_quantity(quantity)
 	resource_collider.type = Common.get_tile_type(type_str)
 	resource_collider.z_index = 3
+	
+	# Connect resource depletion signal
+	resource_collider.resource_depleted.connect(_on_resource_depleted)
+	
 	add_child(resource_collider)
 
 func create_agent(agent: Agent, agent_idx: int, village_coords: Dictionary, agent_id: int) -> Agent:
@@ -303,3 +317,36 @@ func clear_tile_highlights():
 			var cell := get_cell_source_id(2, Vector2i(x, y))
 			if cell != null:
 				set_cell(2, Vector2i(x, y), -1)
+
+func _on_village_1_priority_changed(resource_type: Village.ResourceType, is_auto: bool):
+	"""
+		Called when Village 1's resource priority changes.
+		Resumes the game if it was paused for initial selection.
+	"""
+	if resource_priority_panel != null:
+		resource_priority_panel.resume_game_after_selection()
+
+func _on_resource_depleted(resource_type: Common.TileType):
+	"""
+		Called when a resource becomes depleted.
+		Shows warning if user had selected that resource.
+	"""
+	if game_manager == null or game_manager.village_1 == null:
+		return
+	
+	# Convert TileType to ResourceType
+	var village_resource_type: Village.ResourceType
+	match resource_type:
+		Common.TileType.WOOD:
+			village_resource_type = Village.ResourceType.WOOD
+		Common.TileType.STONE:
+			village_resource_type = Village.ResourceType.STONE
+		Common.TileType.GOLD:
+			village_resource_type = Village.ResourceType.GOLD
+		_:
+			return
+	
+	# Check if Village 1 was targeting this resource
+	if not game_manager.village_1.is_auto_mode and game_manager.village_1.user_selected_resource == village_resource_type:
+		if resource_priority_panel != null:
+			resource_priority_panel.show_resource_depleted_warning(village_resource_type)

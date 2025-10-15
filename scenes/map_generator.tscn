@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cyw2b0ow4rr55"]
+[gd_scene load_steps=10 format=3 uid="uid://cyw2b0ow4rr55"]
 
 [ext_resource type="Script" path="res://scripts/map_generator.gd" id="1_4te8f"]
 [ext_resource type="Texture2D" uid="uid://b232tmj85wv4e" path="res://assets/medievalRTS/medieval_tilesheet_1.png" id="1_qqf7x"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scripts/exit_app.gd" id="4_61sxg"]
 [ext_resource type="Script" path="res://scripts/back_to_menu.gd" id="5_l6ovq"]
 [ext_resource type="Script" path="res://scripts/game_manager.gd" id="6_lruxe"]
+[ext_resource type="Script" path="res://scripts/resource_priority_panel.gd" id="7_priority"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ylq5a"]
 texture = ExtResource("1_qqf7x")
@@ -95,20 +96,20 @@ grow_vertical = 2
 theme_override_constants/separation = 0
 
 [node name="PanelVillage1Status" type="Panel" parent="UILayer/VBoxContainerVillage1AgentsList"]
-custom_minimum_size = Vector2(0, 140)
+custom_minimum_size = Vector2(0, 300)
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 128.0
+offset_bottom = 300.0
 grow_horizontal = 2
 
 [node name="LabelMenu" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer"]
 layout_mode = 2
 text = "
-Village 1
+Village 1 (YOU)
 "
 horizontal_alignment = 1
 
@@ -136,6 +137,116 @@ text = "Wood: %"
 unique_name_in_owner = true
 layout_mode = 2
 text = "Gold: %"
+
+[node name="ResourcePriorityPanel" type="Panel" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+script = ExtResource("7_priority")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LabelTitle" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer"]
+layout_mode = 2
+text = "RESOURCE PRIORITY"
+horizontal_alignment = 1
+
+[node name="HBoxContainerButtons" type="HBoxContainer" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="ButtonWood" type="TextureButton" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer/HBoxContainerButtons"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+tooltip_text = "Prioritize Wood"
+texture_normal = ExtResource("1_qqf7x")
+texture_pressed = ExtResource("1_qqf7x")
+texture_hover = ExtResource("1_qqf7x")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer/HBoxContainerButtons/ButtonWood"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "WOOD"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ButtonStone" type="TextureButton" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer/HBoxContainerButtons"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+tooltip_text = "Prioritize Stone"
+texture_normal = ExtResource("1_qqf7x")
+texture_pressed = ExtResource("1_qqf7x")
+texture_hover = ExtResource("1_qqf7x")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer/HBoxContainerButtons/ButtonStone"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "STONE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ButtonGold" type="TextureButton" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer/HBoxContainerButtons"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+tooltip_text = "Prioritize Gold"
+texture_normal = ExtResource("1_qqf7x")
+texture_pressed = ExtResource("1_qqf7x")
+texture_hover = ExtResource("1_qqf7x")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer/HBoxContainerButtons/ButtonGold"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "GOLD"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ButtonAuto" type="Button" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer/HBoxContainerButtons"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+tooltip_text = "Auto Mode - AI decides priority"
+text = "AUTO"
+
+[node name="LabelCurrentPriority" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer"]
+layout_mode = 2
+text = "Current Priority: None"
+horizontal_alignment = 1
+
+[node name="LabelWinProbability" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer"]
+layout_mode = 2
+text = "Win Probability: --%"
+horizontal_alignment = 1
+
+[node name="LabelWarning" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.3, 0.3, 1)
+text = ""
+horizontal_alignment = 1
+autowrap_mode = 3
 
 [node name="PanelAgentsStatus" type="Panel" parent="UILayer/VBoxContainerVillage1AgentsList"]
 custom_minimum_size = Vector2(400, 0)
@@ -185,7 +296,7 @@ grow_horizontal = 2
 [node name="LabelMenu" type="Label" parent="UILayer/VBoxContainerVillage2AgentsList/PanelVillage1Status2/VBoxContainer"]
 layout_mode = 2
 text = "
-Village 2
+Village 2 (COMPUTER)
 "
 horizontal_alignment = 1
 

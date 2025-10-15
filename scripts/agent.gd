@@ -139,6 +139,11 @@ func _physics_process(delta):
 	"""
 		Handles the agent's state and movement logic each frame.
 	"""
+	# If this is a user-controlled village agent and no priority is selected yet, stay idle
+	if village != null and village.control_mode == Village.ControlMode.USER_CONTROLLED and not village.is_priority_selected:
+		current_state = State.IDLE
+		return
+	
 	if current_state == State.IDLE || current_state == State.REFILLING: return
 	match current_state:
 		State.WALKING: walk(delta)
@@ -412,7 +417,17 @@ func _on_timer_timeout():
 		if current_goal != spawn_tile_type && energy <= RETURN_TO_SPAWN_ENERGY_THRESHOLD:
 			change_goal(spawn_tile_type)
 	
-	label.text = str(energy) + "% ID " + str(id)
+	# Update label with goal indicator for Village 1 agents
+	var goal_text = ""
+	if village != null and village.control_mode == Village.ControlMode.USER_CONTROLLED:
+		if current_goal == Common.TileType.WOOD:
+			goal_text = " 🌲"
+		elif current_goal == Common.TileType.STONE:
+			goal_text = " 🪨"
+		elif current_goal == Common.TileType.GOLD:
+			goal_text = " 💰"
+	
+	label.text = str(energy) + "%" + goal_text + " ID " + str(id)
 	
 	if energy <= 0: self.get_eliminated()
 

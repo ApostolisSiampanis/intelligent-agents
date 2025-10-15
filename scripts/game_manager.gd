@@ -19,9 +19,22 @@ class_name GameManager
 var village_1: Village
 var village_2: Village
 
+signal resource_depleted(resource_type: Village.ResourceType)
+signal village_1_priority_changed(resource_type: Village.ResourceType, is_auto: bool)
+
 func _ready():
 	set_goal_labels()
 	_update_remaining_resources()
+
+func setup_villages():
+	"""
+		Sets up village references after both villages are created.
+		Called after all agents are initialized.
+	"""
+	if village_1 != null and village_2 != null:
+		# Link villages so they can access each other for strategy
+		village_1.opponent_village = village_2
+		village_2.opponent_village = village_1
 	
 func drop_resource(agent: Agent) -> void:
 	""" 
@@ -199,13 +212,22 @@ func get_village(agent: Agent) -> Village:
 	var village
 	match agent.chromosome.bits[0]:
 		"0":
-			if village_1 == null: village_1 = Village.new()
+			if village_1 == null:
+				village_1 = Village.new()
+				village_1.control_mode = Village.ControlMode.USER_CONTROLLED  # Village 1 is user-controlled
 			village_1.add_agent(agent)
 			village = village_1
 		"1":
-			if village_2 == null: village_2 = Village.new()
+			if village_2 == null:
+				village_2 = Village.new()
+				village_2.control_mode = Village.ControlMode.AI_CONTROLLED  # Village 2 is AI-controlled
 			village_2.add_agent(agent)
 			village = village_2
+	
+	# Setup village links if both exist
+	if village_1 != null and village_2 != null:
+		setup_villages()
+	
 	return village
 
 func reproduce(caller_agent: Agent, target_agent: Agent, caller_wants_to_reproduce: bool):
@@ -249,3 +271,93 @@ func finish_game():
 	
 	## Stop the physics processing
 	Engine.time_scale = 0
+
+func calculate_winning_probability() -> float:
+	"""
+		Calculates the winning probability for Village 1 (user-controlled).
+		Based on:
+		- Resource gap between villages
+		- Number of agents alive
+		- Agent capabilities (carry capacity, speed, energy)
+		Returns a value between 0.0 and 1.0 (0% to 100%)
+	"""
+	if village_1 == null or village_2 == null:
+		return 0.5
+	
+	var score_v1 = 0.0
+	var score_v2 = 0.0
+	
+	# Factor 1: Resource completion percentage (weight: 40%)
+	var v1_completion = calculate_completion_percentage(village_1)
+	var v2_completion = calculate_completion_percentage(village_2)
+	score_v1 += v1_completion * 0.4
+	score_v2 += v2_completion * 0.4
+	
+	# Factor 2: Number of active agents (weight: 30%)
+	var v1_agent_count = village_1.agents.size()
+	var v2_agent_count = village_2.agents.size()
+	var total_agents = v1_agent_count + v2_agent_count
+	if total_agents > 0:
+		score_v1 += (float(v1_agent_count) / total_agents) * 0.3
+		score_v2 += (float(v2_agent_count) / total_agents) * 0.3
+	
+	# Factor 3: Agent capabilities (weight: 30%)
+	var v1_capability = calculate_village_capability(village_1)
+	var v2_capability = calculate_village_capability(village_2)
+	var total_capability = v1_capability + v2_capability
+	if total_capability > 0:
+		score_v1 += (v1_capability / total_capability) * 0.3
+		score_v2 += (v2_capability / total_capability) * 0.3
+	
+	# Normalize to probability (0.0 to 1.0)
+	var total_score = score_v1 + score_v2
+	if total_score > 0:
+		return score_v1 / total_score
+	return 0.5
+
+func calculate_completion_percentage(village: Village) -> float:
+	"""
+		Calculates how close a village is to completing its goal (0.0 to 1.0).
+	"""
+	var wood_pct = 0.0 if Village.target_wood_quantity == 0 else min(1.0, float(village.current_wood_quantity) / Village.target_wood_quantity)
+	var stone_pct = 0.0 if Village.target_stone_quantity == 0 else min(1.0, float(village.current_stone_quantity) / Village.target_stone_quantity)
+	var gold_pct = 0.0 if Village.target_gold_quantity == 0 else min(1.0, float(village.current_gold_quantity) / Village.target_gold_quantity)
+	
+	return (wood_pct + stone_pct + gold_pct) / 3.0
+
+func calculate_village_capability(village: Village) -> float:
+	"""
+		Calculates overall capability score for a village based on agent attributes.
+	"""
+	var total_capability = 0.0
+	
+	for agent in village.agents:
+		if agent.current_state != Agent.State.ELIMINATED:
+			# Sum up carry capacities
+			total_capability += agent.chromosome.wood_carry_capacity * 0.1
+			total_capability += agent.chromosome.stone_carry_capacity * 0.2
+			total_capability += agent.chromosome.gold_carry_capacity * 1.0
+			# Add speed factor
+			total_capability += agent.chromosome.speed * 0.01
+			# Add energy factor
+			total_capability += agent.energy * 0.01
+	
+	return total_capability
+
+func set_village_1_priority(resource_type: Village.ResourceType, auto_mode: bool = false) -> void:
+	"""
+		Sets the resource priority for Village 1.
+		Called from the UI when user selects a resource.
+	"""
+	if village_1 != null:
+		village_1.set_user_resource_priority(resource_type, auto_mode)
+		village_1_priority_changed.emit(resource_type, auto_mode)
+
+func check_resource_availability(resource_type: Village.ResourceType) -> bool:
+	"""
+		Checks if there are any available resources of the given type on the map.
+		Returns true if at least one resource source has quantity > 0.
+	"""
+	# This will be called from the map to check resource availability
+	# For now, we'll emit a signal that can be caught by the UI
+	return true

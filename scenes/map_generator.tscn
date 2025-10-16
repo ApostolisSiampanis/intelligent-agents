@@ -87,6 +87,8 @@ text = "Back to
 menu"
 script = ExtResource("5_l6ovq")
 
+
+
 [node name="VBoxContainerVillage1AgentsList" type="VBoxContainer" parent="UILayer"]
 unique_name_in_owner = true
 anchors_preset = 9
@@ -96,14 +98,14 @@ grow_vertical = 2
 theme_override_constants/separation = 0
 
 [node name="PanelVillage1Status" type="Panel" parent="UILayer/VBoxContainerVillage1AgentsList"]
-custom_minimum_size = Vector2(0, 300)
+custom_minimum_size = Vector2(0, 140)
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 300.0
+offset_bottom = 128.0
 grow_horizontal = 2
 
 [node name="LabelMenu" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer"]
@@ -138,75 +140,28 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Gold: %"
 
-[node name="ResourcePriorityPanel" type="Panel" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 150)
-layout_mode = 2
-script = ExtResource("7_priority")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="LabelTitle" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer"]
-layout_mode = 2
-text = "RESOURCE PRIORITY"
-horizontal_alignment = 1
-
-[node name="HBoxContainerButtons" type="HBoxContainer" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="ButtonWood" type="Button" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer/HBoxContainerButtons"]
-custom_minimum_size = Vector2(80, 50)
-layout_mode = 2
-tooltip_text = "Prioritize Wood"
-text = "🌲 WOOD"
-
-[node name="ButtonStone" type="Button" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer/HBoxContainerButtons"]
-custom_minimum_size = Vector2(80, 50)
-layout_mode = 2
-tooltip_text = "Prioritize Stone"
-text = "🪨 STONE"
-
-[node name="ButtonGold" type="Button" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer/HBoxContainerButtons"]
-custom_minimum_size = Vector2(80, 50)
-layout_mode = 2
-tooltip_text = "Prioritize Gold"
-text = "💰 GOLD"
-
-[node name="ButtonAuto" type="Button" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer/HBoxContainerButtons"]
-custom_minimum_size = Vector2(80, 50)
-layout_mode = 2
-tooltip_text = "Auto Mode - AI decides priority"
-text = "🤖 AUTO"
-
-[node name="LabelCurrentPriority" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer"]
-layout_mode = 2
-text = "Current Priority: None"
-horizontal_alignment = 1
-
-[node name="LabelWinProbability" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer"]
-layout_mode = 2
-text = "Win Probability: --%"
-horizontal_alignment = 1
-
-[node name="LabelWarning" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelVillage1Status/VBoxContainer/ResourcePriorityPanel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.3, 0.3, 1)
-text = ""
-horizontal_alignment = 1
-autowrap_mode = 3
 
 [node name="PanelAgentsStatus" type="Panel" parent="UILayer/VBoxContainerVillage1AgentsList"]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="PanelWinProbability" type="Panel" parent="UILayer/VBoxContainerVillage1AgentsList"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+
+[node name="VBoxContainerWin" type="VBoxContainer" parent="UILayer/VBoxContainerVillage1AgentsList/PanelWinProbability"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 46.0
+grow_horizontal = 2
+
+[node name="LabelWinProbability" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelWinProbability/VBoxContainerWin"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Win Probability: --%"
+horizontal_alignment = 0
 
 [node name="ScrollContainer" type="ScrollContainer" parent="UILayer/VBoxContainerVillage1AgentsList/PanelAgentsStatus"]
 custom_minimum_size = Vector2(400, 0)
@@ -224,7 +179,7 @@ clip_contents = true
 custom_minimum_size = Vector2(400, 400)
 layout_direction = 2
 layout_mode = 2
-theme_override_constants/separation = -10
+theme_override_constants/separation = 8
 
 [node name="VBoxContainerVillage2AgentsList" type="VBoxContainer" parent="UILayer"]
 unique_name_in_owner = true
@@ -247,6 +202,8 @@ anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 128.0
 grow_horizontal = 2
+
+
 
 [node name="LabelMenu" type="Label" parent="UILayer/VBoxContainerVillage2AgentsList/PanelVillage1Status2/VBoxContainer"]
 layout_mode = 2
@@ -301,7 +258,7 @@ clip_contents = true
 custom_minimum_size = Vector2(400, 400)
 layout_direction = 2
 layout_mode = 2
-theme_override_constants/separation = -10
+theme_override_constants/separation = 8
 
 [node name="PanelGoal" type="Panel" parent="UILayer"]
 unique_name_in_owner = true
@@ -309,7 +266,10 @@ custom_minimum_size = Vector2(400, 200)
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_bottom = 140.0
+offset_left = -200.0
+offset_right = 200.0
+offset_top = 10.0
+offset_bottom = 210.0
 grow_horizontal = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UILayer/PanelGoal"]

@@ -15,6 +15,7 @@ class_name GameManager
 @onready var label_goal_gold = %LabelGoalGold
 
 @onready var label_finished_game_message = %LabelFinishedGameMessage
+@onready var label_win_probability = %LabelWinProbability
 
 var village_1: Village
 var village_2: Village
@@ -25,6 +26,7 @@ signal village_1_priority_changed(resource_type: Village.ResourceType, is_auto: 
 func _ready():
 	set_goal_labels()
 	_update_remaining_resources()
+	_update_win_probability()
 
 func setup_villages():
 	"""
@@ -94,7 +96,12 @@ func assign_resource_goal(agent: Agent) -> void:
 	"""
 
 	var village = get_village(agent)
-	var next_resource_goal = Village.ResourceType.get(village.calc_capability_dict(agent).keys()[0])
+	var next_resource_goal: Village.ResourceType
+	# If user assigned per-agent task, honor it
+	if village.control_mode == Village.ControlMode.USER_CONTROLLED and agent.has_user_selection:
+		next_resource_goal = agent.user_selected_resource
+	else:
+		next_resource_goal = Village.ResourceType.get(village.calc_capability_dict(agent).keys()[0])
 	var tile_type
 	match next_resource_goal:
 		Village.ResourceType.WOOD: tile_type = Common.TileType.WOOD
@@ -106,6 +113,13 @@ func assign_resource_goal(agent: Agent) -> void:
 func _update_remaining_resources():
 	set_village_labels(label_village_1_stone, label_village_1_wood, label_village_1_gold, village_1)
 	set_village_labels(label_village_2_stone, label_village_2_wood, label_village_2_gold, village_2)
+	_update_win_probability()
+
+func _update_win_probability():
+	if label_win_probability == null:
+		return
+	var probability = calculate_winning_probability()
+	label_win_probability.text = "Win Probability: %d%%" % int(probability * 100)
 
 func is_game_finished(village: Village) -> bool:
 	return village.is_goal_completed()

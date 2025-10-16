@@ -1,21 +1,35 @@
 [gd_scene load_steps=2 format=3 uid="uid://cj80fllllmlwl"]
 
-[ext_resource type="Script" path="res://scripts/info_card.gd" id="1_nbvcf"]
+[ext_resource type="Script" uid="uid://bcbwjdj3p4ueq" path="res://scripts/info_card.gd" id="1_nbvcf"]
 
-[node name="InfoCard" type="Node2D"]
+[node name="InfoCard" type="Control"]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 3
+anchors_preset = 0
 script = ExtResource("1_nbvcf")
 
 [node name="Panel" type="Panel" parent="."]
-offset_right = 409.0
-offset_bottom = 191.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -180.0
+offset_right = 180.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = 15
 anchor_right = 1.0
-offset_bottom = 131.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
 grow_horizontal = 2
-theme_override_constants/separation = 6
+grow_vertical = 2
+theme_override_constants/separation = 8
 alignment = 1
 
 [node name="LabelAgentID" type="Label" parent="Panel/VBoxContainer"]
@@ -27,23 +41,26 @@ horizontal_alignment = 1
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 25
+theme_override_constants/separation = 30
 alignment = 1
 
 [node name="LabelEnergy" type="Label" parent="Panel/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Energy: #"
+horizontal_alignment = 1
 
 [node name="LabelState" type="Label" parent="Panel/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "State: "
+horizontal_alignment = 1
 
 [node name="LabelSpeed" type="Label" parent="Panel/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Speed: "
+horizontal_alignment = 1
 
 [node name="LabelAgentCapacity" type="Label" parent="Panel/VBoxContainer"]
 unique_name_in_owner = true
@@ -53,23 +70,26 @@ horizontal_alignment = 1
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Panel/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 25
+theme_override_constants/separation = 30
 alignment = 1
 
 [node name="LabelStoneCapacity" type="Label" parent="Panel/VBoxContainer/HBoxContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Stone: #%"
+horizontal_alignment = 1
 
 [node name="LabelWoodCapacity" type="Label" parent="Panel/VBoxContainer/HBoxContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Wood: #%"
+horizontal_alignment = 1
 
 [node name="LabelGoldCapacity" type="Label" parent="Panel/VBoxContainer/HBoxContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Gold: #%"
+horizontal_alignment = 1
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="Panel/VBoxContainer"]
 layout_mode = 2
@@ -82,6 +102,7 @@ text = "Carrying: NONE"
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="Panel/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 12
 alignment = 1
 
 [node name="ButtonMap" type="Button" parent="Panel/VBoxContainer/HBoxContainer4"]
@@ -93,6 +114,41 @@ text = "Show Map"
 layout_mode = 2
 text = "Show Agent"
 
+[node name="LabelAssignment" type="Label" parent="Panel/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Assigned: AUTO"
+horizontal_alignment = 1
+
+[node name="HBoxContainerAssign" type="HBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="ButtonWood" type="Button" parent="Panel/VBoxContainer/HBoxContainerAssign"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Wood"
+
+[node name="ButtonStone" type="Button" parent="Panel/VBoxContainer/HBoxContainerAssign"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Stone"
+
+[node name="ButtonGold" type="Button" parent="Panel/VBoxContainer/HBoxContainerAssign"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Gold"
+
+[node name="ButtonAuto" type="Button" parent="Panel/VBoxContainer/HBoxContainerAssign"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Auto"
+
 [connection signal="ready" from="." to="." method="_on_ready"]
 [connection signal="pressed" from="Panel/VBoxContainer/HBoxContainer4/ButtonMap" to="." method="_on_ButtonHighlightMap_pressed"]
 [connection signal="pressed" from="Panel/VBoxContainer/HBoxContainer4/ButtonAgent" to="." method="_on_button_agent_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/HBoxContainerAssign/ButtonWood" to="." method="_on_button_wood_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/HBoxContainerAssign/ButtonStone" to="." method="_on_button_stone_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/HBoxContainerAssign/ButtonGold" to="." method="_on_button_gold_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/HBoxContainerAssign/ButtonAuto" to="." method="_on_button_auto_pressed"]

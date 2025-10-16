@@ -10,7 +10,6 @@ class_name MapGenerator
 @onready var timer = %Timer
 @onready var game_manager = %GameManager
 @onready var camera_2d = $"../Camera2D"
-@onready var resource_priority_panel = %ResourcePriorityPanel
 
 var agents_array := [] # stores all created agent instances
 
@@ -87,14 +86,7 @@ func _ready():
 	for agent in agents_array:
 		add_child(agent)
 	
-	# Connect resource priority panel with game manager
-	if resource_priority_panel != null:
-		resource_priority_panel.game_manager = game_manager
-		resource_priority_panel.pause_game_for_selection()
-		
-		# Connect to priority changed signal
-		if game_manager != null:
-			game_manager.village_1_priority_changed.connect(_on_village_1_priority_changed)
+	# Global resource priority panel removed; per-agent controls live in each info card
 		
 func generate_map(map: Array, available_rows: Array) -> void:
 	"""
@@ -223,9 +215,7 @@ func create_agent(agent: Agent, agent_idx: int, village_coords: Dictionary, agen
 	# Wrap the info_card in a MarginContainer
 	var margin_container = MarginContainer.new()
 	margin_container.add_child(info_card)
-	
-	# Add spacing (adjust the values to your preference)
-	margin_container.add_theme_constant_override("margin_bottom", 205)
+	# Let the VBox container handle spacing; no extra bottom margin
 	
 	# Add the margin container to the VBoxContainer
 	if agent_idx == 0:
@@ -336,8 +326,8 @@ func _on_village_1_priority_changed(resource_type: Village.ResourceType, is_auto
 		Called when Village 1's resource priority changes.
 		Resumes the game if it was paused for initial selection.
 	"""
-	if resource_priority_panel != null:
-		resource_priority_panel.resume_game_after_selection()
+	# Global priority panel removed; nothing to do here (game is not paused)
+	return
 
 func _on_resource_depleted(resource_type: Common.TileType):
 	"""
@@ -361,5 +351,5 @@ func _on_resource_depleted(resource_type: Common.TileType):
 	
 	# Check if Village 1 was targeting this resource
 	if not game_manager.village_1.is_auto_mode and game_manager.village_1.user_selected_resource == village_resource_type:
-		if resource_priority_panel != null:
-			resource_priority_panel.show_resource_depleted_warning(village_resource_type)
+		# Previously showed a warning on the global panel; now we just log
+		DebugLogger.write_log("[MAP_GEN] WARNING: Resource depleted for " + str(Village.ResourceType.find_key(village_resource_type)))

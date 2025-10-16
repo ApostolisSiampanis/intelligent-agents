@@ -111,6 +111,10 @@ var visited = []
 var spawn_tile_type: Common.TileType
 var last_known_priority: Village.ResourceType = Village.ResourceType.WOOD  # Track priority changes
 
+# Per-agent user selection (for user-controlled village)
+var has_user_selection: bool = false
+var user_selected_resource: Village.ResourceType = Village.ResourceType.WOOD
+
 func _on_ready():
 	"""
 		- Initializes the agent when it's added to the scene. 
@@ -133,37 +137,26 @@ func _on_ready():
 	# Initialize not_visited tiles
 	not_visited.append(current_tile_pos)
 	
-	# If this is a user-controlled village, wait for priority selection
-	if village != null and village.control_mode == Village.ControlMode.USER_CONTROLLED:
-		current_state = State.IDLE
-	else:
-		current_state = State.DECIDING
-		choose_search_algorithm()
+	# Start deciding by default (auto mode unless user assigns per-agent)
+	current_state = State.DECIDING
+	choose_search_algorithm()
+	# Assign an initial goal
+	if game_manager != null:
+		game_manager.assign_resource_goal(self)
 
 func _physics_process(delta):
 	"""
 		Handles the agent's state and movement logic each frame.
 	"""
-	# If this is a user-controlled village agent and no priority is selected yet, stay idle
-	if village != null and village.control_mode == Village.ControlMode.USER_CONTROLLED and not village.is_priority_selected:
-		if current_state != State.IDLE:
-			DebugLogger.write_log("[AGENT " + str(id) + "] Waiting for priority selection, setting to IDLE")
-		current_state = State.IDLE
-		return
-	
-	# If we were idle and now priority is selected, switch to deciding state
-	if current_state == State.IDLE and village != null and village.is_priority_selected:
-		DebugLogger.write_log("[AGENT " + str(id) + "] Priority selected! Transitioning from IDLE to DECIDING")
-		last_known_priority = village.user_selected_resource  # Track initial priority
-		current_state = State.DECIDING
-		choose_search_algorithm()
+	# Agents operate automatically unless a per-agent assignment is set
 	
 	# Check if user changed priority while agent is active (not idle, not carrying resources)
-	if village != null and village.control_mode == Village.ControlMode.USER_CONTROLLED and village.is_priority_selected:
+	# Check if user changed task while agent is active (not idle, not carrying resources)
+	if village != null and village.control_mode == Village.ControlMode.USER_CONTROLLED and has_user_selection:
 		if current_state != State.IDLE and current_carrying_resource == null:
-			var current_priority = village.user_selected_resource
+			var current_priority = user_selected_resource
 			if current_priority != last_known_priority:
-				DebugLogger.write_log("[AGENT " + str(id) + "] Priority changed from " + str(Village.ResourceType.find_key(last_known_priority)) + " to " + str(Village.ResourceType.find_key(current_priority)) + " - Reassigning goal")
+				DebugLogger.write_log("[AGENT " + str(id) + "] Task changed from " + str(Village.ResourceType.find_key(last_known_priority)) + " to " + str(Village.ResourceType.find_key(current_priority)) + " - Reassigning goal")
 				last_known_priority = current_priority
 				# Force goal reassignment
 				game_manager.assign_resource_goal(self)
@@ -582,3 +575,26 @@ func get_eliminated():
 	grave.visible = true
 	
 	game_manager.eliminate(self)
+
+# User interaction: per-agent task assignment
+func set_user_resource_priority(resource_type: Village.ResourceType) -> void:
+	user_selected_resource = resource_type
+	has_user_selection = true
+	last_known_priority = resource_type
+	# Reassign goal immediately
+	if game_manager != null:
+		game_manager.assign_resource_goal(self)
+	# If idle waiting for selection, start deciding
+	if current_state == State.IDLE:
+		current_state = State.DECIDING
+		choose_search_algorithm()
+
+func clear_user_resource_priority() -> void:
+	# Switch this agent back to auto/AI assignment
+	has_user_selection = false
+	# Reassign goal using village/AI logic
+	if game_manager != null:
+		game_manager.assign_resource_goal(self)
+	if current_state == State.IDLE:
+		current_state = State.DECIDING
+		choose_search_algorithm()

@@ -73,10 +73,10 @@ func calc_capability_dict(agent: Agent):
 	"""
 	var cap_dict = {}
 	
-	# User-controlled village with manual resource selection
-	if control_mode == ControlMode.USER_CONTROLLED && !is_auto_mode:
-		var resource_key = ResourceType.find_key(user_selected_resource)
-		cap_dict = {resource_key: 1.0}  # Force selected resource
+	# Per-agent user selection takes precedence for user-controlled village
+	if control_mode == ControlMode.USER_CONTROLLED and agent != null and agent.has_user_selection:
+		var resource_key = ResourceType.find_key(agent.user_selected_resource)
+		cap_dict = {resource_key: 1.0}  # Force agent's selected resource
 		return cap_dict
 	
 	# Auto mode or AI-controlled village - calculate best resource

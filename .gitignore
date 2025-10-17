@@ -1,3 +1,15 @@
 # Godot 4+ specific ignores
 .godot/
 .vscode/settings.json
+
+# Godot import cache directory
+.import/
+
+# Godot per-resource import metadata and UID files
+# These are generated and should not be in git
+*.import
+*.uid
+
+# OS/editor junk
+.DS_Store
+Thumbs.db

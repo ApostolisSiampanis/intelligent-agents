@@ -1,11 +1,11 @@
 [gd_scene load_steps=9 format=3 uid="uid://cxpdfyyo8a4oy"]
 
-[ext_resource type="Script" path="res://scripts/line_edit.gd" id="1_2sh7x"]
-[ext_resource type="Script" path="res://scripts/change_min_max_values.gd" id="1_237xi"]
-[ext_resource type="Script" path="res://scripts/h_box_container_input_screen.gd" id="1_ve8jk"]
-[ext_resource type="Texture2D" uid="uid://b232tmj85wv4e" path="res://assets/medievalRTS/medieval_tilesheet_1.png" id="2_3apwb"]
-[ext_resource type="Script" path="res://scripts/start_map_generation.gd" id="3_cl4sr"]
-[ext_resource type="Script" path="res://scripts/exit_app.gd" id="4_yhgwa"]
+[ext_resource type="Script" uid="uid://djiuflghj2iyq" path="res://scripts/line_edit.gd" id="1_2sh7x"]
+[ext_resource type="Script" uid="uid://dfstutv4yhqu4" path="res://scripts/change_min_max_values.gd" id="1_237xi"]
+[ext_resource type="Script" uid="uid://cs1tv14ji8bb4" path="res://scripts/h_box_container_input_screen.gd" id="1_ve8jk"]
+[ext_resource type="Texture2D" uid="uid://034fkho7mvlp" path="res://assets/medievalRTS/medieval_tilesheet_1.png" id="2_3apwb"]
+[ext_resource type="Script" uid="uid://r1bmcogq0amt" path="res://scripts/start_map_generation.gd" id="3_cl4sr"]
+[ext_resource type="Script" uid="uid://cdcu7vuibudkd" path="res://scripts/exit_app.gd" id="4_yhgwa"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ylq5a"]
 texture = ExtResource("2_3apwb")
@@ -59,7 +59,8 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="TileMap" type="TileMap" parent="CenterContainer"]
-position = Vector2(400, 400)
+position = Vector2(400, 500)
+scale = Vector2(1.25, 1.25)
 tile_set = SubResource("TileSet_d7ucr")
 format = 2
 layer_0/name = "background"
@@ -108,43 +109,57 @@ text = "Name"
 horizontal_alignment = 1
 
 [node name="LabelRowsName" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerName"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "Rows"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="LabelColumnsName" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerName"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "Columns"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="LabelBlank" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerName"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = " "
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="LabelStonesName" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerName"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "Stones
 "
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="LabelWoodName" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerName"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "Wood
 "
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="LabelGoldName" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerName"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "Gold
 "
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="LabelAgentsName" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerName"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "Agents per village
 "
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="VBoxContainerValue" type="VBoxContainer" parent="CenterContainer/VBoxContainer/GridContainerParameters"]
 custom_minimum_size = Vector2(100, 0)
@@ -157,56 +172,69 @@ text = "Min. Max. Values"
 horizontal_alignment = 1
 
 [node name="LabelRowsValue" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "(25 - 100)"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="LabelColumnValue" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "(25 - 100)"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="HBoxContainerTotalResources" type="HBoxContainer" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue"]
-custom_minimum_size = Vector2(100, 0)
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 
 [node name="LabelTotalResources" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue/HBoxContainerTotalResources"]
 layout_mode = 2
 text = "Total Resources: "
+vertical_alignment = 1
 
 [node name="LabelTotalResourcesNumber" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue/HBoxContainerTotalResources"]
 layout_mode = 2
 text = "7"
+vertical_alignment = 1
 
 [node name="LabelStonesValue" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "(2 - 2)
 "
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="LabelWoodValue" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "(2 - 4)
 "
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="LabelGoldValue" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "(1 - 1)
 "
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="LabelAgentsValue" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerValue"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "(1 - 1)
 "
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="VBoxContainerInput" type="VBoxContainer" parent="CenterContainer/VBoxContainer/GridContainerParameters"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_constants/separation = 27
-alignment = 0
 
 [node name="LabelHeader" type="Label" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput"]
 layout_mode = 2
@@ -214,6 +242,7 @@ text = "Input"
 horizontal_alignment = 1
 
 [node name="HBoxContainerRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 alignment = 1
 script = ExtResource("1_ve8jk")
@@ -235,6 +264,7 @@ caret_blink = true
 script = ExtResource("1_2sh7x")
 
 [node name="HBoxContainerColumn" type="HBoxContainer" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 alignment = 1
 script = ExtResource("1_ve8jk")
@@ -256,6 +286,7 @@ caret_blink = true
 script = ExtResource("1_2sh7x")
 
 [node name="HBoxContainerBlank" type="HBoxContainer" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 alignment = 1
 
@@ -264,6 +295,7 @@ layout_mode = 2
 text = " "
 
 [node name="HBoxContainerStone" type="HBoxContainer" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 alignment = 1
 script = ExtResource("1_ve8jk")
@@ -286,6 +318,7 @@ caret_blink = true
 script = ExtResource("1_2sh7x")
 
 [node name="HBoxContainerWood" type="HBoxContainer" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 alignment = 1
 script = ExtResource("1_ve8jk")
@@ -308,6 +341,7 @@ caret_blink = true
 script = ExtResource("1_2sh7x")
 
 [node name="HBoxContainerGold" type="HBoxContainer" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 alignment = 1
 script = ExtResource("1_ve8jk")
@@ -330,6 +364,7 @@ caret_blink = true
 script = ExtResource("1_2sh7x")
 
 [node name="HBoxContainerAgents" type="HBoxContainer" parent="CenterContainer/VBoxContainer/GridContainerParameters/VBoxContainerInput"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 alignment = 1
 script = ExtResource("1_ve8jk")
@@ -372,7 +407,7 @@ script = ExtResource("4_yhgwa")
 [node name="Label2" type="Label" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
 text = "
-Created by: @anthonyrouss, @ApostolisSiampanis, @dimitrisstyl7, @thkox"
+Created by: @ApostolisSiampanis, @dimitrisstyl7, @thkox"
 horizontal_alignment = 1
 vertical_alignment = 1
 

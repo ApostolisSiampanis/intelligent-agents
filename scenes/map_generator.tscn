@@ -147,20 +147,27 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="PanelWinProbability" type="Panel" parent="UILayer/VBoxContainerVillage1AgentsList"]
-custom_minimum_size = Vector2(0, 48)
+custom_minimum_size = Vector2(0, 72)
 layout_mode = 2
 
 [node name="VBoxContainerWin" type="VBoxContainer" parent="UILayer/VBoxContainerVillage1AgentsList/PanelWinProbability"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 46.0
+offset_bottom = 70.0
 grow_horizontal = 2
 
 [node name="LabelWinProbability" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelWinProbability/VBoxContainerWin"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Win Probability: --%"
+horizontal_alignment = 1
+size_flags_horizontal = 3
+
+[node name="LabelAIDifficulty" type="Label" parent="UILayer/VBoxContainerVillage1AgentsList/PanelWinProbability/VBoxContainerWin"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "AI Difficulty: --%"
 horizontal_alignment = 1
 size_flags_horizontal = 3
 

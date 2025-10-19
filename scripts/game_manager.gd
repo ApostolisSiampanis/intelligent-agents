@@ -16,6 +16,7 @@ class_name GameManager
 
 @onready var label_finished_game_message = %LabelFinishedGameMessage
 @onready var label_win_probability = %LabelWinProbability
+@onready var label_ai_difficulty = %LabelAIDifficulty
 
 var village_1: Village
 var village_2: Village
@@ -253,6 +254,8 @@ func _update_win_probability():
 		return
 	var probability = calculate_winning_probability()
 	label_win_probability.text = "Win Probability: %d%%" % int(probability * 100)
+	if label_ai_difficulty != null:
+		label_ai_difficulty.text = "AI Difficulty: %d%%" % int(ai_difficulty * 100)
 
 func is_game_finished(village: Village) -> bool:
 	return village.is_goal_completed()

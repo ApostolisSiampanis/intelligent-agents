@@ -11,6 +11,8 @@ var drag_start_mouse_pos = Vector2.ZERO
 var drag_start_camera_pos = Vector2.ZERO
 var is_dragging : bool = false
 var followed_agent : Agent = null
+var saved_camera_position : Vector2 = Vector2.ZERO
+var saved_camera_zoom : Vector2 = Vector2.ZERO
 
 func _ready():
 	zoom_target = zoom
@@ -21,14 +23,33 @@ func _process(delta):
 		var viewport_size = get_viewport().get_visible_rect().size
 		position = followed_agent.global_position - viewport_size / 2
 	else:
+		# Only allow zoom when mouse is not over GUI elements
 		if not is_mouse_over_gui():
 			zoom_camera()
-			simple_pan(delta)
-			click_and_drag()
+		simple_pan(delta)
+		click_and_drag()
 
 func is_mouse_over_gui() -> bool:
-	var mouse_pos = get_global_mouse_position()
-	return v_box_container_village_1_agents_list.get_global_rect().has_point(mouse_pos) or v_box_container_village_2_agents_list.get_global_rect().has_point(mouse_pos)
+	# Only block zoom/pan when mouse is specifically over the village agent list panels
+	var viewport = get_viewport()
+	if viewport == null:
+		return false
+	
+	var mouse_pos = viewport.get_mouse_position()
+	
+	# Check if mouse is over Village 1 agent list panel (left side)
+	if v_box_container_village_1_agents_list != null:
+		var rect1 = v_box_container_village_1_agents_list.get_global_rect()
+		if rect1.has_point(mouse_pos):
+			return true
+	
+	# Check if mouse is over Village 2 agent list panel (right side)
+	if v_box_container_village_2_agents_list != null:
+		var rect2 = v_box_container_village_2_agents_list.get_global_rect()
+		if rect2.has_point(mouse_pos):
+			return true
+	
+	return false
 
 func zoom_camera():
 	if Input.is_action_just_pressed("camera_zoom_in"):
@@ -68,10 +89,19 @@ func click_and_drag():
 		position = drag_start_camera_pos - move_vector * 1/zoom.x
 
 func follow_agent(agent):
+	# Save current camera position and zoom before following
+	if followed_agent == null:  # Only save if we're not already following someone
+		saved_camera_position = position
+		saved_camera_zoom = zoom
 	followed_agent = agent
 
 func stop_following_agent():
 	followed_agent = null
+	# Restore saved camera position and zoom
+	if saved_camera_position != Vector2.ZERO:
+		position = saved_camera_position
+		zoom = saved_camera_zoom
+		zoom_target = saved_camera_zoom
 
 func center_on_tile_map():
 	# Ensure that cols and rows are initialized

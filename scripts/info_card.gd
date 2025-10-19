@@ -6,6 +6,12 @@ var map_highlighted: bool = false
 var agent_highlighted: bool = false  # To track if the agent is highlighted
 var map_highlight_mode: String = "all"  # To track the map highlight mode (known, unknown, or none)
 
+# Track previous capacity values to show changes
+var previous_wood_capacity: int = 0
+var previous_stone_capacity: int = 0
+var previous_gold_capacity: int = 0
+var _last_agent_id: int = -1
+
 signal highlight_agent(agent, highlight)
 signal highlight_map(agent, mode)
 
@@ -13,7 +19,6 @@ signal highlight_map(agent, mode)
 @onready var label_state = %LabelState
 @onready var label_energy = %LabelEnergy
 @onready var label_resource = %LabelResource
-@onready var label_map_discovery = %LabelMapDiscovery
 @onready var label_wood_capacity = %LabelWoodCapacity
 @onready var label_stone_capacity = %LabelStoneCapacity
 @onready var label_gold_capacity = %LabelGoldCapacity
@@ -66,18 +71,47 @@ func update_info():
 func update_chromosome_labels():
 	if agent != null and agent.chromosome != null:
 		var chromosome = agent.chromosome
+		# If the info card is showing a different agent than before, reset baselines to avoid false diffs
+		if _last_agent_id != agent.id:
+			previous_wood_capacity = chromosome.wood_carry_capacity
+			previous_stone_capacity = chromosome.stone_carry_capacity
+			previous_gold_capacity = chromosome.gold_carry_capacity
+			_last_agent_id = agent.id
 		
 		# Speed
 		label_speed.text = "Speed: %s " % str(chromosome.speed)
 
-		# Wood capacity
-		label_wood_capacity.text = "Wood: %s " % str(chromosome.wood_carry_capacity)
+		# Wood capacity with change indicator
+		var wood_diff = chromosome.wood_carry_capacity - previous_wood_capacity if previous_wood_capacity > 0 else 0
+		var wood_change_text = ""
+		if wood_diff > 0:
+			wood_change_text = " (+%d)" % wood_diff
+		elif wood_diff < 0:
+			wood_change_text = " (%d)" % wood_diff
+		label_wood_capacity.text = "Wood: %s%s" % [str(chromosome.wood_carry_capacity), wood_change_text]
 		
-		# Stone capacity
-		label_stone_capacity.text = "Stone: %s " % str(chromosome.stone_carry_capacity)
+		# Stone capacity with change indicator
+		var stone_diff = chromosome.stone_carry_capacity - previous_stone_capacity if previous_stone_capacity > 0 else 0
+		var stone_change_text = ""
+		if stone_diff > 0:
+			stone_change_text = " (+%d)" % stone_diff
+		elif stone_diff < 0:
+			stone_change_text = " (%d)" % stone_diff
+		label_stone_capacity.text = "Stone: %s%s" % [str(chromosome.stone_carry_capacity), stone_change_text]
 		
-		# Gold capacity
-		label_gold_capacity.text = "Gold: %s " % str(chromosome.gold_carry_capacity)
+		# Gold capacity with change indicator
+		var gold_diff = chromosome.gold_carry_capacity - previous_gold_capacity if previous_gold_capacity > 0 else 0
+		var gold_change_text = ""
+		if gold_diff > 0:
+			gold_change_text = " (+%d)" % gold_diff
+		elif gold_diff < 0:
+			gold_change_text = " (%d)" % gold_diff
+		label_gold_capacity.text = "Gold: %s%s" % [str(chromosome.gold_carry_capacity), gold_change_text]
+		
+		# Update previous values for next comparison
+		previous_wood_capacity = chromosome.wood_carry_capacity
+		previous_stone_capacity = chromosome.stone_carry_capacity
+		previous_gold_capacity = chromosome.gold_carry_capacity
 
 func _on_ButtonHighlightMap_pressed():
 	if map_highlight_mode == "all":

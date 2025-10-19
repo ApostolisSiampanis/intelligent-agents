@@ -183,12 +183,25 @@ func create_agent(agent: Agent, agent_idx: int, village_coords: Dictionary, agen
 	var world_pos = map_to_local(tile_pos)
 	
 	# Add small random offset to prevent agents stacking on exact same position
-	var offset_range = 20.0  # Pixels
+	# Reduced range to keep agents closer to tile center and avoid walls
+	var offset_range = 8.0  # Reduced from 20.0 pixels
 	var random_offset = Vector2(
 		randf_range(-offset_range, offset_range),
 		randf_range(-offset_range, offset_range)
 	)
 	world_pos += random_offset
+	
+	# Validate spawn position is not on a wall
+	var spawn_tile_check = local_to_map(world_pos)
+	var tile_data = get_cell_tile_data(1, spawn_tile_check)
+	if tile_data == null:
+		tile_data = get_cell_tile_data(0, spawn_tile_check)
+	if tile_data != null:
+		var tile_type_str = tile_data.get_custom_data("type")
+		if tile_type_str == "wall":
+			# Reset to exact tile center if offset lands on wall
+			world_pos = map_to_local(tile_pos)
+			DebugLogger.write_log("[MAP_GEN] Agent " + str(agent_id) + " offset landed on wall, reset to center")
 	
 	DebugLogger.write_log("[MAP_GEN] Creating agent " + str(agent_id) + " (village " + str(agent_idx) + ") at tile " + str(tile_pos) + " -> world " + str(world_pos) + " (offset: " + str(random_offset) + ")")
 	

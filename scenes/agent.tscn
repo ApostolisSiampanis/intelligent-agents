@@ -11,6 +11,8 @@ size = Vector2(12.75, 10.75)
 size = Vector2(33, 48)
 
 [node name="Agent" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 1
 script = ExtResource("1_1qcrf")
 
 [node name="Agent_1" type="Sprite2D" parent="."]

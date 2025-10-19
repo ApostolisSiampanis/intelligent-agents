@@ -53,10 +53,14 @@ func drop_resource(agent: Agent) -> void:
 	var resource = agent.current_carrying_resource
 	if resource == null: return
 	
+	DebugLogger.write_log("[GAME_MGR] Agent " + str(agent.id) + " dropping " + str(resource.quantity) + " " + str(Village.ResourceType.find_key(resource.type)))
+	
 	var village = agent.village
 	
 	village.add_resource(resource)
 	agent.current_carrying_resource = null
+	
+	DebugLogger.write_log("[GAME_MGR] Village " + str(village.control_mode) + " now has - Wood: " + str(village.current_wood_quantity) + ", Stone: " + str(village.current_stone_quantity) + ", Gold: " + str(village.current_gold_quantity))
 	
 	_update_remaining_resources()
 	

@@ -97,7 +97,7 @@ enum SearchAlgorithm { EXPLORE, ASTAR, NONE }
 var current_state: State
 var current_search_algorithm: SearchAlgorithm
 
-var destination_pos: Vector2i
+var destination_pos: Vector2
 
 var astar: AStar2D
 var is_backtracking := false
@@ -190,10 +190,11 @@ func filter_tiles(tiles):
 
 func calculate_destination(current_tile_position, next_tile_position):
 	"""
-		Calculates the destination position based on the difference between the current and next tile positions.
+		Calculates the destination world position based on the tile step between
+		the current and next tile, preserving sub-tile offsets without truncation.
 	"""
-	var tile_dif = calculate_dif(Vector2i(current_tile_position), Vector2i(next_tile_position))
-	return (Vector2i(position) + tile_dif * Common.TILE_SIZE)
+	var tile_dif: Vector2i = calculate_dif(Vector2i(current_tile_position), Vector2i(next_tile_position))
+	return position + Vector2(tile_dif) * Vector2(Common.TILE_SIZE)
 
 func calculate_dif(vector1: Vector2i, vector2: Vector2i):
 	"""
@@ -211,12 +212,31 @@ func is_one_step_away(current_tile_position, next_tile_position):
 func walk(delta):
 	"""
 		Handles the walking logic of the agent towards the destination position.
+		Uses physics-based movement for proper collision detection.
 	"""
 	var speed_mult := 1.0
 	if village != null:
 		speed_mult = village.speed_multiplier
-	position = position.move_toward(destination_pos, chromosome.speed * speed_mult * delta)
-	if Vector2i(position.x, position.y) == destination_pos:
+	
+	# Calculate direction and distance to destination
+	var distance_to_target = position.distance_to(destination_pos)
+	var move_speed = chromosome.speed * speed_mult
+	
+	# Use physics-based movement with collision detection
+	if distance_to_target > 3.0:  # Small threshold to prevent jitter at destination
+		var direction = (destination_pos - position).normalized()
+		velocity = direction * move_speed
+		move_and_slide()
+		
+		# Check if we got stuck (collision prevented movement)
+		if velocity.length() > 0 and position.distance_to(destination_pos) > distance_to_target:
+			# We're stuck, recalculate path
+			DebugLogger.write_log("[AGENT " + str(id) + "] Stuck at " + str(position) + ", recalculating path")
+			current_state = State.DECIDING
+	else:
+		# Close enough to destination, snap to it
+		velocity = Vector2.ZERO
+		position = destination_pos
 		current_state = State.DECIDING
 
 func decide():
@@ -260,6 +280,18 @@ func explore(current_tile_pos: Vector2i):
 		change_goal(spawn_tile_type)
 		return
 	
+	# CRITICAL: Verify tile is walkable before adding to A*
+	var next_tile_type_str = get_tile_type_str(next_tile_pos)
+	if next_tile_type_str == "wall":
+		# Skip wall tiles completely - don't add to A* graph
+		DebugLogger.write_log("[AGENT " + str(id) + "] Skipping wall tile at " + str(next_tile_pos))
+		# Continue exploring with next tile
+		if not_visited.size() > 0:
+			explore(current_tile_pos)
+		else:
+			change_goal(spawn_tile_type)
+		return
+	
 	# Add next tile point to AStar
 	var next_tile_id = get_point_id(next_tile_pos)
 	if !astar.has_point(next_tile_id):
@@ -273,6 +305,12 @@ func explore(current_tile_pos: Vector2i):
 	# Append front to non_visited
 	for i in range(filtered_tiles.size()-1, -1, -1):
 		var child_tile_pos = filtered_tiles[i].position
+		
+		# CRITICAL: Double-check child tiles aren't walls before adding
+		var child_tile_type_str = get_tile_type_str(child_tile_pos)
+		if child_tile_type_str == "wall":
+			continue  # Skip wall tiles
+		
 		not_visited.push_front(child_tile_pos)
 		
 		# Add children points to AStart
@@ -512,6 +550,7 @@ func find_closest_tile_id(current_tile_pos: Vector2i, tile_goal_type: Common.Til
 	return closest_tile_point["id"]
 
 func on_resource_interact(resource):
+	DebugLogger.write_log("[AGENT " + str(id) + "] on_resource_interact called. Current goal: " + str(Common.TileType.find_key(current_goal)) + ", Resource type: " + str(Common.TileType.find_key(resource.type)) + ", Carrying: " + str(current_carrying_resource != null))
 	if current_goal == resource.type && !current_carrying_resource:
 		var carry_capacity = 0
 		match resource.type:
@@ -522,6 +561,7 @@ func on_resource_interact(resource):
 		if village != null:
 			carry_capacity = int(round(float(carry_capacity) * village.carry_multiplier))
 		
+		DebugLogger.write_log("[AGENT " + str(id) + "] Attempting to loot " + str(carry_capacity) + " from resource")
 		var loot_quantity = resource.loot(carry_capacity)
 		var current_tile_pos = tile_map.local_to_map(position)
 		
@@ -530,6 +570,7 @@ func on_resource_interact(resource):
 		
 		if loot_quantity > 0:	
 			current_carrying_resource = CarryingResource.new(resource.type, loot_quantity)
+			DebugLogger.write_log("[AGENT " + str(id) + "] Now carrying " + str(loot_quantity) + " " + str(Common.TileType.find_key(resource.type)))
 
 func _on_body_entered(body):
 	if body == self: return

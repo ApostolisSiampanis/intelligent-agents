@@ -212,7 +212,10 @@ func walk(delta):
 	"""
 		Handles the walking logic of the agent towards the destination position.
 	"""
-	position = position.move_toward(destination_pos, chromosome.speed * delta)
+	var speed_mult := 1.0
+	if village != null:
+		speed_mult = village.speed_multiplier
+	position = position.move_toward(destination_pos, chromosome.speed * speed_mult * delta)
 	if Vector2i(position.x, position.y) == destination_pos:
 		current_state = State.DECIDING
 
@@ -426,12 +429,18 @@ func _on_timer_timeout():
 	if !available_for_knowledge_exchange:
 		available_for_knowledge_exchange = !available_for_knowledge_exchange
 	if current_state == State.REFILLING:
-		var new_energy = energy + chromosome.energy_gain_value
+		var gain_mult := 1.0
+		if village != null:
+			gain_mult = village.energy_gain_multiplier
+		var new_energy = energy + int(round(float(chromosome.energy_gain_value) * gain_mult))
 		energy = MAX_ENERGY_LEVEL if new_energy > MAX_ENERGY_LEVEL else new_energy
 		if energy == MAX_ENERGY_LEVEL:
 			current_state = State.DECIDING
 	else:
-		var new_energy := energy - chromosome.energy_loss_value
+		var loss_mult := 1.0
+		if village != null:
+			loss_mult = village.energy_loss_multiplier
+		var new_energy := energy - int(round(float(chromosome.energy_loss_value) * loss_mult))
 		energy = 0 if new_energy < 0 else new_energy
 		if current_goal != spawn_tile_type && energy <= RETURN_TO_SPAWN_ENERGY_THRESHOLD:
 			change_goal(spawn_tile_type)
@@ -509,6 +518,9 @@ func on_resource_interact(resource):
 			Common.TileType.WOOD: carry_capacity = chromosome.wood_carry_capacity
 			Common.TileType.STONE: carry_capacity = chromosome.stone_carry_capacity
 			Common.TileType.GOLD: carry_capacity = chromosome.gold_carry_capacity
+		# Apply carry multiplier from village difficulty
+		if village != null:
+			carry_capacity = int(round(float(carry_capacity) * village.carry_multiplier))
 		
 		var loot_quantity = resource.loot(carry_capacity)
 		var current_tile_pos = tile_map.local_to_map(position)

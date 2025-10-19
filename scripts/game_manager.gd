@@ -20,6 +20,11 @@ class_name GameManager
 var village_1: Village
 var village_2: Village
 
+# Adaptive difficulty state (continuous 0..1 for AI village)
+var ai_difficulty: float = 0.5
+var last_adjust_time: float = 0.0
+var adjust_interval_sec: float = 2.0
+
 signal resource_depleted(resource_type: Village.ResourceType)
 signal village_1_priority_changed(resource_type: Village.ResourceType, is_auto: bool)
 
@@ -27,6 +32,7 @@ func _ready():
 	set_goal_labels()
 	_update_remaining_resources()
 	_update_win_probability()
+	last_adjust_time = Time.get_ticks_msec() / 1000.0
 
 func setup_villages():
 	"""
@@ -114,6 +120,133 @@ func _update_remaining_resources():
 	set_village_labels(label_village_1_stone, label_village_1_wood, label_village_1_gold, village_1)
 	set_village_labels(label_village_2_stone, label_village_2_wood, label_village_2_gold, village_2)
 	_update_win_probability()
+	_maybe_adjust_difficulty()
+
+func _maybe_adjust_difficulty() -> void:
+	var now = Time.get_ticks_msec() / 1000.0
+	if now - last_adjust_time < adjust_interval_sec:
+		return
+	last_adjust_time = now
+	_adaptive_difficulty_tick()
+
+func _adaptive_difficulty_tick() -> void:
+	# Evaluate user tactic quality vs optimal, compute fuzzy adjustment, and apply to AI village
+	if village_1 == null or village_2 == null:
+		return
+	var tactic_quality = evaluate_user_tactic()
+	var game_pressure = 1.0 - calculate_winning_probability()  # if user is likely to win, pressure low
+	var delta = fuzzy_adjustment(tactic_quality, game_pressure)
+	ai_difficulty = clamp(ai_difficulty + delta, 0.0, 1.0)
+	# Apply on AI village (Village 2)
+	village_2.apply_difficulty(ai_difficulty)
+	# Optional: small UI feedback could be added
+
+func evaluate_user_tactic() -> float:
+	"""
+		Returns a score in [0,1] measuring how close user's per-agent selections are
+		to the optimal auto-mode evaluation.
+		1. For each agent in Village 1:
+		   - Compute optimal resource via Village.get_optimal_resource_for_agent
+		   - Compare to current chosen resource (user-selected if any, else current goal mapping)
+		2. Weight by capability differences to reward high-impact correct choices.
+	"""
+	if village_1 == null or village_1.agents.is_empty():
+		return 0.5
+	var total_weight := 0.0
+	var matched_weight := 0.0
+	for agent in village_1.agents:
+		if agent.current_state == Agent.State.ELIMINATED:
+			continue
+		var optimal_res: Village.ResourceType = village_1.get_optimal_resource_for_agent(agent)
+		# Determine current user choice
+		var current_res: Village.ResourceType = optimal_res
+		if agent.has_user_selection:
+			current_res = agent.user_selected_resource
+		else:
+			# Infer from current goal
+			match agent.current_goal:
+				Common.TileType.WOOD: current_res = Village.ResourceType.WOOD
+				Common.TileType.STONE: current_res = Village.ResourceType.STONE
+				Common.TileType.GOLD: current_res = Village.ResourceType.GOLD
+				_: current_res = optimal_res
+		# Capability weight
+		var opt_cap = village_1.calc_capability_for_eval(agent, optimal_res)
+		var cur_cap = village_1.calc_capability_for_eval(agent, current_res)
+		var weight = max(opt_cap, cur_cap)
+		if weight <= 0:
+			weight = 0.1
+		total_weight += weight
+		if current_res == optimal_res:
+			matched_weight += weight
+		else:
+			# Partial credit if close: ratio of cur_cap to opt_cap
+			if opt_cap > 0:
+				matched_weight += clamp(cur_cap / opt_cap, 0.0, 1.0) * weight * 0.5
+	if total_weight == 0:
+		return 0.5
+	return clamp(matched_weight / total_weight, 0.0, 1.0)
+
+func fuzzy_adjustment(tactic_quality: float, game_pressure: float) -> float:
+	"""
+		Fuzzy logic to compute difficulty delta per tick.
+		Inputs:
+		  - tactic_quality (0..1): Low=0..0.4, Medium=0.3..0.7, High=0.6..1.0
+		  - game_pressure (0..1): Low=0..0.4 (user ahead), High=0.6..1.0 (AI ahead)
+		Output:
+		  - delta in [-0.05, +0.05] to adjust ai_difficulty gradually.
+	"""
+	var tq_low = tri(0.0, 0.0, 0.4, tactic_quality)
+	var tq_med = tri(0.3, 0.5, 0.7, tactic_quality)
+	var tq_high = tri(0.6, 1.0, 1.0, tactic_quality)
+
+	var gp_low = tri(0.0, 0.0, 0.4, game_pressure)
+	var gp_med = tri(0.3, 0.5, 0.7, game_pressure)
+	var gp_high = tri(0.6, 1.0, 1.0, game_pressure)
+
+	# Rules (Mamdani):
+	# 1) If tactic is Low and pressure is High -> increase difficulty strongly
+	# 2) If tactic is Low and pressure is Low -> small increase (keep some challenge)
+	# 3) If tactic is High and pressure is High -> small decrease (user good but still pressured)
+	# 4) If tactic is High and pressure is Low -> decrease strongly
+	# 5) If both Medium -> slight increase or decrease depending on relative values
+	var inc_strong = min(tq_low, gp_high)
+	var inc_small = min(tq_low, gp_low)
+	var dec_small = min(tq_high, gp_high)
+	var dec_strong = min(tq_high, gp_low)
+	var med_mix = min(tq_med, gp_med)
+
+	# Defuzzify to delta [-0.05, +0.05]
+	var num = 0.0
+	var den = 0.0
+	if inc_strong > 0.0:
+		num += inc_strong * 0.05
+		den += inc_strong
+	if inc_small > 0.0:
+		num += inc_small * 0.02
+		den += inc_small
+	if dec_small > 0.0:
+		num += dec_small * -0.02
+		den += dec_small
+	if dec_strong > 0.0:
+		num += dec_strong * -0.05
+		den += dec_strong
+	# medium mix: push slightly towards balancing based on (0.5 - tq_med) (+/-)
+	if med_mix > 0.0:
+		var mid_val = (0.5 - tactic_quality) * 0.04
+		num += med_mix * mid_val
+		den += med_mix
+	if den == 0:
+		return 0.0
+	return clamp(num / den, -0.05, 0.05)
+
+static func tri(a: float, b: float, c: float, x: float) -> float:
+	if x <= a or x >= c:
+		return 0.0
+	if x == b:
+		return 1.0
+	if x < b:
+		return (x - a) / max(0.0001, (b - a))
+	return (c - x) / max(0.0001, (c - b))
 
 func _update_win_probability():
 	if label_win_probability == null:

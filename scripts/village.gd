@@ -20,6 +20,31 @@ var is_auto_mode: bool = false
 var is_priority_selected: bool = false  # Track if user has selected initial priority
 var opponent_village: Village = null  # Reference to opponent village for AI strategy
 
+# Difficulty multipliers (applied primarily to AI-controlled village/agents)
+var difficulty_level: float = 0.5  # 0.0 = easiest, 1.0 = hardest
+var speed_multiplier: float = 1.0
+var energy_loss_multiplier: float = 1.0
+var energy_gain_multiplier: float = 1.0
+var carry_multiplier: float = 1.0
+var decision_aggressiveness: float = 1.0
+
+func apply_difficulty(level: float) -> void:
+	"""
+		Applies difficulty to this village by setting gameplay multipliers.
+		level in [0.0, 1.0]
+		- Speed:     0.95 .. 1.15
+		- Energy loss: 0.95 .. 0.75 (harder AI loses less energy)
+		- Energy gain: 1.00 .. 1.20
+		- Carry:     1.00 .. 1.15
+		- Decision aggressiveness: 0.9 .. 1.3 (used in AI strategy multiplier)
+	"""
+	difficulty_level = clamp(level, 0.0, 1.0)
+	speed_multiplier = lerp(0.95, 1.15, difficulty_level)
+	energy_loss_multiplier = lerp(0.95, 0.75, difficulty_level)
+	energy_gain_multiplier = lerp(1.00, 1.20, difficulty_level)
+	carry_multiplier = lerp(1.00, 1.15, difficulty_level)
+	decision_aggressiveness = lerp(0.9, 1.3, difficulty_level)
+
 static func set_target_resource_quantity(goal: Dictionary) -> void:
 	"""
 		Sets the target quantities for wood, stone, and gold based on
@@ -91,6 +116,35 @@ func calc_capability_dict(agent: Agent):
 	
 	return cap_dict
 
+func calc_capability_for_eval(agent: Agent, resource_type: ResourceType) -> float:
+	"""
+		Calculates capability for evaluation purposes (optimal auto-mode)
+		ignoring user selection and without AI strategy adaptation.
+	"""
+	var capability = calc_resource_significance_metric(resource_type)
+	if capability == 0.0:
+		return capability
+	if !has_knowledge(agent, resource_type):
+		capability *= 0.5
+	capability *= calc_working_agents_metric(resource_type)
+	capability *= calc_chromosome_metric(agent, resource_type)
+	return capability
+
+func get_optimal_resource_for_agent(agent: Agent) -> ResourceType:
+	"""
+		Returns the top resource according to base capability evaluation
+		(auto-mode optimal), not influenced by user selection or AI strategy.
+	"""
+	var best_resource: ResourceType = ResourceType.WOOD
+	var best_score := -1.0
+	for resource_type in ResourceType.keys():
+		var r: ResourceType = ResourceType.get(resource_type)
+		var score = calc_capability_for_eval(agent, r)
+		if score > best_score:
+			best_score = score
+			best_resource = r
+	return best_resource
+
 func calc_capability(agent: Agent, resource_type: ResourceType) -> float:
 	""" 
 		Calculates the capability of an agent for a specific resource type.
@@ -108,7 +162,7 @@ func calc_capability(agent: Agent, resource_type: ResourceType) -> float:
 	
 	# AI adaptation: If this is an AI-controlled village, adjust based on game state
 	if control_mode == ControlMode.AI_CONTROLLED:
-		capability *= calc_ai_strategy_multiplier(resource_type)
+		capability *= calc_ai_strategy_multiplier(resource_type) * decision_aggressiveness
 	
 	return capability
 
